@@ -8,11 +8,21 @@
         <p><a href="#" class="close-panel">关闭</a></p>
     </div>
 </div>
+<script type='text/javascript'>
+    $.config = {
+        routerFilter: function($link) {
+            // 某个区域的 a 链接不想使用路由功能
+            //if ($link.is('.disable-router a')) {
+            //    return false;
+            //}
 
+            return true;
+        }
+    }
+</script>
 <script type='text/javascript' src='__JS__/zepto.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='__JS__/sm.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='__JS__/sm-extend.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='__JS__/demos.js' charset='utf-8'></script>
-<script type='text/javascript' src='__JS__/kitchen-sink.js' charset='utf-8'></script>
 </body>
 </html>

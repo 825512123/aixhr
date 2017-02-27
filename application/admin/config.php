@@ -13,10 +13,11 @@ return [
 
     //模板参数替换
     'view_replace_str'       => array(
+        '__ADMIN_LTE__'  => '/public/static/adminlte',
         '__CSS__'    => '/public/static/sui/css',
         '__JS__'     => '/public/static/sui/js',
         '__IMG__' => '/public/static/sui/img',
-        '__ZUI__' => '/static/index',
+        '__ZUI__' => '/static/admin',
         '__STATIC__' => '/public/static',
         '__PUBLIC__' => '/public',
         '__INDEXVIEW__' => 'app/index/view',
@@ -26,10 +27,10 @@ return [
         'WEB_TITLE' => '小黄人',
         'INDEX_TITLE' => '首页',
         'INDEX_URL' => url('index/index/index'),
-        'TASK_TITLE' => '任务',
-        'TASK_URL' => url('index/media/index'),
+        'MEDIA_TITLE' => '任务',
+        'MEDIA_URL' => url('index/media/index'),
         'USER_TITLE' => '个人',
-        'USER_URL' => url('index/user/index'),
+        'USER_URL' => url('index/user/member'),
     ),
 
     //管理员状态
@@ -56,8 +57,8 @@ return [
     // | 模板设置
     // +----------------------------------------------------------------------
     'template'               => [
-        'layout_on' => true,
-        'layout_name' => 'layout',
+        /*'layout_on' => true,
+        'layout_name' => 'layout',*/
         // 模板引擎类型 支持 php think 支持扩展
         'type'         => 'Think',
         // 模板路径

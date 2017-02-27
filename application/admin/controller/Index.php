@@ -1,10 +1,10 @@
 <?php
 namespace app\admin\controller;
 
-class Index
+class Index extends Base
 {
     public function index()
     {
-        return '后台';
+        return $this->fetch('index');
     }
 }
