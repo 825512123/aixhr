@@ -1,0 +1,220 @@
+.grid-demo .row {
+  text-align: center;
+}
+.grid-demo .row + .row {
+  margin-top: 0.75rem;
+}
+.grid-demo .row > [class*=col-] {
+  border: 1px solid #ddd;
+}
+.icons-demo .icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0.15rem;
+  font-size: 1.2rem;
+  line-height: 2.5rem;
+  text-align: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 1.25rem;
+  display: inline-block;
+}
+.icon.icon-f7 {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-f7.png");
+}
+.icon.icon-form-name {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-form-name.png");
+}
+.icon.icon-form-password {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-form-password.png");
+}
+.icon.icon-form-password-re {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/password.svg");
+}
+.icon.icon-form-email {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-form-email.png");
+}
+.icon.icon-form-calendar {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-form-calendar.png");
+}
+.icon.icon-form-tel {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-form-tel.png");
+}
+.icon.icon-form-gender {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-form-gender.png");
+}
+.icon.icon-form-toggle {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-form-toggle.png");
+}
+.icon.icon-form-comment {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-form-comment.png");
+}
+.icon.icon-form-settings {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-form-settings.png");
+}
+.icon.icon-form-url {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/i-form-url.png");
+}
+
+/*图标导航*/
+.toolbar-inner {
+  margin-top: 1px;
+  width: 100%;
+  height: 2.5rem;
+  padding: 0;
+  table-layout: fixed;
+}
+.toolbar-inner:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: auto;
+  right: auto;
+  height: 1px;
+  width: 100%;
+  background-color: #e7e7e7;
+  display: block;
+  z-index: 15;
+  -webkit-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .toolbar-inner:before {
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+  }
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 3) {
+  .toolbar-inner:before {
+    -webkit-transform: scaleY(0.33);
+    transform: scaleY(0.33);
+  }
+}
+.toolbar-inner:after {
+  display: none;
+}
+.toolbar-inner .tab-item {
+  position: relative;
+  display: table-cell;
+  width: 1%;
+  height: 2.5rem;
+  color: #929292;
+  text-align: center;
+  vertical-align: middle;
+}
+.toolbar-inner .tab-item.active,
+.toolbar-inner .tab-item:active {
+  color: #0894ec;
+  border: 1px solid #0894ec;
+}
+.toolbar-inner .tab-item .badge {
+  position: absolute;
+  top: .1rem;
+  left: 50%;
+  z-index: 100;
+  height: .8rem;
+  min-width: .8rem;
+  padding: 0 .2rem;
+  font-size: .6rem;
+  line-height: .8rem;
+  color: white;
+  vertical-align: top;
+  background: red;
+  border-radius: .5rem;
+  margin-left: .1rem;
+}
+.toolbar-inner .tab-item .icon {
+  top: 0.05rem;
+  height: 1.2rem;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.toolbar-inner .tab-item .icon ~ .tab-label {
+  display: block;
+  font-size: 0.55rem;
+  position: relative;
+  top: 0.15rem;
+}
+.toolbar-inner .button {
+  border: 1px solid white;
+}
+/*tab选项卡*/
+.tabs .list-block {
+  margin: 1rem 0;
+}
+.price-tabs {
+  padding-bottom: 2.4rem;
+}
+.item-after {
+  position: absolute;
+  right: .75rem;
+  margin-top: -0.6rem;
+}
+.submit-button {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  table-layout: fixed;
+  background: #fff;
+  z-index: 20;
+}
+/*popup弹出层*/
+.popup-overlay {
+  display: none;
+}
+/*登录页面*/
+.login-screen-title {
+  height: 6rem;
+  text-align: center;
+  font-size: 7rem;
+}
+.login-screen-title img {
+  height:7rem;
+}
+/*注册页面*/
+.register-page {
+  background: #fff;
+  margin-bottom: -1.6rem;
+}
+.item-content .item-inner .item-input .register-code-input {
+  float: left;
+  width: 60%;
+}
+.item-content .item-inner .item-input .register-code-send, .item-content .item-inner .item-input .register-code-resend {
+  float: left;
+   width: 40%;
+  margin-top: 0.4rem;
+ }
+.register-code-resend {
+   display: none;
+ }
+.register-button {
+  margin-top: 0.5rem;
+}
