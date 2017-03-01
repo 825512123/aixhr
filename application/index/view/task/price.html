@@ -1,5 +1,4 @@
-
-<div class="page page-current">
+<div id="price" class="page page-current">
     <!-- 你的html代码 -->
     <header class="bar bar-nav">
         <a class="button button-link button-nav pull-left back" href="#">
@@ -9,22 +8,8 @@
         <a class="button button-link button-nav pull-right open-popup" data-popup=".popup-about">
             <span class="icon icon-menu"></span>
         </a>
-        <h1 class="title">图标</h1>
+        <h1 class="title">回收价格一览</h1>
     </header>
-    <nav class="bar bar-tab">
-        <a class="tab-item active" href="/">
-            <span class="icon icon-remove"></span>
-            <span class="tab-label">回收</span>
-        </a>
-        <a class="tab-item" href="/index/index/color">
-            <span class="icon icon-star"></span>
-            <span class="tab-label">活动</span>
-        </a>
-        <a class="tab-item" href="/index/user/index">
-            <span class="icon icon-me"></span>
-            <span class="tab-label">我</span>
-        </a>
-    </nav>
     <div class="content">
         <div class="toolbar-inner">
             <a href="#tab1" class="tab-link button tab-item active">
@@ -60,7 +45,7 @@
             <a href="#tab3" class="tab-link button">待发货</a>
         </div>-->
 
-        <div class="tabs">
+        <div class="tabs price-tabs">
             <div id="tab1" class="tab active">
                 <div class="list-block">
                     <ul>
@@ -137,28 +122,52 @@
                 </div>
             </div>
             <div id="tab6" class="tab">
-                <div class="content-block">
-                    <div class="buttons-row">
-                        <a href="#tab1-1" class="tab-link active button">铁</a>
-                        <a href="#tab1-2" class="tab-link button">铜</a>
-                        <a href="#tab1-3" class="tab-link button">铝</a>
-                    </div>
-                    <div class="tabs">
-                        <p class='tab active' id='tab1-1'>
-                        <div class="list-block">
-                            <ul>
-                                <li class="item-content">
-                                    <div class="item-inner"><div class="item-title">瓶子</div><div class="item-after">￥0.03/个</div></div>
-                                </li>
-                            </ul>
+                <div class="list-block">
+                    <ul>
+                        <li class="item-content">
+                            <div class="item-inner"><div class="item-title">铁</div><div class="item-after">￥0.03/公斤</div></div>
+                        </li>
+                        <li class="item-content">
+                            <div class="item-inner"><div class="item-title">铜</div><div class="item-after">￥0.03/公斤</div></div>
+                        </li>
+                        <li class="item-content">
+                            <div class="item-inner"><div class="item-title">铝</div><div class="item-after">￥0.03/公斤</div></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="submit-button">
+            <a href="/index/task/recover" class="button button-big">开始回收</a>
+            <a href="#" class="button button-big open-recover">开始回收</a>
+        </div>
+    </div>
+    <div class="popup popup-recover">
+        <header class="bar bar-nav">
+            <a class="button button-link button-nav pull-left close-popup" href="#">
+                <span class="icon icon-left"></span>
+                返回
+            </a>
+            <h1 class="title">回收</h1>
+        </header>
+        <div class="content">
+            <div class="content-block">
+                <div class="list-block">
+                    服务地址：
+                    <div class="item-inner">
+                        <div class="item-title label">省市区</div>
+                        <div class="item-input">
+                            <input placeholder="" id="city-picker" readonly="" type="text">
                         </div>
-                        </p>
-                        <p class='tab' id='tab1-2'>This is tab 1-2 content</p>
-                        <p class='tab' id='tab1-3'>13855589778</p>
+                    </div>
+                    <div class="item-inner">
+                        <div class="item-title label">详细地址</div>
+                        <div class="item-input">
+                            <input type="text" placeholder="Your Address">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </div>

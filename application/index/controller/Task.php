@@ -15,6 +15,12 @@ class Task extends Base
 {
     public function price()
     {
-        return $this->fetch('price');
+        return $this->fetch();
     }
+
+    public function recover()
+    {
+        return $this->fetch();
+    }
+
 }

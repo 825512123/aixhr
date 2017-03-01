@@ -583,3 +583,30 @@ if (!function_exists('collection')) {
         }
     }
 }
+
+if (!function_exists('clearArray')) {
+    /**
+     * 清除数组空键值对
+     * @param array $data 被处理数组
+     * @return mixed
+     */
+    function clearArray($data)
+    {
+        foreach ($data as $key => $val) {
+            if(empty($val)) unset($data[$key]);
+        }
+        return $data;
+    }
+}
+
+if (!function_exists('dateToTime')) {
+    /**
+     * 日期转时间戳
+     * @param array $data 被处理数组
+     * @return mixed
+     */
+    function dateToTime($data)
+    {
+        return strtotime($data);
+    }
+}

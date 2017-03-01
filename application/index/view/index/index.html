@@ -3,9 +3,9 @@
         <!-- 你的html代码 -->
         <header class="bar bar-nav">
             <a class="icon icon-me pull-left open-panel" data-panel=".panel-left"></a>
-            <a class="pull-right open-panel" data-panel=".popup-left">
+            <!--<a class="pull-right open-panel" data-panel=".popup-left">
                 <span class="icon icon-menu"></span>
-            </a>
+            </a>-->
             <h1 class="title">首页</h1>
         </header>
         <nav class="bar bar-tab">
@@ -17,13 +17,13 @@
                 <span class="icon icon-star"></span>
                 <span class="tab-label">活动</span>
             </a>
-            <a class="tab-item" href="/index/user/index">
+            <a class="tab-item" onclick="indexLogin('/index/user/index')" href="#">
                 <span class="icon icon-me"></span>
                 <span class="tab-label">我</span>
             </a>
         </nav>
         <div class="content">
-            <div class="swiper-container" data-space-between='10' style="height: 30%">
+            <div class="swiper-container" data-space-between='10' style="height: 30%; min-height: 8rem">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide"><img
                             src="http://gqianniu.alicdn.com/bao/uploaded/i4//tfscom/i1/TB1n3rZHFXXXXX9XFXXXXXXXXXX_!!0-item_pic.jpg_640x640q60.jpg"
@@ -38,26 +38,74 @@
                 <div class="swiper-pagination"></div>
             </div>
             <div class="toolbar-inner">
-                <a href="index/task/price" class="tab-item">
+                <a href="index/task/price" class="button tab-item">
                     <span class="icon icon-app"></span>
-                    <span class="tab-label">纸皮回收</span>
+                    <span class="tab-label">纸板</span>
                 </a>
-                <a href="/index/Media/index" class="tab-item">
+                <a href="/index/Media/index" class="button tab-item">
                     <span class="icon icon-cart"></span>
-                    <span class="tab-label">二手车</span>
+                    <span class="tab-label">家电</span>
                 </a>
-                <a href="#" class="tab-item">
+                <a href="#" class="button tab-item">
                     <span class="icon icon-computer"></span>
-                    <span class="tab-label">二手电器</span>
+                    <span class="tab-label">书报</span>
                 </a>
-                <a href="#" class="tab-item">
-                    <span class="icon icon-remove"></span>
-                    <span class="tab-label">废品回收</span>
+            </div>
+
+            <div class="toolbar-inner">
+                <a href="#tab4" class="button tab-item">
+                    <span class="icon icon-app"></span>
+                    <span class="tab-label">熟料框</span>
                 </a>
-                <a href="#" data-popup=".popup-media" class="tab-item">
+                <a href="#tab5" class="button tab-item">
+                    <span class="icon icon-computer"></span>
+                    <span class="tab-label">熟料瓶</span>
+                </a>
+                <a href="#tab6" class="button tab-item">
                     <span class="icon icon-gift"></span>
-                    <span class="tab-label">礼物包装</span>
+                    <span class="tab-label">废金属</span>
                 </a>
+            </div>
+        </div>
+        <div class="popup popup-login">
+            <header class="bar bar-nav">
+                <a class="button button-link button-nav pull-left close-popup" href="#">
+                    <span class="icon icon-left"></span>
+                    返回
+                </a>
+                <h1 class="title">登录</h1>
+            </header>
+            <div class="content">
+                <div class="login-screen-title"><img src="__IMG__/logo.jpg"></div>
+                <form id="login">
+                    <div class="list-block inputs-list">
+                        <ul>
+                            <li class="item-content">
+                                <div class="item-media"><i class="icon icon-form-name"></i></div>
+                                <div class="item-inner">
+                                    <div class="item-input">
+                                        <input type="text" name="username" placeholder="请输入用户名/手机号">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="item-content">
+                                <div class="item-media"><i class="icon icon-form-password"></i></div>
+                                <div class="item-inner">
+                                    <div class="item-input">
+                                        <input type="password" name="password" placeholder="请输入密码">
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="content-block">
+                        <a href="#" class="button button-fill button-big login-button">登录</a>
+                        <p class="buttons-row">
+                            <a href="/index/user/repassword" class="button button-raised button-big">忘记密码</a>
+                            <a href="/index/index/register" class="button button-raised button-big">注册</a>
+                        </p>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

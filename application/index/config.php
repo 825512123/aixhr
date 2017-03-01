@@ -13,9 +13,10 @@ return [
 
     //模板参数替换
     'view_replace_str'       => array(
-        '__CSS__'    => '/public/static/sui/css',
-        '__JS__'     => '/public/static/sui/js',
-        '__IMG__' => '/public/static/sui/img',
+        '__SUI_CSS__'    => '/public/static/sui/css',
+        '__SUI_JS__'     => '/public/static/sui/js',
+        '__SUI_IMG__' => '/public/static/sui/img',
+        '__IMG__' => '/public/static/index/img',
         '__ZUI__' => '/static/index',
         '__STATIC__' => '/public/static',
         '__PUBLIC__' => '/public',
