@@ -5,7 +5,7 @@
             <span class="icon icon-left"></span>
             返回
         </a>
-        <a class="button button-link button-nav pull-right open-popup" data-popup=".popup-about">
+        <a class="pull-right open-panel" data-panel=".popup-left">
             <span class="icon icon-menu"></span>
         </a>
         <h1 class="title">回收价格一览</h1>
@@ -39,11 +39,6 @@
                 <span class="tab-label">废金属</span>
             </a>
         </div>
-<!--        <div class="buttons-tab fixed-tab" data-offset="44">
-            <a href="#tab1" class="tab-link active button">全部</a>
-            <a href="#tab2" class="tab-link button">待付款</a>
-            <a href="#tab3" class="tab-link button">待发货</a>
-        </div>-->
 
         <div class="tabs price-tabs">
             <div id="tab1" class="tab active">
@@ -137,37 +132,8 @@
                 </div>
             </div>
         </div>
-        <div class="submit-button">
-            <a href="/index/task/recover" class="button button-big">开始回收</a>
-            <a href="#" class="button button-big open-recover">开始回收</a>
-        </div>
-    </div>
-    <div class="popup popup-recover">
-        <header class="bar bar-nav">
-            <a class="button button-link button-nav pull-left close-popup" href="#">
-                <span class="icon icon-left"></span>
-                返回
-            </a>
-            <h1 class="title">回收</h1>
-        </header>
-        <div class="content">
-            <div class="content-block">
-                <div class="list-block">
-                    服务地址：
-                    <div class="item-inner">
-                        <div class="item-title label">省市区</div>
-                        <div class="item-input">
-                            <input placeholder="" id="city-picker" readonly="" type="text">
-                        </div>
-                    </div>
-                    <div class="item-inner">
-                        <div class="item-title label">详细地址</div>
-                        <div class="item-input">
-                            <input type="text" placeholder="Your Address">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!--<div class="submit-button">-->
+            <a href="#" onclick="indexLogin('/index/task/recover')" class="button button-fill button-big">开始回收</a>
+        <!--</div>-->
     </div>
 </div>

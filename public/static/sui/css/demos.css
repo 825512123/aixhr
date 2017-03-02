@@ -79,12 +79,27 @@
   height: 1.45rem;
   background-image: url("../img/i-form-url.png");
 }
+.icon.icon-home-address {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/address-home.svg");
+}
+.icon.icon-edit-address {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/address-edit.svg");
+}
+.icon.icon-my-address {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/my_address.svg");
+}
 
 /*图标导航*/
 .toolbar-inner {
   margin-top: 1px;
   width: 100%;
-  height: 2.5rem;
+  height: 2.47rem;
   padding: 0;
   table-layout: fixed;
 }
@@ -169,13 +184,13 @@
 .tabs .list-block {
   margin: 1rem 0;
 }
-.price-tabs {
+/*.price-tabs {
   padding-bottom: 2.4rem;
-}
+}*/
 .item-after {
   position: absolute;
-  right: .75rem;
-  margin-top: -0.6rem;
+  right: 0.75rem;
+  bottom: 0.35rem;
 }
 .submit-button {
   position: fixed;
@@ -217,4 +232,25 @@
  }
 .register-button {
   margin-top: 0.5rem;
+}
+/*编辑地址页面*/
+.edit-address .list-block .item-content .item-inner .item-title.label {
+  width: 27%;
+}
+/*回收页面*/
+#recover .list-block {
+  margin:  0;
+}
+#recover .list-block .recover-time .content-padded {
+  margin: 0.5rem 0.1rem 0.5rem 0.6rem;
+}
+#recover .list-block .recover-time .row {
+
+}
+#recover .list-block .recover-time .row .col-25 {
+  width: 24.5%;
+  margin-left: 0.5%;
+  height:1.8rem;
+  line-height: 1.8rem;
+  font-size: 0.6rem;
 }

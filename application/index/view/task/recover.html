@@ -5,20 +5,73 @@
             <span class="icon icon-left"></span>
             返回
         </a>
-        <h1 class="title">服务地址</h1>
+        <h1 class="title">预约回收</h1>
     </header>
     <div class="content">
-        <div class="content-block">
-            <div class="item-inner">
-                <div class="item-title label">当前服务地址：</div>
-            </div>
-            <div class="item-inner">
-                <div class="item-title label">四川省南充市高坪区</div>
-                <div class="item-input">万科金润华府16栋2-6</div>
-            </div>
+        <div class="list-block">
+            <ul class="address-show">
+                <li>
+                <div class="item-content">
+                    <div class="item-media">
+                        <i class="icon icon-my-address"></i>
+                    </div>
+                    <div class="item-inner">
+                        <div class="item-title">当前服务地址：</div>
+                        <div class="item-after open-recover"><i class="icon icon-edit-address"></i></div>
+                    </div>
+                </div>
+                </li>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><!--<i class="icon icon-form-name"></i>--></div>
+                        <div class="item-inner address_city"></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><!--<i class="icon icon-form-name"></i>--></div>
+                        <div class="item-inner address_input"></div>
+                    </div>
+                </li>
+            </ul>
+            <ul class="address-hide">
+                <li>
+                <div class="item-content">
+                    <div class="item-media">
+                        <i class="icon icon-my-address"></i>
+                    </div>
+                    <div class="item-inner">
+                        <div class="item-title">请填写地址：</div>
+                        <div class="item-after open-recover"><i class="icon icon-edit-address"></i></div>
+                    </div>
+                </div>
+                </li>
+            </ul>
+            <ul class="recover-time">
+                <div class="content-padded grid-demo">
+                    <div class="row">
+                        <div class="col-25">8:00~12:00</div>
+                        <div class="col-25">8:00~12:00</div>
+                        <div class="col-25">8:00~12:00</div>
+                        <div class="col-25">8:00~12:00</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">13:00~17:00</div>
+                        <div class="col-25">13:00~17:00</div>
+                        <div class="col-25">13:00~17:00</div>
+                        <div class="col-25">13:00~17:00</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-25">17:00~19:00</div>
+                        <div class="col-25">17:00~19:00</div>
+                        <div class="col-25">17:00~19:00</div>
+                        <div class="col-25">17:00~19:00</div>
+                    </div>
+                </div>
+            </ul>
         </div>
-        <div class="submit-button">
-            <a href="#" class="button button-big open-recover">下一步</a>
+        <div class="">
+            <a href="#" class="button button-fill button-big open-recover">召唤小黄人</a>
         </div>
     </div>
     <div class="popup popup-recover">
@@ -27,26 +80,44 @@
                 <span class="icon icon-left"></span>
                 返回
             </a>
-            <h1 class="title">回收</h1>
+            <h1 class="title">编辑回收地址</h1>
         </header>
-        <div class="content">
-            <div class="content-block">
-                <div class="list-block">
-                    <ul>
-                        <!-- Text inputs -->
-                        <li>
-                            <div class="item-content">
-                                <div class="item-inner">
-                                    <div class="item-title label">省市区</div>
-                                    <div class="item-input">
-                                        <input placeholder="" id="city-picker" readonly="" type="text">
-                                    </div>
+        <div class="content edit-address">
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media">
+                                <i class="icon icon-my-address"></i>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title">服务地址：</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">省 市 区</div>
+                                <div class="item-input">
+                                    <input placeholder="" id="city-picker" name="address_city" readonly="" type="text">
                                 </div>
                             </div>
-                        </li>
-                    </ul>
-                </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">详细地址</div>
+                                <div class="item-input">
+                                    <input type="text" name="address_input" placeholder="请精确到门牌号">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
+            <a href="#" class="button button-fill button-big submit-address">确定</a>
         </div>
     </div>
 </div>

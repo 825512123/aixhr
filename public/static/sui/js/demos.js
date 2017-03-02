@@ -17,7 +17,7 @@ $(function () {
                 localStorage.member_id = data.member_id;
                 localStorage.member_info = data.member_info;
                 initMember(localStorage.member_info);
-                localStorage.login_url = '/index/user/member';
+                localStorage.login_url = '/index/user/index';
             }
         });
     } else {
@@ -35,7 +35,7 @@ $(function () {
   });
   // 登录后触发的方法
   indexLogin = function (url) {
-    localStorage.login_url = '/index/user/index';
+    localStorage.login_url = url;
     if (localStorage.member_id) {
       $.router.load(url);
     } else {
@@ -44,6 +44,7 @@ $(function () {
   };
   // 登录
   $('#login').find('.login-button').on('click', function () {
+    $('.submit-login').removeClass('login-button');
     var username = $('#login').find('input[name="username"]').val().trim();
     var password = $('#login').find('input[name="password"]').val().trim();
     if (username != '' && password != '') {
@@ -53,14 +54,16 @@ $(function () {
                     localStorage.member_id = data.member_id;
                     localStorage.member_info = data.member_info;
                     initMember(localStorage.member_info);
-                    localStorage.login_url = '/index/user/index';
-                    $.closeModal('.login-screen');
-                    indexLogin('/index/user/index');
+                    //$.closeModal('.login-screen');
+                    indexLogin(localStorage.login_url);
+                } else {
+                    $('.submit-login').addClass('login-button');
                 }
             });
         });
     } else {
       $.alert('用户名/密码不能为空！');
+        $('.submit-login').addClass('login-button');
     }
   });
   // 注册
@@ -166,6 +169,7 @@ $(function () {
           }
       });
       $('.register-button').on('click', function () {
+          $('.submit-register').removeClass('register-button');
           if (!checkm) {
               $.alert('手机号有误，请重新输入！');
               return false;
@@ -194,13 +198,15 @@ $(function () {
                           localStorage.member_id = data.member_id;
                           localStorage.member_info = data.member_info;
                           initMember(localStorage.member_info);
-                          localStorage.login_url = '/index/user/index';
-                          indexLogin('/index/user/index');
+                          indexLogin(localStorage.login_url);
                       });
                   } else {
                       $.alert('注册失败，请稍后再试！');
+                      $('.submit-register').addClass('register-button');
                   }
               });
+          } else {
+              $('.submit-register').addClass('register-button');
           }
       });
   });
@@ -255,20 +261,43 @@ $(function () {
     }
 
   $(document).on("pageInit", "#price", function (e, id, page) {
-    $('.open-recover').on('click', function () {
-      $.popup('.popup-recover');
-    });
-    $("#city-picker").cityPicker({
-      value: ['四川', '南充', '高坪区']
-    });
+
   });
   $(document).on("pageInit", "#recover", function (e, id, page) {
+      if(!localStorage.address_city) {
+          $('.address-show').hide();
+          $('.address-hide').show();
+          var arr = '四川 南充 高坪区'.split(' ');
+          var input = '';
+      } else {
+          var arr = localStorage.address_city.split(' ');
+          var input = localStorage.address_input;
+          $('.address-hide').hide();
+          $('.address_city').text(localStorage.address_city);
+          $('.address_input').text(localStorage.address_input);
+      }
       $('.open-recover').on('click', function () {
           $.popup('.popup-recover');
       });
       $("#city-picker").cityPicker({
-          value: ['四川', '南充', '高坪区']
-          //value: ['四川', '内江', '东兴区']
+          value: [arr[0], arr[1], arr[2]]
+      });
+      $("input[name='address_input']").val(input);
+      $('.edit-address').find('.submit-address').on('click', function () {
+          var address_city = $("input[name='address_city']").val().trim();
+          var address_input = $("input[name='address_input']").val().trim();
+          if(address_city == '') {$.alert('请选择省市区');}
+          if(address_input.length > 8) {
+              $('.address-show').show();
+              $('.address-hide').hide();
+              $('.address_city').text(address_city);
+              $('.address_input').text(address_input);
+              localStorage.address_city = address_city;
+              localStorage.address_input = address_input;
+              $('.close-popup').click();
+          } else {
+              $.alert('请精确到门牌号!8字以上');
+          }
       });
   });
 
