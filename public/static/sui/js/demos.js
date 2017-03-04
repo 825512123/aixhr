@@ -258,12 +258,25 @@ $(function () {
          $.alert('密码格式有误，请重新输入!');
          return false;
          }*/
-    }
+    };
 
   $(document).on("pageInit", "#price", function (e, id, page) {
 
   });
   $(document).on("pageInit", "#recover", function (e, id, page) {
+      //日期时间初始化
+      var mydate = new Date();
+      for(var i=1;i<5;i++) {
+          var time = 86400000+ mydate.getTime();
+          mydate.setTime(time);
+          var week = getWeek(mydate.getDay());
+          $('.tab'+i).find('.font').text((mydate.getMonth()+1) + '月' + mydate.getDate() + '日');
+          $('.tab'+i).find('.tab-label').text(week);
+          if(i == 1) {
+              $("input[name='recover_date']").val((mydate.getMonth()+1) + '月' + mydate.getDate() + '日' + week);
+          }
+      }
+      // 地址初始化
       if(!localStorage.address_city) {
           $('.address-show').hide();
           $('.address-hide').show();
@@ -299,7 +312,39 @@ $(function () {
               $.alert('请精确到门牌号!8字以上');
           }
       });
+      // 回收时间
+      $('.recover-date').find('.tab-item').on('click', function () {
+          $("input[name='recover_date']").val($(this).find('.font').text() + $(this).find('.tab-label').text());
+      });
+      $('.recover-time').find('.tab-item').on('click', function () {
+          $("input[name='recover_time']").val($(this).find('.tab-label').text());
+      });
+      // 提交
+      $('.submit-recover').on('click', function () {
+          var address_city = $("input[name='address_city']").val().trim();
+          var address_input = $("input[name='address_input']").val().trim();
+          var recover_date = $("input[name='recover_date']").val().trim();
+          var recover_time = $("input[name='recover_time']").val().trim();
+          if(!address_city) {
+              $.alert('请选择服务地址');
+          } else {
+              $.post('/index/order/add',
+                  {task_city: address_city, task_address: address_input, task_date:recover_date, task_time:recover_time},
+                  function (data) {
+                  $.alert(data.msg, function () {
+                      if (data.code > 0) {
+
+                      }
+                  });
+              });
+          }
+      });
   });
+
+  var getWeek = function (day) {
+      var today = new Array('(星期日)','(星期一)','(星期二)','(星期三)','(星期四)','(星期五)','(星期六)');
+      return today[day];
+  };
 
 
   //下拉刷新页面

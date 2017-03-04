@@ -94,6 +94,16 @@
   height: 1.45rem;
   background-image: url("../img/my_address.svg");
 }
+.icon.icon-date {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/date.svg");
+}
+.icon.icon-time {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/time.svg");
+}
 
 /*图标导航*/
 .toolbar-inner {
@@ -206,12 +216,12 @@
 }
 /*登录页面*/
 .login-screen-title {
-  height: 6rem;
+  height: 5rem;
   text-align: center;
-  font-size: 7rem;
+  font-size: 6rem;
 }
 .login-screen-title img {
-  height:7rem;
+  height:6rem;
 }
 /*注册页面*/
 .register-page {
@@ -244,8 +254,9 @@
 #recover .list-block .recover-time .content-padded {
   margin: 0.5rem 0.1rem 0.5rem 0.6rem;
 }
-#recover .list-block .recover-time .row {
-
+#recover .list-block ul {
+  margin-top: 0.2rem;
+  padding-bottom: 0.3rem;
 }
 #recover .list-block .recover-time .row .col-25 {
   width: 24.5%;
@@ -253,4 +264,16 @@
   height:1.8rem;
   line-height: 1.8rem;
   font-size: 0.6rem;
+}
+#recover .submit-recover {
+  padding-top: 0.3rem;
+}
+#recover .toolbar-inner .tab-item .font ~ .tab-label {
+  display: block;
+  font-size: 0.55rem;
+  position: relative;
+  top: 0.15rem;
+}
+#recover .font {
+  font-size: 0.8rem;
 }
