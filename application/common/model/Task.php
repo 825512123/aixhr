@@ -30,4 +30,16 @@ class Task extends Base
         $data['update_time'] = time();
         return Db::name('order')->insert($data);
     }
+
+    public function getOrderList($where, $limit)
+    {
+    	$res = Db::name('task')->alias('t')
+		    ->join('member m', 't.member_id=m.id')
+		    ->where($where)
+		    ->limit($limit, 8)
+		    ->field('*,t.id as task_id')
+		    ->order('t.id desc')
+		    ->select();
+    	return $res;
+    }
 }

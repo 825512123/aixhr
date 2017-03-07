@@ -32,7 +32,7 @@ class Base extends Controller
         } else {
             $data['value'] = (int)($time.'0001');
             $data['create_date'] = $time;
-            Db::name('config')->where(['name' => 'task_id'])->insert($data);
+            Db::name('config')->where(['name' => 'task_id'])->update($data);
             return $data['value'];
         }
     }

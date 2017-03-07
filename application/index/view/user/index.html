@@ -1,8 +1,11 @@
 <div id="user-index" class="page">
     <header class="bar bar-nav">
-        <a class="button button-link button-nav pull-left back" href="/demos/list">
+        <a class="button button-link button-nav pull-left back" href="#">
             <span class="icon icon-left"></span>
             返回
+        </a>
+        <a class="pull-right open-panel" data-panel=".popup-left">
+            <span class="icon icon-menu"></span>
         </a>
         <h1 class="title">我的小黄人</h1>
     </header>
@@ -32,7 +35,7 @@
         </div>
         <div class="list-block inset">
             <ul>
-                <li class="item-content item-link">
+                <li class="item-content item-link" onclick="indexLogin('/index/order/orderList')">
                     <div class="item-media"><i class="icon icon-f7"></i></div>
                     <div class="item-inner"><div class="item-title">我的回收单</div></div>
                 </li>
