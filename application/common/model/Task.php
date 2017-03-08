@@ -37,9 +37,20 @@ class Task extends Base
 		    ->join('member m', 't.member_id=m.id')
 		    ->where($where)
 		    ->limit($limit, 8)
-		    ->field('*,t.id as task_id')
+		    ->field('*,t.id as task_id,t.status as task_status')
 		    ->order('t.id desc')
 		    ->select();
+    	return $res;
+    }
+
+    public function getOrderInfo($where)
+    {
+    	$res = Db::name('task')->alias('t')
+		    ->join('member m', 't.user_id=m.id', 'LEFT')
+		    ->join('recover_type rt', 't.recover_type=rt.id', 'LEFT')
+		    ->where($where)
+		    ->field('*,t.id as task_id,t.status as task_status,t.create_time as create_task_time,rt.name as recover_name')
+		    ->find();
     	return $res;
     }
 }

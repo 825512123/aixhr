@@ -64,6 +64,19 @@ class User extends Base
         }
     }
 
+    public function editMember()
+    {
+	    $post = input("post.");
+	    $post['id'] = session('member_id');
+	    $res = Member::getInstance()->editMember($post);
+	    if($res) {
+	    	$this->refreshSessionMember(['id' => $post['id']]);
+		    return json(['code' => 1, 'data' => session('member_info'), 'msg' => '操作成功！']);
+	    } else {
+		    return json(['code' => 0, 'data' => '', 'msg' => '操作失败，请稍候再试！']);
+	    }
+    }
+
     public function repassword()
     {
 

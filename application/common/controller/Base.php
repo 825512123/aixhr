@@ -13,6 +13,10 @@ use think\Db;
 
 class Base extends Controller
 {
+	/**
+	 * 刷新用户session
+	 * @param $where
+	 */
     public function refreshSessionMember($where)
     {
         $user = Member::getInstance()->getMemberByWhere($where);

@@ -9,28 +9,65 @@ $(function () {
     //centeredSlides: true,
   });
   //初始化用户信息
-  var memberInfo;
   var infoIndex = function () {
     if (localStorage.member_id) {
       $.post('/index/index/autoLogin', {member_id: localStorage.member_id}, function (data) {
         if (data.code > 0) {
           localStorage.member_id = data.member_id;
           localStorage.member_info = data.member_info;
-          initMember(localStorage.member_info);
           localStorage.login_url = '/index/user/index';
         }
       });
-    } else {
-
     }
   };
   infoIndex();
-  // 用户信息初始化
-  var initMember = function (member) {
-    memberInfo = member;
-  };
   // 用户首页
   $(document).on("pageInit", "#user-index", function (e, id, page) {
+    var memberInfo = JSON.parse(localStorage.member_info);
+    $('.money').append(memberInfo.yue);
+    $('.integral').append(memberInfo.integral);
+    var icon = (memberInfo.icon != null && memberInfo.icon != '') ? memberInfo.icon : '/public/static/index/img/null-icon.png';
+    $('.item-photo').find('.member-icon').attr('src',icon);
+    $('.member-mobile').text(memberInfo.mobile);
+    var address = (memberInfo.address_city != null && memberInfo.address_city != '') ? memberInfo.address_city + memberInfo.address_input : '请填写地址';
+    $('.member-address').html(address + '<i class="icon icon-user-edit open-recover"></i>');
+    // 地址初始化
+    if (!memberInfo.address_city) {
+      var arr = '四川 南充 高坪区'.split(' ');
+      var input = '';
+    } else {
+      var arr = memberInfo.address_city.split(' ');
+      var input = memberInfo.address_input;
+      $('.address_city').text(memberInfo.address_city);
+      $('.address_input').text(memberInfo.address_input);
+    }
+    $('.open-recover').on('click', function () {
+      $.popup('.popup-recover');
+    });
+    $("#city-picker").cityPicker({
+      value: [arr[0], arr[1], arr[2]]
+    });
+    $("input[name='address_input']").val(input);
+    $('.edit-address').find('.submit-address').on('click', function () {
+      var address_city = $("input[name='address_city']").val().trim();
+      var address_input = $("input[name='address_input']").val().trim();
+      if (address_city == '') {
+        $.alert('请选择省市区');
+      }
+      if (address_input.length > 8) {
+        $.post('/index/user/editMember', {address_city: address_city, address_input: address_input}, function (data) {
+          $.alert(data.msg, function () {
+            if (data.code > 0) {
+              localStorage.member_info = data.data;
+              $('.member-address').text(address_city + address_input + '<i class="icon icon-user-edit open-recover"></i>');
+              $('.close-popup').click();
+            }
+          });
+        });
+      } else {
+        $.alert('请精确到门牌号!8字以上');
+      }
+    });
 
   });
   // 登录后触发的方法
@@ -53,8 +90,6 @@ $(function () {
           if (data.code > 0) {
             localStorage.member_id = data.member_id;
             localStorage.member_info = data.member_info;
-            initMember(localStorage.member_info);
-            //$.closeModal('.login-screen');
             indexLogin(localStorage.login_url);
           } else {
             $('.submit-login').addClass('login-button');
@@ -197,7 +232,6 @@ $(function () {
             $.alert(data.msg, function () {
               localStorage.member_id = data.member_id;
               localStorage.member_info = data.member_info;
-              initMember(localStorage.member_info);
               indexLogin(localStorage.login_url);
             });
           } else {
@@ -270,17 +304,18 @@ $(function () {
       }
     }
     // 地址初始化
-    if (!localStorage.address_city) {
+    var memberInfo = JSON.parse(localStorage.member_info);
+    if (!memberInfo.address_city) {
       $('.address-show').hide();
       $('.address-hide').show();
       var arr = '四川 南充 高坪区'.split(' ');
       var input = '';
     } else {
-      var arr = localStorage.address_city.split(' ');
-      var input = localStorage.address_input;
+      var arr = memberInfo.address_city.split(' ');
+      var input = memberInfo.address_input;
       $('.address-hide').hide();
-      $('.address_city').text(localStorage.address_city);
-      $('.address_input').text(localStorage.address_input);
+      $('.address_city').text(memberInfo.address_city);
+      $('.address_input').text(memberInfo.address_input);
     }
     $('.open-recover').on('click', function () {
       $.popup('.popup-recover');
@@ -296,13 +331,18 @@ $(function () {
         $.alert('请选择省市区');
       }
       if (address_input.length > 8) {
-        $('.address-show').show();
-        $('.address-hide').hide();
-        $('.address_city').text(address_city);
-        $('.address_input').text(address_input);
-        localStorage.address_city = address_city;
-        localStorage.address_input = address_input;
-        $('.close-popup').click();
+        $.post('/index/user/editMember', {address_city: address_city, address_input: address_input}, function (data) {
+            $.alert(data.msg, function () {
+              if (data.code > 0) {
+                localStorage.member_info = data.data;
+                $('.address-show').show();
+                $('.address-hide').hide();
+                $('.address_city').text(address_city);
+                $('.address_input').text(address_input);
+                $('.close-popup').click();
+              }
+            });
+        });
       } else {
         $.alert('请精确到门牌号!8字以上');
       }
@@ -353,8 +393,13 @@ $(function () {
         return '废品';
     }
   };
+
   // 我的回收单
   $(document).on("pageInit", "#order-list", function (e, id, page) {
+    orderInfo = function (id) {
+      localStorage.task_id = id;
+      indexLogin('/index/order/orderInfo');
+    };
     var orderListLoading = false;
     var getOrderList = function (status, id) {
       var limit = $('#order-list ' + id + ' li').length;
@@ -364,7 +409,7 @@ $(function () {
         if (data.code > 0 && data.sum > 0) {
           var list = '';
           $.each(data.data, function (i,n) {
-            list += '<li><a href="#" class="item-link item-content">';
+            list += '<li><a href="#" onclick="orderInfo('+ n.task_id +')" class="item-link item-content">';
             list += '<div class="item-media"><img src="/favicon.png" style="width: 2.2rem;"></div>';
             list += '<div class="item-inner"> <div class="item-title-row">';
             list += '<div class="item-title">' + getRecoverName(n.task_type) + '回收</div>';
@@ -400,21 +445,73 @@ $(function () {
   });
   // 回收单详情
   $(document).on("pageInit", "#order-info", function (e, id, page) {
-    $("#picker").picker({
-      toolbarTemplate: '<header class="bar bar-nav">\
-  <button class="button button-link pull-left">按钮</button>\
-  <button class="button button-link pull-right close-picker">确定</button>\
-  <h1 class="title">标题</h1>\
-  </header>',
-      cols: [
-        {
-          textAlign: 'center',
-          values: ['iPhone 4', 'iPhone 4S', 'iPhone 5', 'iPhone 5S', 'iPhone 6', 'iPhone 6 Plus', 'iPad 2', 'iPad Retina', 'iPad Air', 'iPad mini', 'iPad mini 2', 'iPad mini 3']
+    var task_id = localStorage.task_id;
+    $.post('/index/order/orderInfo', {task_id:task_id}, function (data) {
+      if(data.code > 0) {
+        var data = data.data;
+        $('.task_date').text(data.task_date);
+        if(data.task_status == 2) {
+          if(data.user_id > 0) {
+            $('.task_status').text('已派单');
+            $('.recover_user').text(data.username + data.mobile);
+          } else {
+            $('.task_status').text('等待派单');
+            $('.recover_user').text('待定');
+          }
+        } else if(data.task_status == 1) {
+          $('.task_status').text('已完成');
+          $('.recover_user').text(data.username + data.mobile);
+          var content = '';
+          content += '<li> <div class="item-content"> <div class="item-inner">';
+          content += '<div class="item-title label">回收品类：</div>';
+          content += '<div class="item-input">' + data.recover_name + '</div>';
+          content += '</div> </div> </li>';
+          content += '<li> <div class="item-content"> <div class="item-inner">';
+          content += '<div class="item-title label">回收单价：</div>';
+          content += '<div class="item-input">' + data.task_price + '</div>';
+          content += '</div> </div> </li>';
+          content += '<li> <div class="item-content"> <div class="item-inner">';
+          content += '<div class="item-title label">回收数量：</div>';
+          content += '<div class="item-input">' + data.number + '</div>';
+          content += '</div> </div> </li>';
+          content += '<li> <div class="item-content"> <div class="item-inner">';
+          content += '<div class="item-title label">回收总价：</div>';
+          content += '<div class="item-input">' + data.task_money + '</div>';
+          content += '</div> </div> </li>';
+          content += '<li> <div class="item-content"> <div class="item-inner">';
+          content += '<div class="item-title label">完成时间：</div>';
+          var mydate = new Date();
+          mydate.setTime(data.end_time * 1000);
+          content += '<div class="item-input">' + mydate.format('yyyy-MM-dd h:m') + '</div>';
+          content += '</div> </div> </li>';
+          $(page).find('ul').append(content);
         }
-      ]
+      }
+
     });
   });
-
+  //时间处理函数
+  Date.prototype.format = function(format) {
+    var date = {
+      "M+": this.getMonth() + 1,
+      "d+": this.getDate(),
+      "h+": this.getHours(),
+      "m+": this.getMinutes(),
+      "s+": this.getSeconds(),
+      "q+": Math.floor((this.getMonth() + 3) / 3),
+      "S+": this.getMilliseconds()
+    };
+    if (/(y+)/i.test(format)) {
+      format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+    }
+    for (var k in date) {
+      if (new RegExp("(" + k + ")").test(format)) {
+        format = format.replace(RegExp.$1, RegExp.$1.length == 1
+          ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+      }
+    }
+    return format;
+  };
 
   $.init();
 });

@@ -89,6 +89,12 @@
   height: 1.45rem;
   background-image: url("../img/address-edit.svg");
 }
+.icon.icon-user-edit {
+  margin-left: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  background-image: url("../img/user_info_edit.svg");
+}
 .icon.icon-my-address {
   width: 1.45rem;
   height: 1.45rem;
@@ -103,6 +109,16 @@
   width: 1.45rem;
   height: 1.45rem;
   background-image: url("../img/time.svg");
+}
+.icon.icon-money {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/user-zhongchou.svg");
+}
+.icon.icon-integral {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/integral.svg");
 }
 
 /*图标导航*/
@@ -277,3 +293,44 @@
 #recover .font {
   font-size: 0.8rem;
 }
+/*回收单详情*/
+#order-info .list-block {
+  margin: 1rem 0;
+}
+/*用户首页*/
+#user-index .card {
+  margin: 0;
+}
+#user-index .item-photo {
+  width: 35%;
+  height: 5rem;
+}
+#user-index .header-text {
+  width: 65%;
+}
+#user-index .card-header a {
+  color: #d81e06;
+}
+#user-index .list-block {
+  margin: 0.75rem 0;
+}
+.no-border {
+  text-align: center;
+  height:6rem;
+  background: linear-gradient(to right, #0E7ADF, #97DFFE);
+}
+.member-icon {
+  height: 4.5rem;
+  width: 4.5rem;
+  margin-right: 0.75rem;
+}
+.header-text {
+  color: #ffffff;
+}
+.header-text .member-mobile {
+  font-size: 1.3rem;
+}
+/*
+.header-text .member-address {
+  font-size: 0.75rem;
+}*/

@@ -63,6 +63,17 @@ class Order extends Base
 
 	public function orderInfo()
 	{
-		return $this->fetch();
+		if(request()->isPost()) {
+			$post = input("post.");
+			$where['t.id'] = $post['task_id'];
+			$res = Task::getInstance()->getOrderInfo($where);
+			if ($res > 0){
+				return json(['code' => 1, 'data' => $res, 'msg' => '成功']);
+			} else {
+				return json(['code' => 0, 'data' => '', 'msg' => '失败']);
+			}
+		} else {
+			return $this->fetch();
+		}
 	}
 }
