@@ -1,0 +1,152 @@
+<div id="withdraw" class="page">
+    <header class="bar bar-nav">
+        <a class="button button-link button-nav pull-left back" href="#">
+            <span class="icon icon-left"></span>
+            返回
+        </a>
+        <h1 class="title">提现</h1>
+    </header>
+    <div class="content">
+        <p class="link money">可提现余额为：￥00.00</p>
+        <input name="" value="" />
+        <div class="content-block">
+            <div class="list-block media-list">
+                <ul>
+                    <li>
+                        <label class="label-checkbox item-content button-wx">
+                            <input name="my-radio" type="radio" value="1">
+                            <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title">微信</div>
+                                    <div class="item-after wechat"></div>
+                                </div>
+                                <!--<div class="item-subtitle">New messages from John Doe</div>
+                                <div class="item-text">Lorem ipsum dolor sit amet...</div>-->
+                            </div>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="label-checkbox item-content button-zfb">
+                            <input name="my-radio" type="radio" value="2">
+                            <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title">支付宝</div>
+                                    <div class="item-after alipay"></div>
+                                </div>
+                            </div>
+                        </label>
+                    </li>
+                    <li>
+                        <label class="label-checkbox item-content button-bank">
+                            <input name="my-radio" type="radio" value="3">
+                            <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title">银行卡</div>
+                                    <div class="item-after bank"></div>
+                                </div>
+                            </div>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <a href="javascript:;" class="button button-fill button-big login-button submit-withdraw">确定</a>
+        </div>
+    </div>
+    <div class="popup popup-wx">
+        <header class="bar bar-nav">
+            <a class="button button-link button-nav pull-left close-popup" href="javascript:;">
+                <span class="icon icon-left"></span>
+                返回
+            </a>
+            <h1 class="title">绑定微信</h1>
+        </header>
+        <div class="content">
+            <div class="list-block inputs-list">
+                <ul>
+                    <li class="item-content">
+                        <div class="item-media"><i class="icon icon-wechat"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" name="wechat" placeholder="请输入微信号">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block">
+                <a href="javascript:;" class="button button-fill button-big login-button submit-wechat">确定</a>
+            </div>
+        </div>
+    </div>
+    <div class="popup popup-zfb">
+        <header class="bar bar-nav">
+            <a class="button button-link button-nav pull-left close-popup" href="javascript:;">
+                <span class="icon icon-left"></span>
+                返回
+            </a>
+            <h1 class="title">绑定支付宝</h1>
+        </header>
+        <div class="content">
+            <div class="list-block inputs-list">
+                <ul>
+                    <li class="item-content">
+                        <div class="item-media"><i class="icon icon-alipay"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" name="alipay" placeholder="请输入支付宝账号">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block">
+                <a href="javascript:;" class="button button-fill button-big login-button submit-alipay">确定</a>
+            </div>
+        </div>
+    </div>
+    <div class="popup popup-bank">
+        <header class="bar bar-nav">
+            <a class="button button-link button-nav pull-left close-popup" href="javascript:;">
+                <span class="icon icon-left"></span>
+                返回
+            </a>
+            <h1 class="title">绑定银行卡</h1>
+        </header>
+        <div class="content">
+            <div class="list-block inputs-list">
+                <ul>
+                    <li class="item-content">
+                        <div class="item-media"><i class="icon icon-legalize-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" name="actual_name" placeholder="请输入真实姓名">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content">
+                        <div class="item-media"><i class="icon icon-bank-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="text" name="bank_name" placeholder="请输银行名">
+                            </div>
+                        </div>
+                    </li>
+                    <li class="item-content">
+                        <div class="item-media"><i class="icon icon-bank"></i></div>
+                        <div class="item-inner">
+                            <div class="item-input">
+                                <input type="number" name="bank" placeholder="请输入银行卡号">
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="content-block">
+                <a href="javascript:;" class="button button-fill button-big login-button submit-bank">确定</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -64,6 +64,16 @@ class User extends Base
         }
     }
 
+    public function money()
+    {
+    	return $this->fetch();
+    }
+
+    public function withdraw()
+    {
+    	return $this->fetch();
+    }
+
     public function editMember()
     {
 	    $post = input("post.");

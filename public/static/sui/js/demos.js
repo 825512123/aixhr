@@ -24,7 +24,7 @@ $(function () {
   // 用户首页
   $(document).on("pageInit", "#user-index", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
-    $('.money').append(memberInfo.yue);
+    $('.money').append(memberInfo.yue.toFixed(2));
     $('.integral').append(memberInfo.integral);
     var icon = (memberInfo.icon != null && memberInfo.icon != '') ? memberInfo.icon : '/public/static/index/img/null-icon.png';
     $('.item-photo').find('.member-icon').attr('src',icon);
@@ -461,7 +461,12 @@ $(function () {
         } else if(data.task_status == 1) {
           $('.task_status').text('已完成');
           $('.recover_user').text(data.username + data.mobile);
+          var task_type = data.task_type == 2 ? '现金交易' : '线上交易';
           var content = '';
+          content += '<li> <div class="item-content"> <div class="item-inner">';
+          content += '<div class="item-title label">支付方式：</div>';
+          content += '<div class="item-input">' + task_type + '</div>';
+          content += '</div> </div> </li>';
           content += '<li> <div class="item-content"> <div class="item-inner">';
           content += '<div class="item-title label">回收品类：</div>';
           content += '<div class="item-input">' + data.recover_name + '</div>';
@@ -490,6 +495,88 @@ $(function () {
 
     });
   });
+  /*我的钱包*/
+  $(document).on("pageInit", "#money", function (e, id, page) {
+    var memberInfo = JSON.parse(localStorage.member_info);
+    $('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
+  });
+  /*提现*/
+  $(document).on("pageInit", "#withdraw", function (e, id, page) {
+    var memberInfo = JSON.parse(localStorage.member_info);
+    $('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
+    // 微信
+    if(memberInfo.wechat != null && memberInfo.wechat != '') {
+      $('.wechat').text(memberInfo.wechat);
+      $("input[name='wechat']").val(memberInfo.wechat);
+    } else {
+      $('.button-wx').on('click', function () {
+        $.popup('.popup-wx');
+      });
+      $('.submit-wechat').on('click', function () {
+        var wechat = $("input[name='wechat']").val().trim();
+        if(wechat != '') {
+          $.post('/index/user/editMember', {wechat:wechat}, function (data) {
+            localStorage.member_info = data.data;
+            $('.wechat').text(wechat);
+            $('.close-popup').click();
+          });
+        } else {
+          $.alert('请填写微信号');
+        }
+      });
+    }
+    // 支付宝
+    if(memberInfo.alipay != null && memberInfo.alipay != '') {
+      $('.alipay').text(memberInfo.alipay);
+      $("input[name='alipay']").val(memberInfo.alipay);
+    } else {
+      $('.button-zfb').on('click', function () {
+        $.popup('.popup-zfb');
+      });
+      $('.submit-alipay').on('click', function () {
+        var alipay = $("input[name='alipay']").val().trim();
+        if(alipay != '') {
+          $.post('/index/user/editMember', {alipay:alipay}, function (data) {
+            localStorage.member_info = data.data;
+            $('.alipay').text(alipay);
+            $('.close-popup').click();
+          });
+        } else {
+          $.alert('请填写支付宝');
+        }
+      });
+    }
+    // 银行卡
+    $("input[name='actual_name']").val(memberInfo.actual_name);
+    $("input[name='bank_name']").val(memberInfo.bank_name);
+    if(memberInfo.bank != null && memberInfo.bank != '') {
+      $('.bank').text(memberInfo.bank);
+      $("input[name='bank']").val(memberInfo.bank);
+    } else {
+      $('.button-bank').on('click', function () {
+        $.popup('.popup-bank');
+      });
+      $('.submit-bank').on('click', function () {
+        var actual_name = $("input[name='actual_name']").val().trim();
+        var bank_name = $("input[name='bank_name']").val().trim();
+        var bank = $("input[name='bank']").val().trim();
+        if(actual_name != '' && bank_name != '' && bank != '') {
+          $.post('/index/user/editMember', {actual_name:actual_name, bank_name:bank_name, bank:bank}, function (data) {
+            localStorage.member_info = data.data;
+            $('.bank').text(bank);
+            $('.close-popup').click();
+          });
+        } else {
+          $.alert('请完整填写信息');
+        }
+      });
+    }
+  });
+
+
+
+
+
   //时间处理函数
   Date.prototype.format = function(format) {
     var date = {

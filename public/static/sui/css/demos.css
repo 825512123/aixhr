@@ -120,6 +120,31 @@
   height: 1.45rem;
   background-image: url("../img/integral.svg");
 }
+.icon.icon-wechat {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/wechat.svg");
+}
+.icon.icon-alipay {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/alipay.svg");
+}
+.icon.icon-legalize-name {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/legalize-name.svg");
+}
+.icon.icon-bank-name {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/icon-bank.svg");
+}
+.icon.icon-bank {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/bank.svg");
+}
 
 /*图标导航*/
 .toolbar-inner {
@@ -330,7 +355,24 @@
 .header-text .member-mobile {
   font-size: 1.3rem;
 }
-/*
-.header-text .member-address {
-  font-size: 0.75rem;
-}*/
+/*我的钱包*/
+#money .card {
+  box-shadow: 0 0;
+  position: initial;
+  margin: 0;
+}
+#money .card-header {
+  position: static;
+  padding: 0;
+}
+#money .no-padding img {
+  height: 7rem;
+}
+/*提现*/
+#withdraw .content-block,#withdraw .list-block {
+  padding: 0;
+  margin: 0.75rem 0;
+}
+#withdraw .list-block {
+  padding: 0;
+}
