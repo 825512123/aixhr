@@ -371,8 +371,52 @@
 /*提现*/
 #withdraw .content-block,#withdraw .list-block {
   padding: 0;
-  margin: 0.75rem 0;
+  margin: 0;
 }
 #withdraw .list-block {
   padding: 0;
+}
+#withdraw .modal-text-input {
+  height: 1.8rem;
+  width: 100%;
+  background-color: #efeff4;
+  border-radius: 0.1rem;
+  border: 1px solid #D6D6D6;
+  margin-top: 0;
+  font-size: inherit;
+}
+.withdraw-money {
+  min-height: 2.2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.45rem;
+  padding-left: 0.75rem;
+  border-bottom: 1px solid #D6D6D6;
+  border-top: 1px solid #D6D6D6;
+}
+.withdraw-input {
+  min-height: 2.6rem;
+  background-color: #fff;
+  padding: 0.4rem 0.75rem;
+}
+#withdraw .label-checkbox .icon {
+  margin-right: 0.2rem;
+}
+#withdraw .label-checkbox .item-after {
+  font-size: 0.7rem;
+  margin-bottom: 0.2rem;
+}
+#withdraw .submit-withdraw {
+  margin-top: 1rem;
+  padding: 0.75rem;
+}
+
+/*主题颜色*/
+.bg-default .bar-nav {
+  background-color: #0894ec;
+}
+.bg-cyan .bar-nav {
+  background-color: #00BCD4;
+}
+.theme-color .bar-nav .title,.theme-color .bar-nav a{
+  color: #ffffff;
 }

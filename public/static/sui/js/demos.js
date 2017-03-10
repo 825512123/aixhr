@@ -500,10 +500,40 @@ $(function () {
     var memberInfo = JSON.parse(localStorage.member_info);
     $('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
   });
+  /*checkMoney = function (i) {
+    $.toast(i);
+    /!*if (mobile == '') {
+      $.alert('手机号不能为空！');
+      return false;
+    }
+    var reg = /^1[34578]\d{9}$/;
+    if (reg.test(mobile)) {
+      return true;
+    } else {
+      $.alert('手机号有误，请重新输入!');
+      return false;
+    }*!/
+  };*/
   /*提现*/
   $(document).on("pageInit", "#withdraw", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
-    $('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
+    var money = memberInfo.yue.toFixed(2);
+    $('.money').text('可提现余额为：￥' + money);
+    checkMoney = function (i) {
+      if(i <= 0) {
+        $.toast('请输入合法数值');
+        $("input[name='withdraw']").val('');
+      }
+      if(i > memberInfo.yue) {
+        $.toast('最多可提现' + money);
+        $("input[name='withdraw']").val(money);
+      }
+      var arr = i.split('.');
+      if(arr[1] && arr[1].length >2) {
+        $.toast('最多至小数后两位');
+        $("input[name='withdraw']").val(Math.floor(i*100)/100);
+      }
+    };
     // 微信
     if(memberInfo.wechat != null && memberInfo.wechat != '') {
       $('.wechat').text(memberInfo.wechat);
@@ -521,7 +551,7 @@ $(function () {
             $('.close-popup').click();
           });
         } else {
-          $.alert('请填写微信号');
+          $.toast('请完整填写信息'); return false;
         }
       });
     }
@@ -542,7 +572,7 @@ $(function () {
             $('.close-popup').click();
           });
         } else {
-          $.alert('请填写支付宝');
+          $.toast('请完整填写信息'); return false;
         }
       });
     }
@@ -567,10 +597,35 @@ $(function () {
             $('.close-popup').click();
           });
         } else {
-          $.alert('请完整填写信息');
+          $.toast('请完整填写信息'); return false;
         }
       });
     }
+    //提交
+    $('.submit-withdraw').on('click', function () {
+      var withdraw = $("input[name='withdraw']").val().trim();
+      var my_radio = $("input[name='my_radio']:checked").val();
+      if(!withdraw) {$.toast('请输入提现金额'); return false;}
+      if(withdraw <= 0) {$.toast('提现金额必须大于0'); return false;}
+      if(withdraw > memberInfo.yue) {$.toast('提现金额大于余额'); return false;}
+      if(!my_radio) {$.toast('请选择提现方式'); return false;}
+      var account = eval('memberInfo.'+my_radio);
+      if(account != '') {
+        $.post('/index/funds/withdraw', {money:withdraw, type:my_radio}, function (data) {
+          $.alert(data.msg, function () {
+            if(data.code > 0) {
+              localStorage.member_info = data.data;
+              memberInfo = JSON.parse(data.data);
+              $('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
+              $('.back').click();
+            }
+          });
+        });
+      } else {
+        $.toast('该提现方式为空，请填写或选择其他提现方式');
+        return false;
+      }
+    })
   });
 
 

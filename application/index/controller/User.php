@@ -69,11 +69,6 @@ class User extends Base
     	return $this->fetch();
     }
 
-    public function withdraw()
-    {
-    	return $this->fetch();
-    }
-
     public function editMember()
     {
 	    $post = input("post.");
@@ -81,7 +76,8 @@ class User extends Base
 	    $res = Member::getInstance()->editMember($post);
 	    if($res) {
 	    	$this->refreshSessionMember(['id' => $post['id']]);
-		    return json(['code' => 1, 'data' => session('member_info'), 'msg' => '操作成功！']);
+		    $user = json_encode(session('member_info'));
+		    return json(['code' => 1, 'data' => $user, 'msg' => '操作成功！']);
 	    } else {
 		    return json(['code' => 0, 'data' => '', 'msg' => '操作失败，请稍候再试！']);
 	    }

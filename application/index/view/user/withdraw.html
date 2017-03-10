@@ -7,18 +7,25 @@
         <h1 class="title">提现</h1>
     </header>
     <div class="content">
-        <p class="link money">可提现余额为：￥00.00</p>
-        <input name="" value="" />
+        <div class="withdraw-money">
+        <span class="money"></span>
+        </div>
+        <div class="withdraw-input">
+            <input class="modal-text-input" type="number" name="withdraw" oninput="checkMoney(value)" value="" placeholder="请输入提现金额" />
+        </div>
+        <div class="withdraw-money">
+            <span>提现方式</span>
+        </div>
         <div class="content-block">
             <div class="list-block media-list">
                 <ul>
                     <li>
                         <label class="label-checkbox item-content button-wx">
-                            <input name="my-radio" type="radio" value="1">
+                            <input name="my_radio" type="radio" value="wechat">
                             <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
                             <div class="item-inner">
                                 <div class="item-title-row">
-                                    <div class="item-title">微信</div>
+                                    <div class="item-title"><i class="icon icon-wechat"></i>微信</div>
                                     <div class="item-after wechat"></div>
                                 </div>
                                 <!--<div class="item-subtitle">New messages from John Doe</div>
@@ -28,11 +35,11 @@
                     </li>
                     <li>
                         <label class="label-checkbox item-content button-zfb">
-                            <input name="my-radio" type="radio" value="2">
+                            <input name="my_radio" type="radio" value="alipay">
                             <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
                             <div class="item-inner">
                                 <div class="item-title-row">
-                                    <div class="item-title">支付宝</div>
+                                    <div class="item-title"><i class="icon icon-alipay"></i>支付宝</div>
                                     <div class="item-after alipay"></div>
                                 </div>
                             </div>
@@ -40,11 +47,11 @@
                     </li>
                     <li>
                         <label class="label-checkbox item-content button-bank">
-                            <input name="my-radio" type="radio" value="3">
+                            <input name="my_radio" type="radio" value="bank">
                             <div class="item-media"><i class="icon icon-form-checkbox"></i></div>
                             <div class="item-inner">
                                 <div class="item-title-row">
-                                    <div class="item-title">银行卡</div>
+                                    <div class="item-title"><i class="icon icon-bank"></i>银行卡</div>
                                     <div class="item-after bank"></div>
                                 </div>
                             </div>
@@ -52,7 +59,9 @@
                     </li>
                 </ul>
             </div>
-            <a href="javascript:;" class="button button-fill button-big login-button submit-withdraw">确定</a>
+            <div class="submit-withdraw">
+            <a href="javascript:;" class="button button-fill button-big login-button ">确定</a>
+            </div>
         </div>
     </div>
     <div class="popup popup-wx">
@@ -64,6 +73,9 @@
             <h1 class="title">绑定微信</h1>
         </header>
         <div class="content">
+            <div class="withdraw-money" style="color: red; font-size: 0.75rem;">
+                注：<span style="color: #a0a0a0">请填写真实信息且不可更改</span>
+            </div>
             <div class="list-block inputs-list">
                 <ul>
                     <li class="item-content">
@@ -90,6 +102,9 @@
             <h1 class="title">绑定支付宝</h1>
         </header>
         <div class="content">
+            <div class="withdraw-money" style="color: red; font-size: 0.75rem;">
+                注：<span style="color: #a0a0a0">请填写真实信息且不可更改</span>
+            </div>
             <div class="list-block inputs-list">
                 <ul>
                     <li class="item-content">
@@ -116,6 +131,9 @@
             <h1 class="title">绑定银行卡</h1>
         </header>
         <div class="content">
+            <div class="withdraw-money" style="color: red; font-size: 0.75rem;">
+                注：<span style="color: #a0a0a0">请填写真实信息且不可更改</span>
+            </div>
             <div class="list-block inputs-list">
                 <ul>
                     <li class="item-content">
