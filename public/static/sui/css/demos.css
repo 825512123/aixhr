@@ -118,7 +118,7 @@
 .icon.icon-integral {
   width: 1.45rem;
   height: 1.45rem;
-  background-image: url("../img/integral.svg");
+  background-image: url("../img/user_tq.svg");
 }
 .icon.icon-wechat {
   width: 1.45rem;
@@ -144,6 +144,31 @@
   width: 1.45rem;
   height: 1.45rem;
   background-image: url("../img/bank.svg");
+}
+.icon.icon-use-money {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/icon-withdraw.svg");
+}
+.icon.icon-sum-money {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/icon_user_money.svg");
+}
+.icon.icon-order {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/order.svg");
+}
+.icon.icon-use-integral {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/integral.svg");
+}
+.icon.icon-count {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/count.svg");
 }
 
 /*图标导航*/
@@ -232,14 +257,17 @@
   border: 1px solid white;
 }
 /*tab选项卡*/
+#price .tabs .list-block {
+  margin: 0.15rem 0 1rem 0;
+}
 .tabs .list-block {
-  margin: 1rem 0;
+    margin: 0;
 }
 /*.price-tabs {
   padding-bottom: 2.4rem;
 }*/
 .item-after {
-  position: absolute;
+  /*position: absolute;*/
   right: 0.75rem;
   bottom: 0.35rem;
 }
@@ -408,6 +436,10 @@
 #withdraw .submit-withdraw {
   margin-top: 1rem;
   padding: 0.75rem;
+}
+
+#count .list-block {
+  margin: -0.25rem 0 0 0;
 }
 
 /*主题颜色*/

@@ -1,5 +1,6 @@
 <?php
 /**
+ * 用户类
  * Created by PhpStorm.
  * User: Administrator
  * Date: 2017/2/23
@@ -12,6 +13,7 @@ namespace app\index\controller;
 use app\common\controller\Base;
 use app\common\controller\MessageApi;
 use app\common\model\Member;
+use app\common\model\Task;
 
 class User extends Base
 {
@@ -20,6 +22,7 @@ class User extends Base
     {
         return $this->fetch('index');
     }
+
     /**
      * 检查手机号是否存在
      * @return \think\response\Json
@@ -54,6 +57,10 @@ class User extends Base
         }
     }
 
+	/**
+	 * 判断验证码
+	 * @return \think\response\Json
+	 */
     public function checkCode()
     {
         $post = input("post.");
@@ -64,11 +71,40 @@ class User extends Base
         }
     }
 
+	/**
+	 * 余额
+	 * @return mixed
+	 */
     public function money()
     {
     	return $this->fetch();
     }
 
+	/**
+	 * 积分
+	 * @return mixed
+	 */
+    public function integral()
+    {
+    	return $this->fetch();
+    }
+
+	/**
+	 * 统计
+	 * @return mixed
+	 */
+    public function count()
+    {
+    	$where['member_id'] = session('member_id');
+    	$sum_order = Task::getInstance()->getOrderSumByMember($where);
+	    $this->assign('sum_order', $sum_order);
+    	return $this->fetch();
+    }
+
+	/**
+	 * 编辑用户
+	 * @return \think\response\Json
+	 */
     public function editMember()
     {
 	    $post = input("post.");

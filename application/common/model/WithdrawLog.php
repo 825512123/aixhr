@@ -42,4 +42,14 @@ class WithdrawLog extends Base
 		}
 		return $res;
 	}
+
+	public function getWithdrawList($where, $limit)
+	{
+		$res = Db::name('withdraw_log')
+			->where($where)
+			->limit($limit, 8)
+			->order('id desc')
+			->select();
+		return $res;
+	}
 }

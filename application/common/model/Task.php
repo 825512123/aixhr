@@ -1,5 +1,6 @@
 <?php
 /**
+ * 订单/任务表
  * Created by PhpStorm.
  * User: Administrator
  * Date: 2017/3/3
@@ -24,6 +25,11 @@ class Task extends Base
         return self::$_instance;
     }
 
+	/**
+	 * 新增任务/订单
+	 * @param $data
+	 * @return int|string
+	 */
     public function addTask($data)
     {
         $data = clearArray($data);//清除数组空键值对
@@ -31,6 +37,12 @@ class Task extends Base
         return Db::name('order')->insert($data);
     }
 
+	/**
+	 * 获取订单/任务列表
+	 * @param $where
+	 * @param $limit
+	 * @return false|\PDOStatement|string|\think\Collection
+	 */
     public function getOrderList($where, $limit)
     {
     	$res = Db::name('task')->alias('t')
@@ -43,6 +55,11 @@ class Task extends Base
     	return $res;
     }
 
+	/**
+	 * 获取订单/任务信息
+	 * @param $where
+	 * @return array|false|\PDOStatement|string|\think\Model
+	 */
     public function getOrderInfo($where)
     {
     	$res = Db::name('task')->alias('t')
@@ -51,6 +68,15 @@ class Task extends Base
 		    ->where($where)
 		    ->field('*,t.id as task_id,t.status as task_status,t.create_time as create_task_time,rt.name as recover_name')
 		    ->find();
+    	return $res;
+    }
+
+    public function getOrderSumByMember($where)
+    {
+    	$where['status'] = 1;
+    	$res = Db::name('task')
+		    ->where($where)
+		    ->count('id');
     	return $res;
     }
 }

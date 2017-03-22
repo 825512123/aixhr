@@ -625,10 +625,87 @@ $(function () {
         $.toast('该提现方式为空，请填写或选择其他提现方式');
         return false;
       }
-    })
+    });
   });
 
+  /*我的积分*/
+  $(document).on("pageInit", "#integral", function (e, id, page) {
+    var memberInfo = JSON.parse(localStorage.member_info);
+    $('.integral').text('可使用积分为：' + memberInfo.integral);
+  });
 
+  /*我的统计*/
+  $(document).on("pageInit", "#count", function (e, id, page) {
+    var memberInfo = JSON.parse(localStorage.member_info);
+    var sum_money = (memberInfo.yue + memberInfo.money).toFixed(2);
+    $('.sum_money').text('￥' + sum_money);
+    $('.use_money').text('￥' + memberInfo.money.toFixed(2));
+    $('.use_integral').text(memberInfo.use_integral);
+  });
+
+  /*提现明细*/
+  $(document).on("pageInit", "#withdraw-list", function (e, id, page) {
+    orderInfo = function (id) {
+      localStorage.task_id = id;
+      indexLogin('/index/order/orderInfo');
+    };
+    var orderListLoading = false;
+    var getOrderList = function (status, id) {
+      var limit = $('#withdraw-list ' + id + ' li').length;
+      console.log(limit);
+      $.post('/index/funds/withdrawList', {status:status, limit:limit}, function (data) {
+        if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+        if (data.code > 0 && data.sum > 0) {
+          var list = '',icon = '',title;
+          var mydate = new Date();
+          $.each(data.data, function (i,n) {
+            //日期时间初始化
+            mydate.setTime(n.create_time * 1000);
+            list += '<li><a href="#" onclick="orderInfo('+ n.task_id +')" class="item-link item-content">';
+            if(n.type == 1) {
+              icon = '/public/static/sui/img/icon-wechat.svg';
+              title = '微信提现';
+            } else if(n.type == 2) {
+              icon = '/public/static/sui/img/icon-alipay.svg';
+              title = '支付宝提现';
+            } else if(n.type == 3) {
+              icon = '/public/static/sui/img/icon-card.svg';
+              title = '银行卡提现';
+            }
+            list += '<div class="item-media"><img src="'+ icon +'" style="width: 2.2rem;"></div>';
+            list += '<div class="item-inner"> <div class="item-title-row">';
+            list += '<div class="item-title">' + title + '</div>';
+            list += '<div class="item-after">-' + n.money.toFixed(2) + '</div>';
+            list += '</div> <div class="item-subtitle">'+ mydate.format('yyyy-MM-dd h:m');
+            list += '</div> </div> </a></li>';
+          });
+          $(id + ' .media-list ul').append(list);
+          if(data.data.length < 8) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+          if(data.data.length == data.sum) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+        } else {
+          $(id + ' .infinite-scroll-preloader').hide(); return;
+        }
+      });
+    };
+
+    getOrderList(2, '#tab1');
+    $('.order-tab1').on('click', function () {
+      getOrderList(2, '#tab1');
+    });
+    $('.order-tab2').on('click', function () {
+      getOrderList(1, '#tab2');
+    });
+    $(page).on('infinite', function () {
+      if(orderListLoading) return;
+      orderListLoading = true;
+      if($(this).find('.infinite-scroll.active').attr('id') == "tab1"){
+        getOrderList(2, '#tab1');
+      } else {
+        getOrderList(1, '#tab2');
+      }
+
+    });
+  });
 
 
 

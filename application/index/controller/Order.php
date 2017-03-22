@@ -14,11 +14,19 @@ use app\common\model\Task;
 
 class Order extends Base
 {
+	/**
+	 * 价格一览
+	 * @return mixed
+	 */
     public function price()
     {
         return $this->fetch();
     }
 
+	/**
+	 * 预约回收
+	 * @return mixed
+	 */
     public function recover()
     {
         return $this->fetch();
@@ -43,6 +51,10 @@ class Order extends Base
         }
     }
 
+	/**
+	 * 订单列表
+	 * @return mixed|\think\response\Json
+	 */
 	public function orderList()
 	{
 		if(request()->isPost()) {
@@ -61,6 +73,10 @@ class Order extends Base
 		}
 	}
 
+	/**
+	 * 订单详情
+	 * @return mixed|\think\response\Json
+	 */
 	public function orderInfo()
 	{
 		if(request()->isPost()) {
