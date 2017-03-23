@@ -20,6 +20,10 @@ $(function () {
       });
     }
   };
+  price = function (id) {
+    localStorage.tab_id = id;
+    indexLogin('/index/order/price');
+  }
   infoIndex();
   // 用户首页
   $(document).on("pageInit", "#user-index", function (e, id, page) {
@@ -287,7 +291,9 @@ $(function () {
   };
 
   $(document).on("pageInit", "#price", function (e, id, page) {
-
+    var tab = $('.tab-link');
+    var id = localStorage.tab_id;
+    tab.eq(id).click();
   });
   // 开始回收
   $(document).on("pageInit", "#recover", function (e, id, page) {
@@ -603,6 +609,7 @@ $(function () {
     }
     //提交
     $('.submit-withdraw').on('click', function () {
+      var memberInfo = JSON.parse(localStorage.member_info);
       var withdraw = $("input[name='withdraw']").val().trim();
       var my_radio = $("input[name='my_radio']:checked").val();
       if(!withdraw) {$.toast('请输入提现金额'); return false;}
@@ -643,11 +650,11 @@ $(function () {
     $('.use_integral').text(memberInfo.use_integral);
   });
 
-  /*提现明细*/
+  /*提现列表*/
   $(document).on("pageInit", "#withdraw-list", function (e, id, page) {
-    orderInfo = function (id) {
-      localStorage.task_id = id;
-      indexLogin('/index/order/orderInfo');
+    withdrawInfo = function (id) {
+      localStorage.withdraw_id = id;
+      indexLogin('/index/funds/withdrawInfo');
     };
     var orderListLoading = false;
     var getOrderList = function (status, id) {
@@ -661,7 +668,7 @@ $(function () {
           $.each(data.data, function (i,n) {
             //日期时间初始化
             mydate.setTime(n.create_time * 1000);
-            list += '<li><a href="#" onclick="orderInfo('+ n.task_id +')" class="item-link item-content">';
+            list += '<li><a href="#" onclick="withdrawInfo('+ n.id +')" class="item-link item-content">';
             if(n.type == 1) {
               icon = '/public/static/sui/img/icon-wechat.svg';
               title = '微信提现';
@@ -707,6 +714,43 @@ $(function () {
     });
   });
 
+  /*提现详情*/
+  $(document).on("pageInit", "#withdraw-info", function (e, id, page) {
+    var withdraw_id = localStorage.withdraw_id;
+    $.post('/index/funds/withdrawInfo', {withdraw_id:withdraw_id}, function (data) {
+      if(data.code > 0) {
+        var data = data.data;
+        var title = '';
+        $('.withdraw_money').text(data.money.toFixed(2));//金额
+        if(data.type == 1) {
+          title = '微信提现';
+        } else if(data.type == 2) {
+          title = '支付宝提现';
+        } else if(data.type == 3) {
+          title = '银行卡提现';
+        }
+        $('.withdraw_type').text(title);//类型
+        var mydate = new Date();
+        mydate.setTime(data.create_time * 1000);
+        $('.withdraw_date').text(mydate.format('yyyy-MM-dd'));//时间
+        $('.withdraw_info').html(data.info);//信息
+        if(data.status == 1) {
+          var content = '';
+          content += '<li> <div class="item-content"> <div class="item-inner">';
+          content += '<div class="item-title label">回执单号：</div>';
+          content += '<div class="item-input">' + data.receipt_id + '</div>';
+          content += '</div> </div> </li>';
+          content += '<li> <div class="item-content"> <div class="item-inner">';
+          content += '<div class="item-title label">完成时间：</div>';
+          mydate.setTime(data.run_time * 1000);
+          content += '<div class="item-input">' + mydate.format('yyyy-MM-dd h:m:s') + '</div>';
+          content += '</div> </div> </li>';
+          $(page).find('ul').append(content);
+        }
+      }
+
+    });
+  });
 
 
   //时间处理函数

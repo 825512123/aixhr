@@ -52,4 +52,9 @@ class WithdrawLog extends Base
 			->select();
 		return $res;
 	}
+
+	public function getWithdrawInfo($where)
+	{
+		return Db::name('withdraw_log')->where($where)->find();
+	}
 }

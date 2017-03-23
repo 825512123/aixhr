@@ -82,6 +82,7 @@ class Order extends Base
 		if(request()->isPost()) {
 			$post = input("post.");
 			$where['t.id'] = $post['task_id'];
+			$where['t.member_id'] = session('member_id');
 			$res = Task::getInstance()->getOrderInfo($where);
 			if ($res > 0){
 				return json(['code' => 1, 'data' => $res, 'msg' => '成功']);

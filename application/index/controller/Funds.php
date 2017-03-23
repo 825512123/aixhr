@@ -76,11 +76,11 @@ class Funds extends Base
 		switch ($type)
 		{
 			case 'wechat':
-				return '提现类型为【微信】，账号为：'.$member_info['wechat']; break;
+				return '账号：'.$member_info['wechat']; break;
 			case 'alipay':
-				return '提现类型为【支付宝】，账号为：'.$member_info['alipay']; break;
+				return '账号：'.$member_info['alipay']; break;
 			case 'bank':
-				return '提现类型为【银行卡】，账号为：'.$member_info['bank'].'，银行名称：'.$member_info['bank_name'].'，真实姓名：'.$member_info['actual_name']; break;
+				return $member_info['actual_name'].'<br/>'.$member_info['bank_name'].'<br/>'.$member_info['bank']; break;
 			default:
 				return '其他提现类型';
 		}
@@ -105,6 +105,23 @@ class Funds extends Base
 			}
 		} else {
 			return $this->fetch('/user/withdraw-list');
+		}
+	}
+
+	public function withdrawInfo()
+	{
+		if(request()->isPost()) {
+			$post = input("post.");
+			$where['id'] = $post['withdraw_id'];
+			$where['member_id'] = session('member_id');
+			$res = WithdrawLog::getInstance()->getWithdrawInfo($where);
+			if ($res > 0){
+				return json(['code' => 1, 'data' => $res, 'msg' => '成功']);
+			} else {
+				return json(['code' => 0, 'data' => '', 'msg' => '失败']);
+			}
+		} else {
+			return $this->fetch('/user/withdraw-info');
 		}
 	}
 

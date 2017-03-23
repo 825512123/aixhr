@@ -346,10 +346,6 @@
 #recover .font {
   font-size: 0.8rem;
 }
-/*回收单详情*/
-#order-info .list-block {
-  margin: 1rem 0;
-}
 /*用户首页*/
 #user-index .card {
   margin: 0;
@@ -440,6 +436,14 @@
 
 #count .list-block {
   margin: -0.25rem 0 0 0;
+}
+
+/*提现详情*/
+#info .list-block {
+  margin: 1rem 0;
+}
+#info .item-inner .item-input {
+  text-align: end;
 }
 
 /*主题颜色*/
