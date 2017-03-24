@@ -767,11 +767,12 @@ $(function () {
           $.each(data.data, function (i,n) {
             //日期时间初始化
             mydate.setTime(n.create_time * 1000);
-            list += '<li><a href="#" onclick="withdrawInfo('+ n.id +')" class="item-link item-content">';
             if(n.type == 1) {
+              list += '<li><a href="#" onclick="orderInfo('+ n.order_id +')" class="item-link item-content">';
               title = '废品回收';
               money = '<div class="item-after" style="color:green">+';
             } else if(n.type == 2) {
+              list += '<li><a href="#" onclick="withdrawInfo('+ n.order_id +')" class="item-link item-content">';
               title = '提现';
               money = '<div class="item-after">-';
             }
