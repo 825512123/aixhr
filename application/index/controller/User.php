@@ -12,6 +12,7 @@ namespace app\index\controller;
 
 use app\common\controller\Base;
 use app\common\controller\MessageApi;
+use app\common\model\IncomeLog;
 use app\common\model\Member;
 use app\common\model\Task;
 
@@ -96,9 +97,28 @@ class User extends Base
     public function count()
     {
     	$where['member_id'] = session('member_id');
-    	$sum_order = Task::getInstance()->getOrderSumByMember($where);
+    	$where['status'] = 1;
+    	$sum_order = Task::getInstance()->where($where)->count('id');
+    	//$sum_order = Task::getInstance()->getOrderSumByMember($where);
 	    $this->assign('sum_order', $sum_order);
     	return $this->fetch();
+    }
+
+    public function incomeList()
+    {
+	    if(request()->isPost()) {
+		    $post = input("post.");
+		    $where['member_id'] = session('member_id');
+		    $res = IncomeLog::getInstance()->getIncomeList($where, $post['limit']);
+		    if ($res > 0){
+			    $sum = IncomeLog::getInstance()->where($where)->count('id');
+			    return json(['code' => 1, 'data' => $res, 'sum' => $sum, 'msg' => '成功']);
+		    } else {
+			    return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
+		    }
+	    } else {
+		    return $this->fetch();
+	    }
     }
 
 	/**

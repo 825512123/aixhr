@@ -336,7 +336,7 @@ $(function () {
       if (address_city == '') {
         $.alert('请选择省市区');
       }
-      if (address_input.length > 8) {
+      if (address_input.length > 5) {
         $.post('/index/user/editMember', {address_city: address_city, address_input: address_input}, function (data) {
             $.alert(data.msg, function () {
               if (data.code > 0) {
@@ -350,12 +350,13 @@ $(function () {
             });
         });
       } else {
-        $.alert('请精确到门牌号!8字以上');
+        $.alert('请精确到门牌号!5字以上');
       }
     });
     // 回收时间
     $('.recover-date').find('.tab-item').on('click', function () {
       $("input[name='recover_date']").val($(this).find('.font').text() + $(this).find('.tab-label').text());
+      $("input[name='task_time']").val($(this).find("input[name='date']").val());
     });
     $('.recover-time').find('.tab-item').on('click', function () {
       $("input[name='recover_time']").val($(this).find('.tab-label').text());
@@ -366,11 +367,12 @@ $(function () {
       var address_input = $("input[name='address_input']").val().trim();
       var recover_date = $("input[name='recover_date']").val().trim();
       var recover_time = $("input[name='recover_time']").val().trim();
+      var day = $("input[name='task_time']").val().trim();
       if (!address_city) {
         $.alert('请选择服务地址');
       } else {
         $.post('/index/order/add',
-          {task_city: address_city, task_address: address_input, task_date: recover_date, task_time: recover_time},
+          {task_city:address_city, task_address:address_input, task_date:recover_date, task_time:recover_time, day:day},
           function (data) {
             $.alert(data.msg, function () {
               if (data.code > 0) {
@@ -751,7 +753,50 @@ $(function () {
 
     });
   });
-
+  /*提现详情*/
+  $(document).on("pageInit", "#income-list", function (e, id, page) {
+    var orderListLoading = false;
+    var getOrderList = function () {
+      var limit = $('#withdraw-list li').length;
+      console.log(limit);
+      $.post('/index/user/incomeList', {limit:limit}, function (data) {
+        if(data.sum <= limit) {$('.infinite-scroll-preloader').hide(); return;}
+        if (data.code > 0 && data.sum > 0) {
+          var list = '',title,money;
+          var mydate = new Date();
+          $.each(data.data, function (i,n) {
+            //日期时间初始化
+            mydate.setTime(n.create_time * 1000);
+            list += '<li><a href="#" onclick="withdrawInfo('+ n.id +')" class="item-link item-content">';
+            if(n.type == 1) {
+              title = '废品回收';
+              money = '<div class="item-after" style="color:green">+';
+            } else if(n.type == 2) {
+              title = '提现';
+              money = '<div class="item-after">-';
+            }
+            list += '<div class="item-media"></div>';
+            list += '<div class="item-inner"> <div class="item-title-row">';
+            list += '<div class="item-title">' + title + '</div>';
+            list += money + n.money.toFixed(2) + '</div>';
+            list += '</div> <div class="item-subtitle">'+ mydate.format('yyyy-MM-dd h:m');
+            list += '</div> </div> </a></li>';
+          });
+          $(id + ' .media-list ul').append(list);
+          if(data.data.length < 8) {$('.infinite-scroll-preloader').hide(); return;}
+          if(data.data.length == data.sum) {$('.infinite-scroll-preloader').hide(); return;}
+        } else {
+          $('.infinite-scroll-preloader').hide(); return;
+        }
+      });
+    };
+    getOrderList();
+    $(page).on('infinite', function () {
+      if(orderListLoading) return;
+      orderListLoading = true;
+        getOrderList();
+    });
+  });
 
   //时间处理函数
   Date.prototype.format = function(format) {

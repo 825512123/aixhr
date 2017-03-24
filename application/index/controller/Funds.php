@@ -104,10 +104,14 @@ class Funds extends Base
 				return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
 			}
 		} else {
-			return $this->fetch('/user/withdraw-list');
+			return $this->fetch('/user/withdrawList');
 		}
 	}
 
+	/**
+	 * 提现详情
+	 * @return mixed|\think\response\Json
+	 */
 	public function withdrawInfo()
 	{
 		if(request()->isPost()) {
@@ -121,7 +125,7 @@ class Funds extends Base
 				return json(['code' => 0, 'data' => '', 'msg' => '失败']);
 			}
 		} else {
-			return $this->fetch('/user/withdraw-info');
+			return $this->fetch('/user/withdrawInfo');
 		}
 	}
 

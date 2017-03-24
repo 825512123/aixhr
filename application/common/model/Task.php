@@ -43,12 +43,25 @@ class Task extends Base
 	 * @param $limit
 	 * @return false|\PDOStatement|string|\think\Collection
 	 */
-    public function getOrderList($where, $limit)
+    public function getOrderList($data)
     {
-    	$res = Db::name('task')->alias('t')
+	    $where['t.member_id'] = session('member_id');
+	    if($data['status'] == 2) {
+		    $where['t.status'] = 2;
+		    $where['t.recover_date'] = ['gt', time()];
+	    } elseif($data['status'] == 1) {
+	    	$where['t.status'] = 1;
+	    }
+	    /*if($data['status'] == 1) {//完成状态或时间大于预约时间
+		    $res = $res->where(function ($query){
+			    $query->where('t.status', 1)
+				    ->whereOr('t.recover_date', '<', time());
+		    });
+	    }*/
+	    $res = Db::name('task')->alias('t')
 		    ->join('member m', 't.member_id=m.id')
 		    ->where($where)
-		    ->limit($limit, 8)
+		    ->limit($data['limit'], 8)
 		    ->field('*,t.id as task_id,t.status as task_status')
 		    ->order('t.id desc')
 		    ->select();
@@ -71,12 +84,16 @@ class Task extends Base
     	return $res;
     }
 
-    public function getOrderSumByMember($where)
+    public function getOrderSum($data)
     {
-    	$where['status'] = 1;
-    	$res = Db::name('task')
-		    ->where($where)
+	    $where['member_id'] = session('member_id');
+	    if($data['status'] == 2) {
+		    $where['status'] = 2;
+		    $where['recover_date'] = ['gt', time()];
+	    }
+	    $res = Db::name('task')->where($where)
 		    ->count('id');
-    	return $res;
+	    return $res;
     }
+
 }
