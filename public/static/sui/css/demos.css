@@ -170,6 +170,26 @@
   height: 1.45rem;
   background-image: url("../img/count.svg");
 }
+.icon.icon-index {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/home.svg");
+}
+.icon.icon-user-color {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/user-color.svg");
+}
+.icon.icon-bottle {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/bottle.svg");
+}
+.active .icon.icon-bottle {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/bottle-color.svg");
+}
 
 /*图标导航*/
 .toolbar-inner {
@@ -323,9 +343,13 @@
 #recover .list-block .recover-time .content-padded {
   margin: 0.5rem 0.1rem 0.5rem 0.6rem;
 }
-#recover .list-block ul {
+#recover .list-block .recover-date {
   margin-top: 0.2rem;
   padding-bottom: 0.3rem;
+}
+#recover .list-block .recover-time {
+  margin-top: 0.2rem;
+  padding-bottom: 0.1rem;
 }
 #recover .list-block .recover-time .row .col-25 {
   width: 24.5%;
@@ -368,7 +392,7 @@
   height:6rem;
   background: linear-gradient(to right, #0E7ADF, #97DFFE);
 }
-.member-icon {
+#user-index .member-icon {
   height: 4.5rem;
   width: 4.5rem;
   margin-right: 0.75rem;
@@ -376,8 +400,11 @@
 .header-text {
   color: #ffffff;
 }
+#user-index .member-address {
+  font-size: 0.75rem;
+}
 .header-text .member-mobile {
-  font-size: 1.3rem;
+  font-size: 1rem;
 }
 /*我的钱包*/
 #money .card {
@@ -444,6 +471,46 @@
 }
 #info .item-inner .item-input {
   text-align: end;
+}
+
+/*侧栏*/
+#sidebar {
+  background-color: #fff;
+}
+#sidebar .content-block, #sidebar .list-block, #sidebar .card {
+  margin: 0;
+  padding: 0;
+}
+#sidebar .member-icon {
+  height: 3rem;
+  width: 3rem;
+  margin-right: 0.75rem;
+}
+.with-panel-left-cover .panel-overlay {
+  opacity: 1;
+  background: rgba(0,0,0,0.4);
+}
+#sidebar .no-border{
+  height: 3.5rem;
+}
+#sidebar .item-photo {
+  margin-bottom: -0.38rem;
+}
+.no-border .header-text{
+  padding-bottom: 0.8rem;
+}
+#sidebar .card-header {
+  padding: 0 0.75rem;
+  background: linear-gradient(to right, #0E7ADF, #97DFFE);
+}
+#sidebar .card-header a {
+  font-size: 0.75rem;
+  color: #fff;
+}
+#sidebar .header-text {
+  width: 70%;
+  height: 3rem;
+  line-height: 3rem;
 }
 
 /*主题颜色*/

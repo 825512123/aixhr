@@ -50,12 +50,49 @@
         <p><a href="#" class="close-panel">关闭</a></p>
     </div>
 </div>-->
-<div class="panel panel-left panel-cover">
+<div id="sidebar" class="panel panel-left panel-cover">
     <div class="content-block">
-        <p>这是一个侧栏</p>
-        <p></p>
-        <!-- Click on link with "close-panel" class will close panel -->
-        <p><a href="#" class="close-panel">关闭</a></p>
+        <div class="card demo-card-header-pic">
+            <div valign="bottom" class="card-header color-white no-border">
+                <div class="item-photo">
+                    <img class="member-icon">
+                </div>
+                <div class="header-text">
+                    <div class="member-mobile"></div>
+                </div>
+            </div>
+            <div class="card-header">
+                <a href="tel:08173307787">客服电话：0817 330 7787</a>
+            </div>
+        </div>
+        <div class="list-block">
+            <ul>
+                <li class="item-content item-link" onclick="indexLogin('/index/index/index')">
+                    <div class="item-media"><i class="icon icon-index"></i></div>
+                    <div class="item-inner"><div class="item-title">首页</div></div>
+                </li>
+                <li class="item-content item-link" onclick="indexLogin('/index/user/index')">
+                    <div class="item-media"><i class="icon icon-user-color"></i></div>
+                    <div class="item-inner"><div class="item-title">个人中心</div></div>
+                </li>
+                <li class="item-content item-link" onclick="indexLogin('/index/user/money')">
+                    <div class="item-media"><i class="icon icon-sum-money"></i></div>
+                    <div class="item-inner"><div class="item-title">我的钱包</div></div>
+                </li>
+                <li class="item-content item-link" onclick="indexLogin('/index/user/integral')">
+                    <div class="item-media"><i class="icon icon-use-integral"></i></div>
+                    <div class="item-inner"><div class="item-title">我的积分</div></div>
+                </li>
+                <li class="item-content item-link" onclick="indexLogin('/index/user/count')">
+                    <div class="item-media"><i class="icon icon-count"></i></div>
+                    <div class="item-inner"><div class="item-title">我的统计</div></div>
+                </li>
+                <li class="item-content item-link" onclick="loginOut()">
+                    <div class="item-media"><i class="icon icon-f7"></i></div>
+                    <div class="item-inner"><div class="item-title">退出登录</div></div>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 <script type='text/javascript'>
