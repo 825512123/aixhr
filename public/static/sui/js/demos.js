@@ -8,6 +8,9 @@ $(function () {
     autoplayDisableOnInteraction: false,
     //centeredSlides: true,
   });
+  urlJump = function (url) {
+    $.router.load(url);
+  }
   // 登录后触发的方法
   indexLogin = function (url) {
     localStorage.login_url = url;
@@ -33,7 +36,9 @@ $(function () {
   var memberInfo = localStorage.member_info ? JSON.parse(localStorage.member_info) : '';
   var icon = (memberInfo.icon != null && memberInfo.icon != '') ? memberInfo.icon : '/public/static/index/img/null-icon.png';
   $('.item-photo').find('.member-icon').attr('src',icon);
-  $('.member-mobile').text(memberInfo.mobile);
+  if(memberInfo) {
+    $('.member-mobile').text(memberInfo.mobile);
+  }
   price = function (id) {
     localStorage.tab_id = id;
     $.router.load('/index/order/price');

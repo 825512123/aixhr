@@ -477,8 +477,12 @@
 #sidebar {
   background-color: #fff;
 }
-#sidebar .content-block, #sidebar .list-block, #sidebar .card {
+#sidebar .content-block, #sidebar .list-block {
   margin: 0;
+  padding: 0;
+}
+#sidebar .card {
+  margin: 2.2rem 0 0 0;
   padding: 0;
 }
 #sidebar .member-icon {
