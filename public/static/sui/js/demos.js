@@ -8,6 +8,16 @@ $(function () {
     autoplayDisableOnInteraction: false,
     //centeredSlides: true,
   });
+  // 登录后触发的方法
+  indexLogin = function (url) {
+    localStorage.login_url = url;
+    if (localStorage.member_id) {
+      $.router.load(url);
+    } else {
+      $.toast('请先登录！');
+      $.popup('.popup-login');
+    }
+  };
   //初始化用户信息
   var infoIndex = function () {
     if (localStorage.member_id) {
@@ -20,13 +30,13 @@ $(function () {
       });
     }
   };
-  var memberInfo = JSON.parse(localStorage.member_info);
+  var memberInfo = localStorage.member_info ? JSON.parse(localStorage.member_info) : '';
   var icon = (memberInfo.icon != null && memberInfo.icon != '') ? memberInfo.icon : '/public/static/index/img/null-icon.png';
   $('.item-photo').find('.member-icon').attr('src',icon);
   $('.member-mobile').text(memberInfo.mobile);
   price = function (id) {
     localStorage.tab_id = id;
-    indexLogin('/index/order/price');
+    $.router.load('/index/order/price');
   }
   infoIndex();
   // 用户首页
@@ -74,15 +84,6 @@ $(function () {
     });
 
   });
-  // 登录后触发的方法
-  indexLogin = function (url) {
-    localStorage.login_url = url;
-    if (localStorage.member_id) {
-      $.router.load(url);
-    } else {
-      $.popup('.popup-login');
-    }
-  };
   // 登录
   $('#login').find('.login-button').on('click', function () {
     $('.submit-login').removeClass('login-button');
