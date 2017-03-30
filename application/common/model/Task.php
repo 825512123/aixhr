@@ -30,7 +30,7 @@ class Task extends Base
 	 * @param $data
 	 * @return int|string
 	 */
-    public function addTask($data)
+    public function addTask($data = [])
     {
         $data = clearArray($data);//清除数组空键值对
         $data['update_time'] = time();
@@ -43,7 +43,7 @@ class Task extends Base
 	 * @param $limit
 	 * @return false|\PDOStatement|string|\think\Collection
 	 */
-    public function getOrderList($data)
+    public function getOrderList($data = [])
     {
 	    $where['t.member_id'] = session('member_id');
 	    if($data['status'] == 2) {
@@ -73,7 +73,7 @@ class Task extends Base
 	 * @param $where
 	 * @return array|false|\PDOStatement|string|\think\Model
 	 */
-    public function getOrderInfo($where)
+    public function getOrderInfo($where = [])
     {
     	$res = Db::name('task')->alias('t')
 		    ->join('member m', 't.user_id=m.id', 'LEFT')
@@ -84,7 +84,7 @@ class Task extends Base
     	return $res;
     }
 
-    public function getOrderSum($data)
+    public function getOrderSum($data = [])
     {
 	    $where['member_id'] = session('member_id');
 	    if($data['status'] == 2) {

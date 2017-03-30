@@ -11,5 +11,8 @@ namespace app\admin\controller;
 
 class Task extends Base
 {
-
+	public function index()
+	{
+		return $this->fetch();
+	}
 }
