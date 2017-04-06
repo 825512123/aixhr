@@ -13,10 +13,16 @@ use app\admin\model\Member;
 
 class User extends Base
 {
+	/**
+	 * 用户列表
+	 * @return mixed
+	 */
 	public function index()
 	{
 		$list = Member::getInstance()->getList();
 		$this->assign('list', $list);
 		return $this->fetch();
 	}
+
+
 }
