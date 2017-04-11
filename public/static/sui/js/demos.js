@@ -22,7 +22,7 @@ $(function () {
     }
   };
   //初始化用户信息
-  var infoIndex = function () {
+  infoIndex = function () {
     if (localStorage.member_id) {
       $.post('/index/index/autoLogin', {member_id: localStorage.member_id}, function (data) {
         if (data.code > 0) {
