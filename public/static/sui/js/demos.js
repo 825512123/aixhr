@@ -46,6 +46,7 @@ $(function () {
   infoIndex();
   // 用户首页
   $(document).on("pageInit", "#user-index", function (e, id, page) {
+    var memberInfo = localStorage.member_info ? JSON.parse(localStorage.member_info) : '';
     $('.money').append(memberInfo.yue.toFixed(2));
     $('.integral').append(memberInfo.integral);
     var address = (memberInfo.address_city != null && memberInfo.address_city != '') ? memberInfo.address_city + memberInfo.address_input : '请填写地址';
