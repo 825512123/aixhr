@@ -47,7 +47,8 @@ $(function () {
   // 用户首页
   $(document).on("pageInit", "#user-index", function (e, id, page) {
     var memberInfo = localStorage.member_info ? JSON.parse(localStorage.member_info) : '';
-    $('.money').append(memberInfo.yue.toFixed(2));
+    $('.money').append(toDecimal2(memberInfo.yue));
+    //$('.money').append(memberInfo.yue.toFixed(2));
     $('.integral').append(memberInfo.integral);
     var address = (memberInfo.address_city != null && memberInfo.address_city != '') ? memberInfo.address_city + memberInfo.address_input : '请填写地址';
     $('.member-address').html(address + '<i class="icon icon-user-edit open-recover"></i>');
@@ -297,6 +298,25 @@ $(function () {
     return true;
   };
 
+  //制保留2位小数，如：2，会在2后面补上00.即2.00
+  function toDecimal2(x) {
+    var f = parseFloat(x);
+    if (isNaN(f)) {
+      return false;
+    }
+    var f = Math.round(x*100)/100;
+    var s = f.toString();
+    var rs = s.indexOf('.');
+    if (rs < 0) {
+      rs = s.length;
+      s += '.';
+    }
+    while (s.length <= rs + 2) {
+      s += '0';
+    }
+    return s;
+  }
+
   $(document).on("pageInit", "#price", function (e, id, page) {
     var tab = $('.tab-link');
     var id = localStorage.tab_id;
@@ -513,7 +533,8 @@ $(function () {
   /*我的钱包*/
   $(document).on("pageInit", "#money", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
-    $('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
+    $('.money').text('可提现余额为：￥' + toDecimal2(memberInfo.yue));
+    //$('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
   });
   /*checkMoney = function (i) {
     $.toast(i);
@@ -532,7 +553,8 @@ $(function () {
   /*提现*/
   $(document).on("pageInit", "#withdraw", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
-    var money = memberInfo.yue.toFixed(2);
+    var money = toDecimal2(memberInfo.yue);
+    //var money = memberInfo.yue.toFixed(2);
     $('.money').text('可提现余额为：￥' + money);
     checkMoney = function (i) {
       if(i <= 0) {
@@ -632,7 +654,8 @@ $(function () {
             if(data.code > 0) {
               localStorage.member_info = data.data;
               memberInfo = JSON.parse(data.data);
-              $('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
+              $('.money').text('可提现余额为：￥' + toDecimal2(memberInfo.yue));
+              //$('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
               $('.back').click();
             }
           });
@@ -653,9 +676,11 @@ $(function () {
   /*我的统计*/
   $(document).on("pageInit", "#count", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
-    var sum_money = (memberInfo.yue + memberInfo.money).toFixed(2);
+    var sum_money = toDecimal2(memberInfo.yue + memberInfo.money);
+    //var sum_money = (memberInfo.yue + memberInfo.money).toFixed(2);
     $('.sum_money').text('￥' + sum_money);
-    $('.use_money').text('￥' + memberInfo.money.toFixed(2));
+    $('.use_money').text('￥' + toDecimal2(memberInfo.money));
+    //$('.use_money').text('￥' + memberInfo.money.toFixed(2));
     $('.use_integral').text(memberInfo.use_integral);
   });
 
@@ -691,7 +716,8 @@ $(function () {
             list += '<div class="item-media"><img src="'+ icon +'" style="width: 2.2rem;"></div>';
             list += '<div class="item-inner"> <div class="item-title-row">';
             list += '<div class="item-title">' + title + '</div>';
-            list += '<div class="item-after">-' + n.money.toFixed(2) + '</div>';
+            list += '<div class="item-after">-' + toDecimal2(n.money) + '</div>';
+            //list += '<div class="item-after">-' + n.money.toFixed(2) + '</div>';
             list += '</div> <div class="item-subtitle">'+ mydate.format('yyyy-MM-dd h:m');
             list += '</div> </div> </a></li>';
           });
@@ -730,7 +756,8 @@ $(function () {
       if(data.code > 0) {
         var data = data.data;
         var title = '';
-        $('.withdraw_money').text(data.money.toFixed(2));//金额
+        $('.withdraw_money').text(toDecimal2(data.money));//金额
+        //$('.withdraw_money').text(data.money.toFixed(2));//金额
         if(data.type == 1) {
           title = '微信提现';
         } else if(data.type == 2) {
@@ -785,7 +812,8 @@ $(function () {
             }
             list += '<div class="item-inner"> <div class="item-title-row">';
             list += '<div class="item-title">' + title + '</div>';
-            list += money + n.money.toFixed(2) + '</div>';
+            list += money + toDecimal2(n.money) + '</div>';
+            //list += money + n.money.toFixed(2) + '</div>';
             list += '</div> <div class="item-subtitle">'+ mydate.format('yyyy-MM-dd h:m');
             list += '</div> </div> </a></li>';
           });

@@ -275,6 +275,7 @@
 }
 .toolbar-inner .button {
   border: 1px solid white;
+  padding: 0;
 }
 /*tab选项卡*/
 #price .tabs .list-block {
