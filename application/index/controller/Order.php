@@ -72,7 +72,7 @@ class Order extends Base
 				return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
 			}
 		} else {
-			return $this->fetch();
+			return $this->fetch('orderList');
 		}
 	}
 
