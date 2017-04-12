@@ -298,7 +298,7 @@ $(function () {
     return true;
   };
 
-  //制保留2位小数，如：2，会在2后面补上00.即2.00
+  //强制保留2位小数，如：2，会在2后面补上00.即2.00
   function toDecimal2(x) {
     var f = parseFloat(x);
     if (isNaN(f)) {
@@ -315,7 +315,7 @@ $(function () {
       s += '0';
     }
     return s;
-  }
+  };
 
   $(document).on("pageInit", "#price", function (e, id, page) {
     var tab = $('.tab-link');
@@ -676,9 +676,9 @@ $(function () {
   /*我的统计*/
   $(document).on("pageInit", "#count", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
-    var sum_money = toDecimal2(memberInfo.yue + memberInfo.money);
+    var sum_money = Number(memberInfo.yue) + Number(memberInfo.money);
     //var sum_money = (memberInfo.yue + memberInfo.money).toFixed(2);
-    $('.sum_money').text('￥' + sum_money);
+    $('.sum_money').text('￥' + toDecimal2(sum_money));
     $('.use_money').text('￥' + toDecimal2(memberInfo.money));
     //$('.use_money').text('￥' + memberInfo.money.toFixed(2));
     $('.use_integral').text(memberInfo.use_integral);
