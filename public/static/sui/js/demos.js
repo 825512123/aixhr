@@ -8,9 +8,10 @@ $(function () {
     autoplayDisableOnInteraction: false,
     //centeredSlides: true,
   });
+  //路径跳转
   urlJump = function (url) {
     $.router.load(url);
-  }
+  };
   // 登录后触发的方法
   indexLogin = function (url) {
     localStorage.login_url = url;
@@ -24,8 +25,12 @@ $(function () {
   //初始化用户信息
   infoIndex = function () {
     if (localStorage.member_id) {
-      $.post('/index/index/autoLogin', {member_id: localStorage.member_id}, function (data) {
+      var aid = localStorage.aid ? localStorage.aid : 0;
+      $.post('/index/index/autoLogin', {member_id: localStorage.member_id, aid:aid}, function (data) {
         if (data.code > 0) {
+          if(data.aid) {
+            localStorage.aid = data.aid;
+          }
           localStorage.member_id = data.member_id;
           localStorage.member_info = data.member_info;
           localStorage.login_url = '/index/user/index';
@@ -42,14 +47,15 @@ $(function () {
   price = function (id) {
     localStorage.tab_id = id;
     $.router.load('/index/order/price');
-  }
+  };
   infoIndex();
   // 用户首页
   $(document).on("pageInit", "#user-index", function (e, id, page) {
     var memberInfo = localStorage.member_info ? JSON.parse(localStorage.member_info) : '';
     $('.money').append(toDecimal2(memberInfo.yue));
     //$('.money').append(memberInfo.yue.toFixed(2));
-    $('.integral').append(memberInfo.integral);
+    var integral = memberInfo.integral ? memberInfo.integral : 0;
+    $('.integral').append(integral);
     var address = (memberInfo.address_city != null && memberInfo.address_city != '') ? memberInfo.address_city + memberInfo.address_input : '请填写地址';
     $('.member-address').html(address + '<i class="icon icon-user-edit open-recover"></i>');
     // 地址初始化
@@ -102,7 +108,12 @@ $(function () {
           if (data.code > 0) {
             localStorage.member_id = data.member_id;
             localStorage.member_info = data.member_info;
-            indexLogin(localStorage.login_url);
+            if(data.aid) {
+              localStorage.aid = data.aid;
+              indexLogin('/');
+            } else {
+              indexLogin(localStorage.login_url);
+            }
           } else {
             $('.submit-login').addClass('login-button');
           }
@@ -261,12 +272,7 @@ $(function () {
     $.post('/index/index/loginOut', {}, function (data) {
       $.alert(data.msg, function () {
         if (data.code > 0) {
-          var color_theme = localStorage.color_theme;
-          var layout_theme = localStorage.layout_theme;
           localStorage.clear();
-          localStorage.color_theme = color_theme;
-          localStorage.layout_theme = layout_theme;
-          infoIndex();
           window.location.href = '/';
         }
       });
@@ -670,7 +676,8 @@ $(function () {
   /*我的积分*/
   $(document).on("pageInit", "#integral", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
-    $('.integral').text('可使用积分为：' + memberInfo.integral);
+    var integral = memberInfo.integral ? memberInfo.integral : 0;
+    $('.integral').text('可使用积分为：' + integral);
   });
 
   /*我的统计*/

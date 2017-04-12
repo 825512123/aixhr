@@ -9,6 +9,7 @@
 namespace app\admin\controller;
 
 
+use app\admin\model\AdminUser;
 use think\auth\Auth;
 use think\Controller;
 use think\Request;
@@ -24,5 +25,17 @@ class Base extends Controller
 		if($auth->cache()) {
 
 		}*/
+	}
+
+	/**
+	 * 刷新员工session
+	 * @param $where
+	 */
+	public function refreshSessionUser($where)
+	{
+		$user = AdminUser::getInstance()->getInfo($where);
+		session('user_id', $user['id']);
+		session('user_info', $user);
+		session('aid', $user['aid']);
 	}
 }

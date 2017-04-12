@@ -42,12 +42,19 @@ class Index extends Base
             return json(['code' => -5, 'data' => '', 'msg' => $result]);
         }*/
         $member = db('member')->where(['username|mobile' => $username])->find();
-        if(empty($member)){
-            return json(['code' => -1, 'data' => '', 'msg' => '用户不存在！']);
+        if(empty($member)){// user表无此用户
+	        // 判断是否为工作人员
+	        $arr = explode('@',$username);
+	        if(isset($arr[1])) {
+		        $adminLogin = new \app\admin\controller\Index();
+		        return $adminLogin->userLogin($username, $password);//工作人员登录
+	        } else {
+		        return json(['code' => -1, 'data' => '', 'msg' => '用户不存在！']);
+	        }
         }
 
         if(md5(md5($password) . config('data_auth_key'))!= $member['password']){
-            return json(['code' => -2, 'data' => "md5(md5($password) . config('data_auth_key'))", 'password'=> $member['password'], 'msg' => '密码错误！']);
+            return json(['code' => -2, 'data' => '', 'msg' => '密码错误！']);
         }
 
         if(1 != $member['status']){
@@ -67,17 +74,26 @@ class Index extends Base
 
     public function autoLogin()
     {
-        $member_id = input("param.member_id");
-        $this->refreshSessionMember(['id' => $member_id]);
-        $user = json_encode(session('member_info'));
-
-        return json(['code' => 1, 'member_info' => $user, 'member_id' => session('member_id'), 'msg' => '登录成功']);
+    	$post = input('post.');
+        if($post['aid'] > 0) {
+		    $base = new \app\admin\controller\Base();
+		    $base->refreshSessionUser(['id' => $post['member_id']]);
+		    $user = json_encode(session('user_info'));
+	        return json(['code' => 1, 'member_info' => $user, 'member_id' => session('user_id'), 'aid' => session('aid'), 'msg' => '登录成功']);
+	    } else {
+		    $this->refreshSessionMember(['id' => $post['member_id']]);
+		    $user = json_encode(session('member_info'));
+	        return json(['code' => 1, 'member_info' => $user, 'member_id' => session('member_id'), 'msg' => '登录成功']);
+	    }
     }
 
     public function loginOut()
     {
         session('member_id', null);
         session('member_info', null);
+        session('user_id', null);
+        session('aid', null);
+        session('user_info', null);
         return json(['code' => 1, 'msg' => '退出成功']);
     }
 

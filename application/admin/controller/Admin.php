@@ -9,8 +9,8 @@
 namespace app\admin\controller;
 
 
-use app\admin\model\Admin_Admin;
-use app\admin\model\Admin_User;
+use app\admin\model\AdminAdmin;
+use app\admin\model\AdminUser;
 
 class Admin extends Base
 {
@@ -20,7 +20,7 @@ class Admin extends Base
 	 */
 	public function index()
 	{
-		$list = Admin_Admin::getInstance()->getList();
+		$list = AdminAdmin::getInstance()->getList();
 		$this->assign('list', $list);
 		return $this->fetch();
 	}
@@ -29,13 +29,13 @@ class Admin extends Base
 	{
 		if(request()->isPost()) {
 			$post = input("post.");
-			if(Admin_Admin::getInstance()->addData($post)) {
+			if(AdminAdmin::getInstance()->addData($post)) {
 				return json(['code' => 1, 'data' => '', 'msg' => '提交成功!']);
 			} else {
 				return json(['code' => 0, 'data' => '', 'msg' => '提交失败!请稍后再试!']);
 			}
 		} else {
-			$list = Admin_User::getInstance()->getList(['status' => 1]);
+			$list = AdminUser::getInstance()->getList(['status' => 1]);
 			$this->assign('list', $list);
 			return $this->fetch();
 		}
@@ -43,8 +43,8 @@ class Admin extends Base
 
 	public function admin_add()
 	{
-		$list = Admin_Admin::getInstance()->getList(['status' => 1]);
-		$userList = Admin_User::getInstance()->getList(['status' => 1]);
+		$list = AdminAdmin::getInstance()->getList(['status' => 1]);
+		$userList = AdminUser::getInstance()->getList(['status' => 1]);
 		$this->assign('list', $list);
 		$this->assign('userList', $userList);
 		return $this->fetch('admin-add');
@@ -56,7 +56,7 @@ class Admin extends Base
 	 */
 	public function user()
 	{
-		$list = Admin_User::getInstance()->getList();
+		$list = AdminUser::getInstance()->getList();
 		$this->assign('list', $list);
 		return $this->fetch();
 	}

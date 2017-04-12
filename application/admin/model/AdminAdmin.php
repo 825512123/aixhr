@@ -11,7 +11,7 @@ namespace app\admin\model;
 
 use app\common\model\Base;
 use think\Db;
-class Admin_Admin extends Base
+class AdminAdmin extends Base
 {
 	private static $_instance;
 
