@@ -7,6 +7,16 @@ $(function () {
   router = function (url) {
     location.href = url;
   };
+  ajax_status = function (url,id) {
+    $('#id_'+id).find('.btn-danger').text('aaa');
+    /*$.post(url, {id:id}, function (data) {
+      if(data.code) {
+        successModal();
+      } else {
+        errorModal();
+      }
+    },'json');*/
+  };
   //图片上传初始化
   var uploadImg = function (url) {
     $("#file-Portrait").fileinput({
@@ -33,6 +43,7 @@ $(function () {
       $('.btn-file').show();
     });//初始化 后 上传插件的样子
   };
+  //判断表单数组
   var checkFromArray = function (arr) {
     $.each(arr, function (i,n) {
       if(!n.value) {
@@ -41,6 +52,25 @@ $(function () {
       }
     });
     return true;
+  };
+  //提示框
+  var alertModal = function (msg, time) {
+    $('#alertModal .box .box-body').html(msg);
+    $('#alertModal').modal('show');
+    if(!time) {time = 3000}
+    setTimeout("$('#alertModal').modal('hide')", time);
+  };
+  //成功提示框
+  var successModal = function (msg, time) {
+    if(msg) {$('#successModal h4').text(msg);}
+    $('#successModal').modal('show');
+    if(time) {setTimeout("$('#successModal').modal('hide')", time);}
+  };
+  //失败提示框
+  var errorModal = function (msg, time) {
+    if(msg) {$('#errorModal h4').text(msg);}
+    $('#errorModal').modal('show');
+    if(time) {setTimeout("$('#errorModal').modal('hide')", time);}
   };
 
 
@@ -59,13 +89,110 @@ $(function () {
   $('.admin-add').on('click', function () {
     var from = $('#admin-add').serialize();
     var arr = $('#admin-add').serializeArray();
-    if(!checkFromArray(arr)) { alert('请填写完整信息！'); return false;}
+    if(!checkFromArray(arr)) { alertModal('请填写完整信息！'); return false;}
     $.post('/admin/admin/add', from, function (data) {
       if(data.code) {
         router('/admin/admin');
       }
-      alert(data.msg);
     },'json');
   });
 
+  //编辑角色提交
+  $('.role-edit').on('click', function () {
+    var from = $('#role-edit').serialize();
+    var roleName =  $('input[name="rolename"]').val().trim();
+    if(!roleName) { alertModal('请填写角色名称！'); return false;}
+    $.post('/admin/role/edit', from, function (data) {
+      if(data.code) {
+        successModal();
+        setTimeout("router('/admin/role/index')", 1000);
+      } else {
+        errorModal();
+      }
+    },'json');
+  });
+
+  //编辑节点提交
+  $('.node-edit').on('click', function () {
+    var from = $('#node-edit').serialize();
+    var arr = $('#node-edit').serializeArray();
+    if(!checkFromArray(arr)) { alertModal('请填写完整信息！'); return false;}
+    $.post('/admin/role/node_edit', from, function (data) {
+      if(data.code) {
+        successModal();
+        setTimeout("router('/admin/role/node')", 1000);
+      } else {
+        errorModal();
+      }
+    },'json');
+  });
+
+  var change = function (obj) {
+    if(obj.hasClass('btn-danger')) {
+      obj.attr('data-url','/admin/role/up');
+      obj.parent().prev('td').text('禁用');
+      obj.text('启用');
+    } else {
+      obj.attr('data-url','/admin/role/down');
+      obj.parent().prev('td').text('正常');
+      obj.text('禁用');
+    }
+    obj.toggleClass('btn-danger');
+    obj.toggleClass('btn-info');
+  };
+  // 角色禁用
+  $('#role-index .btn-danger').on('click', function () {
+    var obj = $(this);
+    var url = obj.hasClass('btn-danger') ? obj.data('url') : '/admin/role/up';
+    var id = obj.data('id');
+    console.log(url);
+    $.post(url, {id:id}, function (data) {
+      if(data.code) {
+        change(obj);
+        successModal();
+      } else {
+        errorModal();
+      }
+    },'json');
+  });
+  // 角色启用
+  $('#role-index .btn-info').on('click', function () {
+    var obj = $(this);
+    var url = obj.hasClass('btn-info') ? obj.data('url') : '/admin/role/down';
+    var id = obj.data('id');
+
+    $.post(url, {id:id}, function (data) {
+      if(data.code) {
+        change(obj);
+        successModal();
+      } else {
+        errorModal();
+      }
+    },'json');
+  });
+  // 节点删除
+  $('#role-node .btn-danger').on('click', function () {
+    var obj = $(this);
+    var url = obj.data('url');
+    var id = obj.data('id');
+
+    $.post(url, {id:id}, function (data) {
+      if(data.code) {
+        obj.parent().parent().remove();
+        successModal();
+      } else {
+        errorModal();
+      }
+    },'json');
+  });
+
+  //退出登录
+  loginOut = function () {
+    $.post('/admin/index/loginOut', {id:1}, function (data) {
+      if (data.code > 0) {
+        successModal(data.msg);
+        setTimeout("router('/admin/login')", 1000);
+      }
+    });
+  };
 });

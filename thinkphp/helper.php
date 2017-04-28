@@ -602,11 +602,23 @@ if (!function_exists('clearArray')) {
 if (!function_exists('dateToTime')) {
     /**
      * 日期转时间戳
-     * @param array $data 被处理数组
+     * @param array $data 被处理字符串
      * @return mixed
      */
     function dateToTime($data)
     {
         return strtotime($data);
+    }
+}
+if (!function_exists('adminLTEToTime')) {
+    /**
+     * AdminLTE日期转时间戳
+     * @param array $data 被处理字符串
+     * @return mixed
+     */
+    function adminLTEToTime($data)
+    {
+        $arr = explode('/', $data);
+	    return strtotime($arr[2].'-'.$arr[1].'-'.$arr[0]);
     }
 }

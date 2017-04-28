@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AdminLTE 2 | Dashboard</title>
+	<title>小黄人回收管理系统</title>
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<!-- Bootstrap 3.3.6 -->
@@ -306,7 +306,7 @@
 									<a href="#" class="btn btn-default btn-flat">Profile</a>
 								</div>
 								<div class="pull-right">
-									<a href="#" class="btn btn-default btn-flat">Sign out</a>
+									<button onclick="loginOut()" class="btn btn-default btn-flat">Sign out</button>
 								</div>
 							</li>
 						</ul>
@@ -319,3 +319,66 @@
 			</div>
 		</nav>
 	</header>
+	<!-- Left side column. contains the logo and sidebar -->
+	<aside class="main-sidebar">
+		<!-- sidebar: style can be found in sidebar.less -->
+		<section class="sidebar">
+			<!-- Sidebar user panel -->
+			<div class="user-panel">
+				<div class="pull-left image">
+					<img src="__ADMIN_LTE__/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+				</div>
+				<div class="pull-left info">
+					<p>Alexander Pierce</p>
+					<a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+				</div>
+			</div>
+			<!-- search form -->
+			<form action="#" method="get" class="sidebar-form">
+				<div class="input-group">
+					<input type="text" name="q" class="form-control" placeholder="Search...">
+					<span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+				</div>
+			</form>
+			<!-- /.search form -->
+			<!-- sidebar menu: : style can be found in sidebar.less -->
+			<ul class="sidebar-menu">
+				<li class="header">MAIN NAVIGATION</li>
+				<{if !empty($menu)}>
+				<{volist name="menu" id="vo"}>
+				<li class="treeview <{if condition='$vo.node_name eq $theme'}> active<{/if}>">
+					<a href="<{$vo.href}>">
+						<i class="<{$vo.icon}>"></i> <span><{$vo.node_name}></span>
+						<span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+					</a>
+					<ul class="treeview-menu">
+						<{if !empty($vo['child'])}>
+						<{volist name="$vo['child']" id="v"}>
+						<li class="<{if condition='$v.node_name eq $title'}>active<{/if}>"><a href="<{$v.href}>"><i class="<{$v.icon}>"></i><{$v.node_name}></a></li>
+						<{/volist}>
+						<{/if}>
+					</ul>
+				</li>
+				<{/volist}>
+				<{/if}>
+			</ul>
+		</section>
+		<!-- /.sidebar -->
+	</aside>
+	<div class="content-wrapper">
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+			<h1><{$theme}>
+				<small><{$title}></small>
+			</h1>
+			<ol class="breadcrumb">
+				<li><a href="/admin/"><i class="fa fa-dashboard"></i> 首页</a></li>
+				<li><a href="#"><{$theme}></a></li>
+				<li class="active"><{$title}></li>
+			</ol>
+		</section>

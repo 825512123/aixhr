@@ -2,15 +2,17 @@
 /**
  * Created by PhpStorm.
  * User: Administrator
- * Date: 2017/4/2
- * Time: 16:14
+ * Date: 2017/4/17
+ * Time: 12:40
  */
 
 namespace app\admin\model;
 
+
 use app\common\model\Base;
 use think\Db;
-class AdminUser extends Base
+
+class AdminRole extends Base
 {
 	private static $_instance;
 
@@ -22,30 +24,42 @@ class AdminUser extends Base
 		return self::$_instance;
 	}
 
-	public function getList($where = [])
+	/**
+	 * 获取列表
+	 * @return false|\PDOStatement|string|\think\Collection
+	 */
+	public function getList()
 	{
-		$res = Db::name('admin_user')->alias('au')
-			->join('admin_admin aa', 'au.aid=aa.id')
+		$where = empty(session('aid')) ? '' : 'aid in(0,'.session('aid').')';
+		$res = Db::name('admin_role')
 			->where($where)
-			->field('au.*,aa.name as adminName')
-			->order('id desc,au.status desc')
+			->order('id desc')
 			->select();
 		return $res;
 	}
 
+	/**
+	 * 获取单条信息
+	 * @param array $where
+	 * @return array|false|\PDOStatement|string|\think\Model
+	 */
 	public function getInfo($where = [])
 	{
-		return Db::name('admin_user')->where($where)->find();
+		return Db::name('admin_role')->where($where)->find();
 	}
 
-	public function editUser($data)
+	/**
+	 * 编辑/新增角色
+	 * @param $data
+	 * @return $this|false|int
+	 */
+	public function editRole($data)
 	{
-		$data = clearArray($data);//清除数组空键值对
 		$data['update_time'] = time();
 		if (isset($data['id'])) {
-			if (isset($data['password'])) $data['password'] = md5(md5($data['password']) . config('data_auth_key'));
 			$res = $this->allowField(true)->where('id', $data['id'])->update($data);
 		} else {
+			$data['create_time'] = $data['update_time'];
 			$res = $this->allowField(true)->data($data)->save();
 		}
 		return $res;

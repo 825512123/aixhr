@@ -1,0 +1,102 @@
+<!-- Main content -->
+<section class="content">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title"><{$pageTitle}></h3>
+				</div>
+				<!-- /.box-header -->
+				<!-- form start -->
+				<form role="form" method="post" id="node-edit" action="<{:url('role/node_edit')}>">
+					<div class="box-body">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="node_name">名称</label>
+								<input value="<{gt name='$info.id' value='0'}><{$info.id}><{/gt}>" type="hidden" class="form-control" id="id" name="id">
+								<input value="<{if condition='$info.node_name'}><{$info.node_name}><{/if}>" type="text" class="form-control" id="node_name" name="node_name" placeholder="请填写节点名称">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="icon">图标</label>
+								<input value="<{if condition='$info.icon'}><{$info.icon}><{else /}>fa fa-circle-o<{/if}>" type="text" class="form-control" id="icon" name="icon" placeholder="请填写节点图标">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="module_name">模块名</label>
+								<input value="<{if condition='$info.module_name'}><{$info.module_name}><{else /}>admin<{/if}>" type="text" class="form-control" id="module_name" name="module_name" placeholder="请填写模块名">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="control_name">控制器名</label>
+								<input value="<{if condition='$info.control_name'}><{$info.control_name}><{/if}>" type="text" class="form-control" id="control_name" name="control_name" placeholder="请填写控制器名">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="action_name">操作名</label>
+								<input value="<{if condition='$info.action_name'}><{$info.action_name}><{/if}>" type="text" class="form-control" id="action_name" name="action_name" placeholder="请填写操作名">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label>菜单显示</label>
+								<div class="radio">
+									<label>
+										<input type="radio" name="is_menu" value="1" <{if condition='$info.is_menu neq 0'}>checked="checked"<{/if}> >
+										显示
+									</label>
+								</div>
+								<div class="radio">
+									<label>
+										<input type="radio" name="is_menu" value="0" <{if condition='$info.is_menu eq 0'}>checked="checked"<{/if}> >
+										关闭
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="pid">操作</label>
+								<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" id="pid" name="pid" tabindex="-1" aria-hidden="true">
+									<option value="<{$vo.id}>" <{if condition='$vo.id eq 0'}>selected="selected"<{/if}>>顶级节点</option>
+									<{volist name="list" id="vo"}>
+									<option value="<{$vo.id}>" <{if condition='$vo.id eq $info.pid'}>selected="selected"<{/if}>><{$vo.node_name}></option>
+									<{/volist}>
+								</select>
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label>状态</label>
+								<div class="radio">
+									<label>
+										<input type="radio" name="status" value="1" <{if condition='$info.status neq 0'}>checked="checked"<{/if}> >
+										正常
+									</label>
+								</div>
+								<div class="radio">
+									<label>
+										<input type="radio" name="status" value="0" <{if condition='$info.status eq 0'}>checked="checked"<{/if}> >
+										禁用
+									</label>
+								</div>
+							</div>
+						</div>
+						<!-- /.box-body -->
+
+						<div class="box-footer col-md-12">
+							<button type="button" class="btn btn-primary node-edit">提 交</button>
+						</div>
+				</form>
+			</div>
+			<!-- /.box -->
+		</div>
+		<!-- /.col -->
+	</div>
+	<!-- /.row -->
+</section>
+<!-- /.content -->

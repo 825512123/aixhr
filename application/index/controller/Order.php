@@ -29,7 +29,11 @@ class Order extends Base
 	 */
 	public function recover()
 	{
-		return $this->fetch();
+		if(session('aid') > 0) {
+			return $this->fetch('userOrderList');
+		} else {
+			return $this->fetch();
+		}
 	}
 
 	/**
@@ -57,12 +61,14 @@ class Order extends Base
 	}
 
 	/**
-	 * 订单列表
+	 * 客户订单列表
 	 * @return mixed|\think\response\Json
 	 */
 	public function orderList()
 	{
-		if (request()->isPost()) {
+		if(session('aid') > 0) {
+			return $this->fetch('userOrderList');
+		} elseif (request()->isPost()) {
 			$post = input("post.");
 			$res = Task::getInstance()->getOrderList($post);
 			if ($res > 0) {
@@ -73,6 +79,26 @@ class Order extends Base
 			}
 		} else {
 			return $this->fetch('orderList');
+		}
+	}
+
+	/**
+	 * 员工订单列表
+	 * @return mixed|\think\response\Json
+	 */
+	public function userOrderList()
+	{
+		if (request()->isPost()) {
+			$post = input("post.");
+			$res = Task::getInstance()->getUserOrderList($post);
+			if ($res > 0) {
+				$sum = Task::getInstance()->getOrderSum($post);
+				return json(['code' => 1, 'data' => $res, 'sum' => $sum, 'msg' => '成功']);
+			} else {
+				return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
+			}
+		} else {
+			return $this->fetch('userOrderList');
 		}
 	}
 

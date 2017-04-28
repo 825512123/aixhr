@@ -9,6 +9,7 @@
 namespace app\admin\controller;
 
 
+use app\admin\model\AdminNode;
 use app\admin\model\AdminUser;
 use think\auth\Auth;
 use think\Controller;
@@ -19,6 +20,20 @@ class Base extends Controller
 	public function __construct(Request $request = null)
 	{
 		parent::__construct($request);
+		if(!session('user_id')) {
+			$this->redirect('login/index');
+		}
+		$user_info = session('user_info');
+		$data = AdminNode::getInstance()->getMenu();
+		$c = $request->controller();
+		$a = $request->action();
+		$menu = $this->prepareMenu($data);
+		$title = AdminNode::getInstance()->getInfo(['action_name' => $a,'control_name' => $c]);
+		$theme = AdminNode::getInstance()->getInfo(['id' => $title['pid']]);
+		$this->assign('theme', $theme['node_name']);//父级菜单名
+		$this->assign('title', $title['node_name']);//子级菜单名
+		$this->assign('menu', $menu);
+
 		/*$user_id = session('user_id');
 		$aid = session('aid');
 		$auth = Auth::instance();
@@ -27,15 +42,37 @@ class Base extends Controller
 		}*/
 	}
 
-	/**
-	 * 刷新员工session
-	 * @param $where
-	 */
-	public function refreshSessionUser($where)
+	public function prepareMenu($data, $rule=[])
 	{
-		$user = AdminUser::getInstance()->getInfo($where);
-		session('user_id', $user['id']);
-		session('user_info', $user);
-		session('aid', $user['aid']);
+		$parent = []; //父类
+		$child = [];  //子类
+		if(!empty($rule)){
+			$rule = explode(',', $rule);
+		}
+
+		foreach ($data as $key => $vo) {
+			$vo['checked'] = (!empty($rule) && in_array($vo['id'], $rule)) ? 1 : 0;
+			if ($vo['pid'] == 0) {
+				$vo['href'] = '#';
+				$parent[] = $vo;
+			} else {
+				$vo['href'] = url($vo['control_name'] . '/' . $vo['action_name']);
+				$child[] = $vo;
+			}
+		}
+
+		foreach ($parent as $key => $vo) {
+			foreach ($child as $k => $v) {
+				if ($v['pid'] == $vo['id']) {
+					if ($v['group']) {
+						$parent[$key]['child'][$v['group']][] = $v;
+					} else {
+						$parent[$key]['child'][] = $v;
+					}
+				}
+			}
+		}
+
+		return $parent;
 	}
 }

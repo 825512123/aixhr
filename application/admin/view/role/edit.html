@@ -1,0 +1,56 @@
+<!-- Main content -->
+<section class="content">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title"><{$pageTitle}></h3>
+				</div>
+				<!-- /.box-header -->
+				<!-- form start -->
+				<form role="form" method="post" id="role-edit" action="<{:url('role/edit')}>">
+					<div class="box-body">
+						<!--<div class="col-md-6">
+							<div class="form-group">
+								<label for="admin_id">企业标识</label>
+								<input type="text" class="form-control" id="admin_id" name="id" disabled="true">
+							</div>
+						</div>-->
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="rolename">角色名称</label>
+								<input value="<{gt name='$info.id' value='0'}><{$info.id}><{/gt}>" type="hidden" class="form-control" id="id" name="id">
+								<input value="<{if condition='$info.rolename'}><{$info.rolename}><{/if}>" type="text" class="form-control" id="rolename" name="rolename" placeholder="请输入企业名称">
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label>状态</label>
+								<div class="radio">
+									<label>
+										<input type="radio" name="status" value="1" <{if condition='$info.status neq 0'}>checked="checked"<{/if}> >
+										正常
+									</label>
+								</div>
+								<div class="radio">
+									<label>
+										<input type="radio" name="status" value="0" <{if condition='$info.status eq 0'}>checked="checked"<{/if}> >
+										禁用
+									</label>
+								</div>
+							</div>
+						</div>
+						<!-- /.box-body -->
+
+						<div class="box-footer col-md-12">
+							<button type="button" class="btn btn-primary role-edit">提 交</button>
+						</div>
+				</form>
+			</div>
+			<!-- /.box -->
+		</div>
+		<!-- /.col -->
+	</div>
+	<!-- /.row -->
+</section>
+<!-- /.content -->

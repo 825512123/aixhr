@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use app\admin\controller\Login;
 use app\common\controller\Base;
 use app\common\model\Member;
 
@@ -46,8 +47,8 @@ class Index extends Base
 	        // 判断是否为工作人员
 	        $arr = explode('@',$username);
 	        if(isset($arr[1])) {
-		        $adminLogin = new \app\admin\controller\Index();
-		        return $adminLogin->userLogin($username, $password);//工作人员登录
+	        	$login = new Login();
+		        return $login->doLogin($username, $password);//工作人员登录
 	        } else {
 		        return json(['code' => -1, 'data' => '', 'msg' => '用户不存在！']);
 	        }
@@ -76,12 +77,12 @@ class Index extends Base
     {
     	$post = input('post.');
         if($post['aid'] > 0) {
-		    $base = new \app\admin\controller\Base();
-		    $base->refreshSessionUser(['id' => $post['member_id']]);
+		    $login = new Login();// 管理员信息更新
+		    $login->refreshSessionUser(['id' => $post['member_id']]);
 		    $user = json_encode(session('user_info'));
 	        return json(['code' => 1, 'member_info' => $user, 'member_id' => session('user_id'), 'aid' => session('aid'), 'msg' => '登录成功']);
 	    } else {
-		    $this->refreshSessionMember(['id' => $post['member_id']]);
+		    $this->refreshSessionMember(['id' => $post['member_id']]);// 用户信息更新
 		    $user = json_encode(session('member_info'));
 	        return json(['code' => 1, 'member_info' => $user, 'member_id' => session('member_id'), 'msg' => '登录成功']);
 	    }

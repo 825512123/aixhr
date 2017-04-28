@@ -15,12 +15,20 @@ $(function () {
   // 登录后触发的方法
   indexLogin = function (url) {
     localStorage.login_url = url;
-    if (localStorage.member_id) {
-      $.router.load(url);
-    } else {
-      $.toast('请先登录！');
-      $.popup('.popup-login');
-    }
+    /*if(localStorage.aid > 0) {
+      if(url == '/index/order/recover' || url == '/index/order/orderList') {
+        $.router.load('/index/order/userOrderList');
+      } else {
+        $.router.load(url);
+      }
+    } else {*/
+      if (localStorage.member_id) {
+        $.router.load(url);
+      } else {
+        $.toast('请先登录！');
+        $.popup('.popup-login');
+      }
+    //}
   };
   //初始化用户信息
   infoIndex = function () {
@@ -110,7 +118,8 @@ $(function () {
             localStorage.member_info = data.member_info;
             if(data.aid) {
               localStorage.aid = data.aid;
-              indexLogin('/');
+              $('.close-popup').click();
+              //indexLogin('/');
             } else {
               indexLogin(localStorage.login_url);
             }
@@ -484,6 +493,51 @@ $(function () {
 
     });
   });
+  // 员工的回收单
+  $(document).on("pageInit", "#user-order-list", function (e, id, page) {
+    var orderListLoading = false;
+    var getOrderList = function (status, id) {
+      var limit = $('#order-list ' + id + ' li').length;
+      console.log(limit);
+      $.post('/index/order/userOrderList', {status:status, limit:limit}, function (data) {
+        if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+        if (data.code > 0 && data.sum > 0) {
+          var list = '';
+          $.each(data.data, function (i,n) {
+            list += '<li><a href="#" onclick="orderInfo('+ n.task_id +')" class="item-link item-content">';
+            list += '<div class="item-media"><img src="/public/static/sui/img/icon_recover.svg" style="width: 2.2rem;"></div>';
+            list += '<div class="item-inner"> <div class="item-title-row">';
+            list += '<div class="item-title">' + getRecoverName(n.task_type) + '回收</div>';
+            list += '</div> <div class="item-subtitle">'+ n.task_date + n.task_time;
+            list += '</div> </div> </a></li>';
+          });
+          $(id + ' .media-list ul').append(list);
+          if(data.data.length < 8) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+          if(data.data.length == data.sum) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+        } else {
+          $(id + ' .infinite-scroll-preloader').hide(); return;
+        }
+      });
+    };
+
+    getOrderList(2, '#tab1');
+    $('.order-tab1').on('click', function () {
+      getOrderList(2, '#tab1');
+    });
+    $('.order-tab2').on('click', function () {
+      getOrderList(1, '#tab2');
+    });
+    $(page).on('infinite', function () {
+      if(orderListLoading) return;
+      orderListLoading = true;
+      if($(this).find('.infinite-scroll.active').attr('id') == "tab1"){
+        getOrderList(2, '#tab1');
+      } else {
+        getOrderList(1, '#tab2');
+      }
+
+    });
+  });
   // 回收单详情
   $(document).on("pageInit", "#order-info", function (e, id, page) {
     var task_id = localStorage.task_id;
@@ -539,7 +593,7 @@ $(function () {
   /*我的钱包*/
   $(document).on("pageInit", "#money", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
-    $('.money').text('可提现余额为：￥' + toDecimal2(memberInfo.yue));
+    $('.money').text('余额为：￥' + toDecimal2(memberInfo.yue));
     //$('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
   });
   /*checkMoney = function (i) {
@@ -794,7 +848,7 @@ $(function () {
 
     });
   });
-  /*提现详情*/
+  /*收支明细*/
   $(document).on("pageInit", "#income-list", function (e, id, page) {
     var orderListLoading = false;
     var getOrderList = function () {

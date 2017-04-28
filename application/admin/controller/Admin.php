@@ -35,7 +35,7 @@ class Admin extends Base
 				return json(['code' => 0, 'data' => '', 'msg' => '提交失败!请稍后再试!']);
 			}
 		} else {
-			$list = AdminUser::getInstance()->getList(['status' => 1]);
+			$list = AdminUser::getInstance()->getList(['aa.status' => 1]);
 			$this->assign('list', $list);
 			return $this->fetch();
 		}
@@ -43,11 +43,20 @@ class Admin extends Base
 
 	public function admin_add()
 	{
-		$list = AdminAdmin::getInstance()->getList(['status' => 1]);
-		$userList = AdminUser::getInstance()->getList(['status' => 1]);
-		$this->assign('list', $list);
-		$this->assign('userList', $userList);
-		return $this->fetch('admin-add');
+		if(request()->isPost()) {
+			$post = input("post.");
+			$data = clearArray($post);//清除数组空键值对
+			$data = $this->getUserData($data);
+			if(AdminUser::getInstance()->editUser($data)) {
+				$this->success('添加成功！', 'admin/admin/user');
+			}
+		} else {
+			$list = AdminAdmin::getInstance()->getList(['status' => 1]);
+			$userList = AdminUser::getInstance()->getList(['aa.status' => 1]);
+			$this->assign('list', $list);
+			$this->assign('userList', $userList);
+			return $this->fetch('admin-add');
+		}
 	}
 
 	/**
@@ -61,4 +70,25 @@ class Admin extends Base
 		return $this->fetch();
 	}
 
+	/**
+	 * 处理并返回员工数据
+	 * @param $data
+	 * @return mixed
+	 */
+	public function getUserData($data)
+	{
+		if(!isset($data['name']) || !isset($data['mobile']) || !isset($data['idcard']) || !isset($data['address'])) {
+			$this->error('姓名、电话、身份证号、地址均不能为空！');
+		}
+		if(isset($data['joinday'])) {
+			$data['joinday'] = adminLTEToTime($data['joinday']);
+		} else {
+			$data['joinday'] = time();
+		}
+		if(isset($data['birthday'])) {$data['birthday'] = adminLTEToTime($data['birthday']);}
+		$password = substr($data['mobile'], -6);
+		$data['password'] = md5(md5($password) . config('data_auth_key'));
+		$data['create_time'] = time();
+		return $data;
+	}
 }

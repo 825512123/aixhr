@@ -1,0 +1,43 @@
+<ul class="sidebar-menu">
+	<li class="header">MAIN NAVIGATION</li>
+	<{if !empty($node)}>
+	<{volist name="node" id="vo"}>
+	<li class="treeview <{if condition='$vo.node_name eq $theme'}> active<{/if}>">
+
+		<div class="col-xs-8">
+			<div class="checkbox icheck">
+				<label>
+					<input type="checkbox" name="id" value="<{$vo.id}>" <{if condition='$vo.checked eq 1'}>checked="checked"<{/if}> >
+					<i class="<{$vo.icon}>"></i>
+					<{$vo.node_name}>
+				</label>
+			</div>
+		</div>
+		<!--<a href="<{$vo.href}>">
+			<i class="<{$vo.icon}>"></i> <span><{$vo.node_name}></span>
+			<span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+		</a>-->
+		<ul class="treeview-menu">
+			<{if !empty($vo['child'])}>
+			<{volist name="$vo['child']" id="v"}>
+			<li class="<{if condition='$v.node_name eq $title'}>active<{/if}>">
+				<div class="col-xs-8">
+					<div class="checkbox icheck">
+						<label>
+							<input type="checkbox" name="id" value="<{$v.id}>" <{if condition='$v.checked eq 1'}>checked="checked"<{/if}> >
+							<i class="<{$v.icon}>"></i>
+							<{$v.node_name}>
+						</label>
+					</div>
+				</div>
+				<!--<a href="<{$v.href}>"><i class="<{$v.icon}>"></i><{$v.node_name}></a>-->
+			</li>
+			<{/volist}>
+			<{/if}>
+		</ul>
+	</li>
+	<{/volist}>
+	<{/if}>
+</ul>

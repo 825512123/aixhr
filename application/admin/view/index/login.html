@@ -27,54 +27,72 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="__ADMIN_LTE__/index2.html"><b>Admin</b>LTE</a>
+    <a href="__ADMIN_LTE__/index2.html"><b>小黄人</b>回收</a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">Sign in to start your session</p>
+    <p class="login-box-msg">登录管理后台</p>
 
-    <form action="__ADMIN_LTE__/index2.html" method="post">
+    <form>
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" placeholder="Email">
+        <input type="text" class="form-control" name="name" placeholder="请输入账号/手机号">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password">
+        <input type="password" class="form-control" name="password" placeholder="请输入密码">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">
             <label>
-              <input type="checkbox"> Remember Me
+              <input type="checkbox" name="autoLogin" checked> 自动登录
             </label>
           </div>
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+          <button type="button" class="btn btn-primary btn-block btn-flat login">登录</button>
         </div>
         <!-- /.col -->
       </div>
     </form>
-
-    <div class="social-auth-links text-center">
-      <p>- OR -</p>
-      <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using
-        Facebook</a>
-      <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
-        Google+</a>
-    </div>
-    <!-- /.social-auth-links -->
-
-    <a href="#">I forgot my password</a><br>
-    <a href="register.html" class="text-center">Register a new membership</a>
 
   </div>
   <!-- /.login-box-body -->
 </div>
 <!-- /.login-box -->
 
+<!-- 提示 modal -->
+<div class="modal fade bs-example-modal-sm" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="box box-default">
+      <div class="box-header with-border">
+        <h3 class="box-title">温馨提示：</h3>
+      </div>
+      <div class="box-body"></div>
+      <!-- /.box-body -->
+    </div>
+  </div>
+</div>
+<!-- 成功 modal -->
+<div class="modal fade bs-example-modal-lg" id="successModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="callout callout-info">
+      <h4>恭喜!操作成功!</h4>
+    </div>
+  </div>
+</div>
+<!-- 失败 modal -->
+<div class="modal fade bs-example-modal-sm" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="callout callout-danger">
+      <h4>操作失败!请稍后再试!</h4>
+      <!--<p>The construction of this layout differs from the normal one. In other words, the HTML markup of the navbar
+		  and the content will slightly differ than that of the normal layout.</p>-->
+    </div>
+  </div>
+</div>
 <!-- jQuery 2.2.3 -->
 <script src="__ADMIN_LTE__/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
@@ -87,6 +105,40 @@
       checkboxClass: 'icheckbox_square-blue',
       radioClass: 'iradio_square-blue',
       increaseArea: '20%' // optional
+    });
+    //提示框
+    var alertModal = function (msg, time) {
+      $('#alertModal .box .box-body').html(msg);
+      $('#alertModal').modal('show');
+      if(!time) {time = 3000}
+      setTimeout("$('#alertModal').modal('hide')", time);
+    };
+    //成功提示框
+    var successModal = function (msg, time) {
+      if(msg) {$('#successModal h4').text(msg);}
+      $('#successModal').modal('show');
+      if(time) {setTimeout("$('#successModal').modal('hide')", time);}
+    };
+    //失败提示框
+    var errorModal = function (msg, time) {
+      if(msg) {$('#errorModal h4').text(msg);}
+      $('#errorModal').modal('show');
+      if(time) {setTimeout("$('#errorModal').modal('hide')", time);}
+    };
+    //登录
+    $('.login').on('click', function () {
+      var name = $('input[name="name"]').val().trim();
+      var password = $('input[name="password"]').val();
+      if(name == '') { alertModal('请输入账号（或手机号）！'); return false;}
+      if(password == '') { alertModal('请输入密码！'); return false;}
+      $.post('/admin/login/doLogin', {username:name,password:password}, function (data) {
+        if(data.code == 1) {
+          successModal(data.msg);
+          setTimeout("location.href = '/admin'", 1000);
+        } else {
+          errorModal(data.msg, 2000);
+        }
+      },'json');
     });
   });
 </script>
