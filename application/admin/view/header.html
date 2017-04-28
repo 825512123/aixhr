@@ -356,7 +356,7 @@
                       <i class="fa fa-angle-left pull-right"></i>
                     </span>
 					</a>
-					<ul class="treeview-menu">
+					<ul class="treeview-menu" style="padding-left: 2rem">
 						<{if !empty($vo['child'])}>
 						<{volist name="$vo['child']" id="v"}>
 						<li class="<{if condition='$v.node_name eq $title'}>active<{/if}>"><a href="<{$v.href}>"><i class="<{$v.icon}>"></i><{$v.node_name}></a></li>

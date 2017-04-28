@@ -186,7 +186,7 @@ $(function () {
     },'json');
   });
 
-  //退出登录
+  // 退出登录
   loginOut = function () {
     $.post('/admin/index/loginOut', {id:1}, function (data) {
       if (data.code > 0) {
@@ -195,4 +195,17 @@ $(function () {
       }
     });
   };
+
+  // 授权页面
+  $('.access').on('click', function () {
+    var from = $('#access').serialize();
+    $.post('/admin/role/access', from, function (data) {
+      if(data.code) {
+        successModal();
+        setTimeout("router('/admin/role/')", 1000);
+      } else {
+        errorModal();
+      }
+    },'json');
+  });
 });

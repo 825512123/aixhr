@@ -9,13 +9,14 @@
 					<!-- /.box-header -->
 					<!-- form start -->
 					<form role="form" method="post" action="/admin/admin/admin_add">
+						<input name="id" type="hidden" value='<{if condition="!empty($user)"}><{$user.id}><{else /}>0<{/if}>' >
 						<div class="box-body">
 							<div class="col-md-6">
 								<div class="form-group">
 									<label>所属企业</label>
 									<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" id="aid" name="aid" tabindex="-1" aria-hidden="true">
 										<{volist name="list" id="vo"}>
-										<option value="<{$vo.id}>"><{$vo.name}></option>
+										<option value="<{$vo.id}>" <{if condition="!empty($user) and ($user.aid eq $vo.id)"}> selected="selected"<{/if}> ><{$vo.name}></option>
 										<{/volist}>
 									</select>
 								</div>
@@ -27,7 +28,7 @@
 									<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" id="user_id" name="user_id" tabindex="-1" aria-hidden="true">
 										<option selected="selected" value="0">无内部员工引荐</option>
 										<{volist name="userList" id="vo"}>
-										<option value="<{$vo.id}>"><{$vo.name}></option>
+										<option value="<{$vo.id}>" <{if condition="!empty($user) and ($user.user_id eq $vo.id)"}> selected="selected"<{/if}>><{$vo.name}></option>
 										<{/volist}>
 									</select>
 								</div>
@@ -36,7 +37,7 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="name">员工姓名</label>
-									<input type="text" class="form-control" id="name" name="name" placeholder="请输入员工姓名">
+									<input type="text" class="form-control" id="name" name="name" <{if condition="!empty($user)"}> value="<{$user.name}>"<{/if}> placeholder="请输入员工姓名">
 								</div>
 							</div>
 							<div class="col-md-6">
@@ -46,14 +47,14 @@
 									<div class="input-group-addon">
 										<i class="fa fa-calendar"></i>
 									</div>
-									<input type="text" class="form-control" id="joinday" data-inputmask="'alias': 'dd/mm/yyyy'" name="joinday" placeholder="请输入入职日期（日/月/年）" data-mask>
+									<input type="text" class="form-control" id="joinday" data-inputmask="'alias': 'dd/mm/yyyy'" name="joinday" <{if condition="!empty($user)"}> value="<{$user.joinday|date="d/m/Y",###}>"<{/if}> placeholder="请输入入职日期（日/月/年）" data-mask>
 								</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="mobile">员工电话</label>
-									<input type="number" class="form-control" id="mobile" name="mobile" placeholder="请输入员工电话">
+									<input type="number" class="form-control" id="mobile" name="mobile" <{if condition="!empty($user)"}> value="<{$user.mobile}>"<{/if}> placeholder="请输入员工电话">
 								</div>
 							</div>
 							<div class="col-md-6">
@@ -63,64 +64,64 @@
 										<div class="input-group-addon">
 											<i class="fa fa-calendar"></i>
 										</div>
-									<input type="text" class="form-control" id="birthday" name="birthday" data-inputmask="'alias': 'dd/mm/yyyy'" placeholder="请输入员工生日（日/月/年）" data-mask>
+									<input type="text" class="form-control" id="birthday" name="birthday" <{if condition="!empty($user) and !empty($user.birthday)"}> value="<{$user.birthday|date="d/m/Y",###}>"<{/if}> data-inputmask="'alias': 'dd/mm/yyyy'" placeholder="请输入员工生日（日/月/年）" data-mask>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="qq">员工 Q Q</label>
-									<input type="number" class="form-control" id="qq" name="qq" placeholder="请输入QQ">
+									<input type="number" class="form-control" id="qq" name="qq" <{if condition="!empty($user)"}> value="<{$user.qq}>"<{/if}> placeholder="请输入QQ">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="alipay">员工支付宝</label>
-									<input type="text" class="form-control" id="alipay" name="alipay" placeholder="请输入支付宝">
+									<input type="text" class="form-control" id="alipay" name="alipay" <{if condition="!empty($user)"}> value="<{$user.alipay}>"<{/if}> placeholder="请输入支付宝">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="wechat">员工微信</label>
-									<input type="text" class="form-control" id="wechat" name="wechat" placeholder="请输入微信">
+									<input type="text" class="form-control" id="wechat" name="wechat" <{if condition="!empty($user)"}> value="<{$user.wechat}>"<{/if}> placeholder="请输入微信">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="email">员工邮箱</label>
-									<input type="text" class="form-control" id="email" name="email" placeholder="请输入邮箱">
+									<input type="text" class="form-control" id="email" name="email" <{if condition="!empty($user)"}> value="<{$user.email}>"<{/if}> placeholder="请输入邮箱">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="idcard">身份证号</label>
-									<input type="text" class="form-control" id="idcard" name="idcard" placeholder="请输入身份证号">
+									<input type="text" class="form-control" id="idcard" name="idcard" <{if condition="!empty($user)"}> value="<{$user.idcard}>"<{/if}> placeholder="请输入身份证号">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="bank_name">银行名称</label>
-									<input type="text" class="form-control" id="bank_name" name="bank_name" placeholder="请输入银行名称">
+									<input type="text" class="form-control" id="bank_name" name="bank_name" <{if condition="!empty($user)"}> value="<{$user.bank_name}>"<{/if}> placeholder="请输入银行名称">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="bank">银行卡号</label>
-									<input type="number" class="form-control" id="bank" name="bank" placeholder="请输入银行卡号">
+									<input type="number" class="form-control" id="bank" name="bank" <{if condition="!empty($user)"}> value="<{$user.bank}>"<{/if}> placeholder="请输入银行卡号">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="address">员工地址</label>
-									<input type="text" class="form-control" id="address" name="address" placeholder="请输入企业地址">
+									<input type="text" class="form-control" id="address" name="address" <{if condition="!empty($user)"}> value="<{$user.address}>"<{/if}> placeholder="请输入企业地址">
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label>员工角色</label>
 									<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" id="role_id" name="role_id" tabindex="-1" aria-hidden="true">
-										<{volist name="list" id="vo"}>
-										<option value="<{$vo.id}>"><{$vo.name}></option>
+										<{volist name="roleList" id="vo"}>
+										<option value="<{$vo.id}>" <{if condition="!empty($user) and ($user.role_id eq $vo.id)"}> selected="selected"<{/if}>><{$vo.rolename}></option>
 										<{/volist}>
 									</select>
 								</div>
@@ -131,13 +132,13 @@
 									<label>员工性别</label>
 									<div class="radio">
 										<label>
-											<input type="radio" name="gender" value="1" checked="checked">
+											<input type="radio" name="gender" value="1" <{if condition="!empty($user) and ($user.gender neq 0)"}> checked="checked"<{else /}> checked="checked"<{/if}> >
 											男
 										</label>
 									</div>
 									<div class="radio">
 										<label>
-											<input type="radio" name="gender" value="0">
+											<input type="radio" name="gender" value="0" <{if condition="!empty($user) and ($user.gender eq 0)"}> checked="checked"<{/if}> >
 											女
 										</label>
 									</div>
@@ -148,13 +149,13 @@
 									<label>婚姻</label>
 									<div class="radio">
 										<label>
-											<input type="radio" name="marriage" value="0" checked="checked">
+											<input type="radio" name="marriage" value="0" <{if condition="!empty($user) and ($user.marriage neq 0)"}> checked="checked"<{else /}> checked="checked"<{/if}> >
 											未婚
 										</label>
 									</div>
 									<div class="radio">
 										<label>
-											<input type="radio" name="marriage" value="1">
+											<input type="radio" name="marriage" value="1" <{if condition="!empty($user) and ($user.marriage eq 0)"}> checked="checked"<{/if}>>
 											已婚
 										</label>
 									</div>
@@ -165,13 +166,13 @@
 									<label>状态</label>
 									<div class="radio">
 										<label>
-											<input type="radio" name="status" value="1" checked="checked">
+											<input type="radio" name="status" value="1" <{if condition="!empty($user) and ($user.status neq 0)"}> checked="checked"<{else /}> checked="checked"<{/if}> >
 											正常
 										</label>
 									</div>
 									<div class="radio">
 										<label>
-											<input type="radio" name="status" value="0">
+											<input type="radio" name="status" value="0" <{if condition="!empty($user) and ($user.status eq 0)"}> checked="checked"<{/if}> >
 											禁用
 										</label>
 									</div>

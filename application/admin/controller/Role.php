@@ -95,13 +95,19 @@ class Role extends Base
 	{
 		if(!$id) {$this->redirect('/admin/role');}
 		if(request()->isPost()) {
-			$role = AdminRole::getInstance()->getInfo(['id' => $id]);
-			$data = AdminNode::getInstance()->getNodeInfo($role['rule']);
-			return json(['code' => 0, 'data' => $data, 'msg' => '操作失败!请稍后再试!']);
+			$post = input("post.");
+			$data['id'] = $post['id'];
+			$data['rule'] = implode(',', $post['rule']);
+			if(AdminRole::getInstance()->editRole($data)) {
+				return json(['code' => 1, 'data' => '', 'msg' => '操作成功!']);
+			} else {
+				return json(['code' => 0, 'data' => '', 'msg' => '操作失败!请稍后再试!']);
+			}
 		} else {
 			$role = AdminRole::getInstance()->getInfo(['id' => $id]);
 			$data = AdminNode::getInstance()->getList();
 			$data = $this->prepareMenu($data,$role['rule']);
+			$this->assign('id', $id);
 			$this->assign('node', $data);
 			return $this->fetch();
 		}

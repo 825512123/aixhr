@@ -10,6 +10,7 @@ namespace app\admin\controller;
 
 
 use app\admin\model\AdminAdmin;
+use app\admin\model\AdminRole;
 use app\admin\model\AdminUser;
 
 class Admin extends Base
@@ -41,7 +42,7 @@ class Admin extends Base
 		}
 	}
 
-	public function admin_add()
+	public function admin_add($id = '')
 	{
 		if(request()->isPost()) {
 			$post = input("post.");
@@ -51,9 +52,16 @@ class Admin extends Base
 				$this->success('添加成功！', 'admin/admin/user');
 			}
 		} else {
+			$user = [];
+			if($id > 0) {
+				$user = AdminUser::getInstance()->getInfo(['id' => $id]);
+			}
+			$this->assign('user', $user);
 			$list = AdminAdmin::getInstance()->getList(['status' => 1]);
+			$roleList = AdminRole::getInstance()->getList(['status' => 1]);
 			$userList = AdminUser::getInstance()->getList(['aa.status' => 1]);
 			$this->assign('list', $list);
+			$this->assign('roleList', $roleList);
 			$this->assign('userList', $userList);
 			return $this->fetch('admin-add');
 		}

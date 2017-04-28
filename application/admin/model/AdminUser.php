@@ -26,8 +26,9 @@ class AdminUser extends Base
 	{
 		$res = Db::name('admin_user')->alias('au')
 			->join('admin_admin aa', 'au.aid=aa.id')
+			->join('admin_role ar', 'au.role_id=ar.id')
 			->where($where)
-			->field('au.*,aa.name as adminName')
+			->field('au.*,aa.name as adminName,ar.rolename')
 			->order('id desc,au.status desc')
 			->select();
 		return $res;
