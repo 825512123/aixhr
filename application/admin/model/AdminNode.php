@@ -74,40 +74,12 @@ class AdminNode extends Base
 	public function editNode($data)
 	{
 		$data['update_time'] = time();
-		if (isset($data['id'])) {
+		if ((isset($data['id']) && $data['id'] > 0)) {
 			$res = $this->allowField(true)->where('id', $data['id'])->update($data);
 		} else {
 			$data['create_time'] = $data['update_time'];
 			$res = $this->allowField(true)->data($data)->save();
 		}
 		return $res;
-	}
-
-	/**
-	 * 获取节点数据
-	 * @param $id
-	 * @return string
-	 */
-	public function getNodeInfo($rule)
-	{
-		$result = $this->field('id,node_name,pid')->select();
-		dump($result);exit;
-		$str = "";
-
-		if(!empty($rule)){
-			$rule = explode(',', $rule);
-		}
-		foreach($result as $key=>$vo){
-			$str .= '{ "id": "' . $vo['id'] . '", "pId":"' . $vo['pid'] . '", "name":"' . $vo['node_name'].'"';
-
-			if(!empty($rule) && in_array($vo['id'], $rule)){
-				$str .= ' ,"checked":1';
-			}
-
-			$str .= '},';
-
-		}
-
-		return "[" . substr($str, 0, -1) . "]";
 	}
 }

@@ -24,10 +24,23 @@ class Member extends Base
 
 	public function getList($where = [])
 	{
+		if(session('role_id') != 1) {$where['aid'] = session('aid');}
 		$res = Db::name('member')
 			->where($where)
 			->order('id desc')
 			->select();
+		return $res;
+	}
+
+	public function editMember($data)
+	{
+		$data['update_time'] = time();
+		if ((isset($data['id']) && $data['id'] > 0)) {
+			if (isset($data['password'])) $data['password'] = md5(md5($data['password']) . config('data_auth_key'));
+			$res = $this->allowField(true)->where('id', $data['id'])->update($data);
+		} else {
+			$res = $this->allowField(true)->data($data)->save();
+		}
 		return $res;
 	}
 }

@@ -8,14 +8,14 @@ $(function () {
     location.href = url;
   };
   ajax_status = function (url,id) {
-    $('#id_'+id).find('.btn-danger').text('aaa');
-    /*$.post(url, {id:id}, function (data) {
+    $.post(url, {id:id}, function (data) {
       if(data.code) {
+        $('#id_'+id).remove();
         successModal();
       } else {
         errorModal();
       }
-    },'json');*/
+    },'json');
   };
   //图片上传初始化
   var uploadImg = function (url) {
@@ -92,7 +92,10 @@ $(function () {
     if(!checkFromArray(arr)) { alertModal('请填写完整信息！'); return false;}
     $.post('/admin/admin/add', from, function (data) {
       if(data.code) {
-        router('/admin/admin');
+        successModal();
+        setTimeout("router('/admin/admin')",10000);
+      } else {
+        errorModal();
       }
     },'json');
   });
@@ -200,6 +203,41 @@ $(function () {
   $('.access').on('click', function () {
     var from = $('#access').serialize();
     $.post('/admin/role/access', from, function (data) {
+      if(data.code) {
+        successModal();
+        setTimeout("router('/admin/role/')", 1000);
+      } else {
+        errorModal();
+      }
+    },'json');
+  });
+
+  // 订单管理-订单分配
+  send_task = function (id) {
+    $('#send-task').find('input[name="id"]').val(id);
+    $('#sendModal').modal('show');
+  };
+  $('.send-task').on('click', function () {
+    var from = $('#send-task').serialize();
+    var id = $('#send-task').find('input[name="id"]').val();
+    $.post('/admin/task/sendTask', from, function (data) {
+      if(data.code) {
+        //$('#id_'+id).find('.btn-success').remove();
+        successModal();
+        setTimeout("router('/admin/task/')", 1000);
+      } else {
+        errorModal();
+      }
+    },'json');
+  });
+  // 订单管理-订单取消
+  cancel_task = function (id) {
+    $('#cancel-task').find('input[name="id"]').val(id);
+    $('#cancelModal').modal('show');
+  };
+  $('.cancel-task').on('click', function () {
+    var from = $('#send-task').serialize();
+    $.post('/admin/task/sendTask', from, function (data) {
       if(data.code) {
         successModal();
         setTimeout("router('/admin/role/')", 1000);

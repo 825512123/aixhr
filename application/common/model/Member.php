@@ -33,7 +33,7 @@ class Member extends Base
     {
         $data = clearArray($data);//清除数组空键值对
         $data['update_time'] = time();
-        if (isset($data['id'])) {
+        if ((isset($data['id']) && $data['id'] > 0)) {
             if (isset($data['password'])) $data['password'] = md5(md5($data['password']) . config('data_auth_key'));
             $res = $this->allowField(true)->where('id', $data['id'])->update($data);
         } else {

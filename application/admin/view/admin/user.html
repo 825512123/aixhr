@@ -21,7 +21,7 @@
 							</thead>
 							<tbody>
 							<{volist name="list" id="vo"}>
-							<tr>
+							<tr id="id_<{$vo.id}>">
 								<td><{$vo.name}></td>
 								<td><{$vo.adminName}></td>
 								<td><{$vo.rolename}></td>
@@ -30,7 +30,7 @@
 								<td><{$vo.status}></td>
 								<td>
 									<a href="<{:url('admin/admin_add', 'id='.$vo.id)}>" class="btn btn-primary">编辑</a>
-									<button type="button" onclick="ajax_status(<{$vo.id}>,0)" class="btn btn-danger">删除</button>
+									<button type="button" onclick="ajax_status('/admin/admin/down',<{$vo.id}>)" class="btn btn-danger">删除</button>
 								</td>
 							</tr>
 							<{/volist}>

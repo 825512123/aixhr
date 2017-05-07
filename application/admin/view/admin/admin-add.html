@@ -107,7 +107,7 @@
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="bank">银行卡号</label>
-									<input type="number" class="form-control" id="bank" name="bank" <{if condition="!empty($user)"}> value="<{$user.bank}>"<{/if}> placeholder="请输入银行卡号">
+									<input type="text" class="form-control" id="bank" name="bank" <{if condition="!empty($user)"}> value="<{$user.bank}>"<{/if}> placeholder="请输入银行卡号">
 								</div>
 							</div>
 							<div class="col-md-6">
@@ -132,7 +132,7 @@
 									<label>员工性别</label>
 									<div class="radio">
 										<label>
-											<input type="radio" name="gender" value="1" <{if condition="!empty($user) and ($user.gender neq 0)"}> checked="checked"<{else /}> checked="checked"<{/if}> >
+											<input type="radio" name="gender" value="1" <{if condition="(!empty($user) and ($user.gender neq 0)) or empty($user)"}> checked="checked"<{/if}> >
 											男
 										</label>
 									</div>
@@ -149,13 +149,13 @@
 									<label>婚姻</label>
 									<div class="radio">
 										<label>
-											<input type="radio" name="marriage" value="0" <{if condition="!empty($user) and ($user.marriage neq 0)"}> checked="checked"<{else /}> checked="checked"<{/if}> >
+											<input type="radio" name="marriage" value="0" <{if condition="(!empty($user) and ($user.marriage neq 1)) or empty($user)"}> checked="checked"<{/if}> >
 											未婚
 										</label>
 									</div>
 									<div class="radio">
 										<label>
-											<input type="radio" name="marriage" value="1" <{if condition="!empty($user) and ($user.marriage eq 0)"}> checked="checked"<{/if}>>
+											<input type="radio" name="marriage" value="1" <{if condition="!empty($user) and ($user.marriage eq 1)"}> checked="checked"<{/if}>>
 											已婚
 										</label>
 									</div>
@@ -166,7 +166,7 @@
 									<label>状态</label>
 									<div class="radio">
 										<label>
-											<input type="radio" name="status" value="1" <{if condition="!empty($user) and ($user.status neq 0)"}> checked="checked"<{else /}> checked="checked"<{/if}> >
+											<input type="radio" name="status" value="1" <{if condition="(!empty($user) and ($user.status neq 0)) or empty($user)"}> checked="checked"<{/if}> >
 											正常
 										</label>
 									</div>

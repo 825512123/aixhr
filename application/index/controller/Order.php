@@ -92,7 +92,7 @@ class Order extends Base
 			$post = input("post.");
 			$res = Task::getInstance()->getUserOrderList($post);
 			if ($res > 0) {
-				$sum = Task::getInstance()->getOrderSum($post);
+				$sum = Task::getInstance()->getUserOrderSum($post);
 				return json(['code' => 1, 'data' => $res, 'sum' => $sum, 'msg' => '成功']);
 			} else {
 				return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
@@ -111,7 +111,7 @@ class Order extends Base
 		if (request()->isPost()) {
 			$post = input("post.");
 			$where['t.id'] = $post['task_id'];
-			$where['t.member_id'] = session('member_id');
+			//$where['t.member_id'] = session('member_id');
 			$res = Task::getInstance()->getOrderInfo($where);
 			if ($res > 0) {
 				return json(['code' => 1, 'data' => $res, 'msg' => '成功']);

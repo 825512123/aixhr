@@ -30,6 +30,8 @@ class Base extends Controller
 		$menu = $this->prepareMenu($data);
 		$title = AdminNode::getInstance()->getInfo(['action_name' => $a,'control_name' => $c]);
 		$theme = AdminNode::getInstance()->getInfo(['id' => $title['pid']]);
+		$this->assign('user_info', $user_info);// 管理员信息
+		$this->assign('role_id', session('role_id'));//角色
 		$this->assign('theme', $theme['node_name']);//父级菜单名
 		$this->assign('title', $title['node_name']);//子级菜单名
 		$this->assign('menu', $menu);

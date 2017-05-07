@@ -9,6 +9,7 @@
 					<!-- /.box-header -->
 					<!-- form start -->
 					<form role="form" enctype="multipart/form-data" id="admin-add">
+						<input name="id" type="hidden" value='<{if condition="!empty($admin)"}><{$admin.id}><{else /}>0<{/if}>' >
 						<div class="box-body">
 							<!--<div class="col-md-6">
 								<div class="form-group">
@@ -19,25 +20,25 @@
 							<div class="col-md-12">
 								<div class="form-group">
 									<label for="name">企业名称</label>
-									<input type="text" class="form-control" id="name" name="name" placeholder="请输入企业名称">
+									<input type="text" class="form-control" id="name" name="name" value='<{if condition="!empty($admin)"}><{$admin.name}><{/if}>' placeholder="请输入企业名称">
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="form-group">
 									<label for="username">法人姓名</label>
-									<input type="text" class="form-control" id="username" name="username" placeholder="请输入法人姓名">
+									<input type="text" class="form-control" id="username" name="username" value='<{if condition="!empty($admin)"}><{$admin.username}><{/if}>' placeholder="请输入法人姓名">
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="form-group">
 									<label for="mobile">法人电话</label>
-									<input type="number" class="form-control" id="mobile" name="mobile" placeholder="请输入法人电话">
+									<input type="number" class="form-control" id="mobile" name="mobile" value='<{if condition="!empty($admin)"}><{$admin.mobile}><{/if}>' placeholder="请输入法人电话">
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="form-group">
 									<label for="address">企业地址</label>
-									<input type="text" class="form-control" id="address" name="address" placeholder="请输入企业地址">
+									<input type="text" class="form-control" id="address" name="address" value='<{if condition="!empty($admin)"}><{$admin.address}><{/if}>' placeholder="请输入企业地址">
 								</div>
 							</div>
 							<div class="col-md-12">
@@ -45,13 +46,13 @@
 									<label>企业状态</label>
 									<div class="radio">
 										<label>
-											<input type="radio" name="status" value="1" checked="checked">
+											<input type="radio" name="status" value="1" <{if condition="(!empty($admin) and ($admin.status neq 0)) or empty($admin)"}> checked="checked"<{/if}> >
 											正常
 										</label>
 									</div>
 									<div class="radio">
 										<label>
-											<input type="radio" name="status" value="0">
+											<input type="radio" name="status" value="0" <{if condition="!empty($admin) and ($admin.status eq 0)"}> checked="checked"<{/if}>>
 											禁用
 										</label>
 									</div>

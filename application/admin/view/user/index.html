@@ -23,7 +23,7 @@
                             </thead>
                             <tbody>
                             <{volist name="list" id="vo"}>
-                            <tr>
+                            <tr id="id_<{$vo.id}>">
                                 <td><{$vo.mobile}></td>
                                 <td><{$vo.actual_name}></td>
                                 <td><{$vo.yue}></td>
@@ -32,8 +32,8 @@
                                 <td><{$vo.address_city}></td>
                                 <td><{$vo.status}></td>
                                 <td>
-                                    <button type="button" onclick="ajax_status(<{$vo.id}>,3)" class="btn btn-success">通过</button>
-                                    <button type="button" onclick="ajax_status(<{$vo.id}>,0)" class="btn btn-danger">不通过</button>
+                                    <!--<a href="<{:url('/admin/user/edit', 'id='.$vo.id)}>" class="btn btn-primary">编辑</a>-->
+                                    <button type="button" onclick="ajax_status('/admin/user/down',<{$vo.id}>)" class="btn btn-danger">删除</button>
                                 </td>
                             </tr>
                             <{/volist}>

@@ -27,13 +27,13 @@ class Login extends Controller
 
 	/**
 	 * 刷新员工session
-	 * @param $where
+	 * @param $id
 	 */
-	public function refreshSessionUser($where)
+	public function refreshSessionUser($id)
 	{
-		$user = AdminUser::getInstance()->getInfo($where);
-		$role = AdminRole::getInstance()->getInfo(['id' => $user['role_id']]);
-		session('menu',$role['rule']);
+		$user = AdminUser::getInstance()->getInfo(['au.id' => $id]);
+		session('menu',$user['rule']);
+		session('role_id',$user['role_id']);
 		session('user_id', $user['id']);
 		session('user_info', $user);
 		session('aid', $user['aid']);
@@ -51,12 +51,13 @@ class Login extends Controller
 		if(isset($arr[1])) {
 			$where['aid'] = $arr[1];
 			$where['mobile'] = $arr[0];
-			$adminUser = AdminUser::getInstance()->getInfo($where);
+			$adminUser = AdminUser::getInstance()->getFind($where);
+			//$adminUser = AdminUser::getInstance()->getInfo($where);
 			if(empty($adminUser)) {
 				return json(['code' => -1, 'data' => '', 'msg' => '用户不存在！']);
 			}
 			$pass = md5(md5($password) . config('data_auth_key'));
-			if(md5(md5($password) . config('data_auth_key')) != $adminUser['password']){
+			if($pass != $adminUser['password']){
 				return json(['code' => -2, 'data' => $pass, 'msg' => '密码错误！']);
 			}
 			if(1 != $adminUser['status']){
@@ -68,7 +69,7 @@ class Login extends Controller
 			$data['last_login_ip'] = ip2long($_SERVER["REMOTE_ADDR"]);
 			AdminUser::getInstance()->editUser($data);
 
-			$this->refreshSessionUser(['id' => $adminUser['id']]);
+			$this->refreshSessionUser($adminUser['id']);
 			$user = json_encode(session('user_info'));
 
 			return json(['code' => 1, 'member_info' => $user, 'member_id' => session('user_id'), 'aid' => session('aid'), 'msg' => '登录成功']);

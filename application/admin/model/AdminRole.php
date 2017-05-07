@@ -25,12 +25,11 @@ class AdminRole extends Base
 	}
 
 	/**
-	 * 获取列表
+	 * 获取角色列表
 	 * @return false|\PDOStatement|string|\think\Collection
 	 */
-	public function getList()
+	public function getList($where = [])
 	{
-		$where = empty(session('aid')) ? '' : 'aid in(0,'.session('aid').')';
 		$res = Db::name('admin_role')
 			->where($where)
 			->order('id desc')
@@ -56,7 +55,7 @@ class AdminRole extends Base
 	public function editRole($data)
 	{
 		$data['update_time'] = time();
-		if (isset($data['id'])) {
+		if (isset($data['id']) && $data['id'] > 0) {
 			$res = $this->allowField(true)->where('id', $data['id'])->update($data);
 		} else {
 			$data['create_time'] = $data['update_time'];

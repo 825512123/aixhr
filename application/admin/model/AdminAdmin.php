@@ -23,6 +23,11 @@ class AdminAdmin extends Base
 		return self::$_instance;
 	}
 
+	/**
+	 * 获取企业列表
+	 * @param array $where
+	 * @return false|\PDOStatement|string|\think\Collection
+	 */
 	public function getList($where = [])
 	{
 		$res = Db::name('admin_admin')
@@ -32,6 +37,11 @@ class AdminAdmin extends Base
 		return $res;
 	}
 
+	/**
+	 * 获取企业信息
+	 * @param array $where
+	 * @return array|false|\PDOStatement|string|\think\Model
+	 */
 	public function getInfo($where = [])
 	{
 		$res = Db::name('admin_admin')
@@ -40,14 +50,24 @@ class AdminAdmin extends Base
 		return $res;
 	}
 
-	public function addData($data)
+	/**
+	 * 新增/编辑企业
+	 * @param $data
+	 * @return $this|false|int
+	 */
+	public function editAdmin($data)
 	{
-		$data = clearArray($data);//清除数组空键值对
-		if(rename(ROOT_PATH."public/images/temporary/picture/".$data['url'], ROOT_PATH."public/images/upload/picture/".$data['url'])) {
-			rename(ROOT_PATH."public/images/temporary/thumb/".$data['url'], ROOT_PATH."public/images/upload/thumb/".$data['url']);
-			$data['url'] = '/images/upload/picture/'.$data['url'];
+		if(isset($data['url']) && rename(ROOT_PATH . "public/images/temporary/picture/" . $data['url'], ROOT_PATH . "public/images/upload/picture/" . $data['url'])) {
+			rename(ROOT_PATH . "public/images/temporary/thumb/" . $data['url'], ROOT_PATH . "public/images/upload/thumb/" . $data['url']);
+			$data['url'] = '/images/upload/picture/' . $data['url'];
 		}
-		$data['create_time'] = time();
-		return Db::name('admin_admin')->insert($data);
+		$data['update_time'] = time();
+		if ((isset($data['id']) && $data['id'] > 0)) {
+			$res = $this->allowField(true)->where('id', $data['id'])->update($data);
+		} else {
+			$data['create_time'] = $data['update_time'];
+			$res = $this->allowField(true)->data($data)->save();
+		}
+		return $res;
 	}
 }

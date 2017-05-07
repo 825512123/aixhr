@@ -57,8 +57,9 @@ class Role extends Base
 	{
 		if(request()->isPost()) {
 			$post = input("post.");
-			$post['status'] = '0';
-			$res = AdminRole::getInstance()->editRole($post);
+			$data['id'] = $post['id'];
+			$data['status'] = '0';
+			$res = AdminRole::getInstance()->editRole($data);
 			if ($res > 0) {
 				return json(['code' => 1, 'data' => '', 'msg' => '操作成功!']);
 			}
@@ -176,8 +177,9 @@ class Role extends Base
 	public function node_del()
 	{
 		$post = input("post.");
-		$post['status'] = '0';
-		$res = AdminNode::getInstance()->editNode($post);
+		$data['id'] = $post['id'];
+		$data['status'] = '0';
+		$res = AdminNode::getInstance()->editNode($data);
 		if ($res > 0){
 			return json(['code' => 1, 'data' => '', 'msg' => '操作成功!']);
 		}

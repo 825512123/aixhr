@@ -22,6 +22,7 @@ class Index extends Base
 	 */
 	public function loginOut()
 	{
+		session('role_id',null);
 		session('user_id', null);
 		session('menu', null);
 		session('aid', null);
