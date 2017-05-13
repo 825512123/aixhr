@@ -10,6 +10,7 @@ namespace app\index\controller;
 
 
 use app\common\controller\Base;
+use app\common\model\RecoverPrice;
 use app\common\model\Task;
 
 class Order extends Base
@@ -88,10 +89,12 @@ class Order extends Base
 	 */
 	public function userOrderList()
 	{
-		if (request()->isPost()) {
+        if(session('aid') <= 0) {
+            return $this->fetch('orderList');
+        } elseif (request()->isPost()) {
 			$post = input("post.");
 			$res = Task::getInstance()->getUserOrderList($post);
-			if ($res > 0) {
+			if ($res) {
 				$sum = Task::getInstance()->getUserOrderSum($post);
 				return json(['code' => 1, 'data' => $res, 'sum' => $sum, 'msg' => '成功']);
 			} else {
@@ -108,13 +111,15 @@ class Order extends Base
 	 */
 	public function orderInfo()
 	{
-		if (request()->isPost()) {
+        if(session('aid') > 0) {
+            return $this->fetch('userOrderInfo');
+        } elseif (request()->isPost()) {
 			$post = input("post.");
 			$where['t.id'] = $post['task_id'];
 			//$where['t.member_id'] = session('member_id');
 			$res = Task::getInstance()->getOrderInfo($where);
-			if ($res > 0) {
-				return json(['code' => 1, 'data' => $res, 'msg' => '成功']);
+			if ($res) {
+                return json(['code' => 1, 'data' => $res, 'price' => [], 'memberPrice' => [], 'msg' => '成功']);
 			} else {
 				return json(['code' => 0, 'data' => '', 'msg' => '失败']);
 			}
@@ -122,4 +127,89 @@ class Order extends Base
 			return $this->fetch('orderInfo');
 		}
 	}
+
+    /**
+     * 员工订单详情
+     * @return mixed|\think\response\Json
+     */
+	public function userOrderInfo()
+    {
+        if(session('aid') <= 0) {
+            return $this->fetch('orderInfo');
+        } elseif (request()->isPost()) {
+            $post = input("post.");
+            $where['t.id'] = $post['task_id'];
+            $res = Task::getInstance()->getOrderInfo($where);
+            if ($res) {
+                if($res['task_status'] == 2) {
+                    $memberPrice = RecoverPrice::getInstance()->getMemberPrice(['member_id' => $res['member_id']]);
+                    $price = $this->getMemberPice($memberPrice);
+                    return json(['code' => 1, 'data' => $res, 'price' => $price, 'msg' => '成功']);
+                } else {
+                    return json(['code' => 1, 'data' => $res, 'price' => [], 'msg' => '成功']);
+                }
+            } else {
+                return json(['code' => 0, 'data' => '', 'msg' => '失败']);
+            }
+        } else {
+            return $this->fetch('userOrderInfo');
+        }
+    }
+
+    /**
+     * 获取用户价格
+     * @param $memberPrice
+     * @return false|\PDOStatement|string|\think\Collection
+     */
+    public function getMemberPice($memberPrice)
+    {
+        $price = RecoverPrice::getInstance()->getList();
+        if($memberPrice) {
+            foreach ($price as $key => $val) {
+                foreach ($memberPrice as $k=>$v) {
+                    if($val['id'] == $v['id']) {
+                        $price[$key]['price'] = $v['price'];
+                    }
+                }
+            }
+        }
+        return $price;
+    }
+
+    /**
+     * 提交订单数据
+     * @return \think\response\Json
+     */
+    public function editOrder()
+    {
+        $post = input("post.");
+        $sum = (($post['task_price']*100) * ($post['number']*100))/10000;
+        $sum = round($sum, 2);
+        if($sum == $post['task_money']) {
+            if(Task::getInstance()->editTask($post)) {
+                $data = Task::getInstance()->getOrderInfo(['t.id' => $post['id']]);
+                return json(['code' => 1, 'data' => $data, 'msg' => '提交成功!等待用户确认!']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'msg' => '失败!请稍后再试!']);
+            }
+        } else {
+            return json(['code' => 2, 'data' => '', 'msg' => '价格有误,请重新提交!']);
+        }
+    }
+
+    /**
+     * 用户确认订单
+     * @return \think\response\Json
+     */
+    public function confirmOrder()
+    {
+        $post = input("post.");
+        $post['status'] = 1;
+        $post['end_time'] = time();
+        if (Task::getInstance()->confirmOrder($post)) {
+            return json(['code' => 1, 'data' => $post, 'msg' => '提交成功!']);
+        } else {
+            return json(['code' => 0, 'data' => '', 'msg' => '失败!请稍后再试!']);
+        }
+    }
 }

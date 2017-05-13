@@ -46,6 +46,7 @@ $(function () {
       });
     }
   };
+  //var memberInfo = localStorage.member_info ? localStorage.member_info : '';
   var memberInfo = localStorage.member_info ? JSON.parse(localStorage.member_info) : '';
   var icon = (memberInfo.icon != null && memberInfo.icon != '') ? memberInfo.icon : '/public/static/index/img/null-icon.png';
   $('.item-photo').find('.member-icon').attr('src',icon);
@@ -120,9 +121,8 @@ $(function () {
               localStorage.aid = data.aid;
               $('.close-popup').click();
               //indexLogin('/');
-            } else {
-              indexLogin(localStorage.login_url);
             }
+            indexLogin(localStorage.login_url);
           } else {
             $('.submit-login').addClass('login-button');
           }
@@ -430,19 +430,6 @@ $(function () {
     var today = new Array('(星期日)', '(星期一)', '(星期二)', '(星期三)', '(星期四)', '(星期五)', '(星期六)');
     return today[day];
   };
-  var getRecoverName = function (type) {
-    switch (type)
-    {
-      case 1:
-        return '纸皮';break;
-      case 2:
-        return '塑料筐';break;
-      case 3:
-        return '进行中';break;
-      default:
-        return '废品';
-    }
-  };
 
   orderInfo = function (id) {
     localStorage.task_id = id;
@@ -451,7 +438,7 @@ $(function () {
   // 我的回收单
   $(document).on("pageInit", "#order-list", function (e, id, page) {
     var orderListLoading = false;
-    var getOrderList = function (status, id) {
+    var getOrderList = function (status, id, type) {
       var limit = $('#order-list ' + id + ' li').length;
       console.log(limit);
       $.post('/index/order/orderList', {status:status, limit:limit}, function (data) {
@@ -459,10 +446,11 @@ $(function () {
         if (data.code > 0 && data.sum > 0) {
           var list = '';
           $.each(data.data, function (i,n) {
-            list += '<li><a href="#" onclick="orderInfo('+ n.task_id +')" class="item-link item-content">';
+              var recover_name = n.recover_name ? n.recover_name : '再生资源回收';
+            list += '<li><a href="#" onclick="orderInfo('+ n.id +')" class="item-link item-content">';
             list += '<div class="item-media"><img src="/public/static/sui/img/icon_recover.svg" style="width: 2.2rem;"></div>';
             list += '<div class="item-inner"> <div class="item-title-row">';
-            list += '<div class="item-title">' + getRecoverName(n.task_type) + '回收</div>';
+            list += '<div class="item-title">' + recover_name + '</div>';
             list += '</div> <div class="item-subtitle">'+ n.task_date + n.task_time;
             list += '</div> </div> </a></li>';
           });
@@ -504,10 +492,11 @@ $(function () {
         if (data.code > 0 && data.sum > 0) {
           var list = '';
           $.each(data.data, function (i,n) {
-            list += '<li><a href="#" onclick="orderInfo('+ n.task_id +')" class="item-link item-content">';
+            var recover_name = n.recover_name ? n.recover_name : '再生资源回收';
+            list += '<li><a href="#" onclick="orderInfo('+ n.id +')" class="item-link item-content">';
             list += '<div class="item-media"><img src="/public/static/sui/img/icon_recover.svg" style="width: 2.2rem;"></div>';
             list += '<div class="item-inner"> <div class="item-title-row">';
-            list += '<div class="item-title">' + getRecoverName(n.task_type) + '回收</div>';
+            list += '<div class="item-title">' + recover_name + '</div>';
             list += '</div> <div class="item-subtitle">'+ n.task_date + n.task_time;
             list += '</div> </div> </a></li>';
           });
@@ -538,89 +527,257 @@ $(function () {
 
     });
   });
+
+  orderContent = function (task) {
+      var task_type = task.task_type == 2 ? '现金交易' : '线上交易';
+      var content = '';
+      content += '<li> <div class="item-content"> <div class="item-inner">';
+      content += '<div class="item-title label">支付方式：</div>';
+      if(task.task_type) { content += '<div class="item-input">' + task_type + '</div>';}
+      content += '</div> </div> </li>';
+      content += '<li> <div class="item-content"> <div class="item-inner">';
+      content += '<div class="item-title label">回收品类：</div>';
+      if(task.recover_name) { content += '<div class="item-input">' + task.recover_name + '</div>';}
+      content += '</div> </div> </li>';
+      content += '<li> <div class="item-content"> <div class="item-inner">';
+      content += '<div class="item-title label">回收单价：</div>';
+      var task_price = task.task_price ? task.task_price : '';
+      content += '<div class="item-input task_price">' + task_price + '</div>';
+      content += '</div> </div> </li>';
+      content += '<li> <div class="item-content"> <div class="item-inner">';
+      content += '<div class="item-title label">回收数量：</div>';
+      if(task.number) { content += '<div class="item-input">' + task.number + '</div>';}
+      content += '</div> </div> </li>';
+      content += '<li> <div class="item-content"> <div class="item-inner">';
+      content += '<div class="item-title label">回收总价：</div>';
+      if(task.task_money) { content += '<div class="item-input">' + task.task_money + '</div>';}
+      content += '</div> </div> </li>';
+      return content;
+  };
   // 回收单详情
   $(document).on("pageInit", "#order-info", function (e, id, page) {
+   /* $('.recover_type').onchange(function () {
+        alert(111);
+        console.log(this.data('price'));
+    });*/
     var task_id = localStorage.task_id;
+    var aid = localStorage.aid > 0 ? localStorage.aid : 0;
     $.post('/index/order/orderInfo', {task_id:task_id}, function (data) {
       if(data.code > 0) {
-        var data = data.data;
-        $('.task_date').text(data.task_date);
-        if(data.task_status == 2) {
-          if(data.user_id > 0) {
-            $('.task_status').text('已派单');
-            $('.recover_user').text(data.username + data.mobile);
-            var task_type = data.task_type == 2 ? '现金交易' : '线上交易';
-            var content = '';
-            content += '<li class="back-white"> <div class="item-content"> <div class="item-inner">';
-            content += '<div class="item-title label">支付方式：</div>';
-            content += '<div class="item-input"><select name="task_type"><option>请选择支付方式</option>';
-            content += '<option value="1">线上交易</option><option value="2">现金交易</option>';
-            content += '</select></div></div> </div> </li>';
-            content += '<li class="back-white"> <div class="item-content"> <div class="item-inner">';
-            content += '<div class="item-title label">回收品类：</div>';
-            content += '<div class="item-input"><select name="task_type"><option>请选择支付方式</option>';
-            content += '<option value="1">线上交易</option><option value="2">现金交易</option>';
-            content += '</select></div></div> </div> </li>';
-            content += '<li> <div class="item-content"> <div class="item-inner">';
-            content += '<div class="item-title label">回收品类：</div>';
-            content += '<div class="item-input">' + data.recover_type + '</div>';
-            content += '</div> </div> </li>';
-            content += '<li> <div class="item-content"> <div class="item-inner">';
-            content += '<div class="item-title label">回收单价：</div>';
-            content += '<div class="item-input">' + data.task_price + '</div>';
-            content += '</div> </div> </li>';
-            content += '<li> <div class="item-content"> <div class="item-inner">';
-            content += '<div class="item-title label">回收数量：</div>';
-            content += '<div class="item-input">' + data.number + '</div>';
-            content += '</div> </div> </li>';
-            content += '<li> <div class="item-content"> <div class="item-inner">';
-            content += '<div class="item-title label">回收总价：</div>';
-            content += '<div class="item-input">' + data.task_money + '</div>';
-            content += '</div> </div> </li>';
-            content += '<li> <div class="item-content"> <div class="item-inner">';
-            content += '<div class="item-title label">完成时间：</div>';
-            var mydate = new Date();
-            mydate.setTime(data.end_time * 1000);
-            content += '<div class="item-input">' + mydate.format('yyyy-MM-dd h:m') + '</div>';
-            content += '</div> </div> </li>';
-            $(page).find('ul').append(content);
+        var task = data.data;
+        $('input[name="id"]').val(task_id);
+        $('.task_date').text(task.task_date);
+        $('.order_id').text(task.order_id);
+
+        if(task.task_status == 2) {
+          if(task.user_id > 0) {
+            $('.recover_user').html(task.username +'(<a href="tel:' + task.mobile + '">' + task.user_mobile + '</a>)');
+            if(task.task_money > 0) {
+                $('.task_status').text('等待确认');
+                var content = orderContent(task);
+                content += '<a href="#" class="button button-fill button-big submit-order">如数据无误 请确认!</a>';
+                $(page).find('ul').append(content);
+                $('.submit-order').on('click', function () {
+                    $.confirm('您确认数据无误吗？', function () {
+                        $.post('/index/order/confirmOrder', {id:task_id}, function (data) {
+                          $.toast(data.msg);
+                            if(data.code) {
+                                $('.task_status').text('已完成');
+                                $('.submit-order').hide();
+                                var content = '<li> <div class="item-content"> <div class="item-inner">';
+                                content += '<div class="item-title label">完成时间：</div>';
+                                var mydate = new Date();
+                                mydate.setTime(data.data.end_time * 1000);
+                                content += '<div class="item-input">' + mydate.format('yyyy-MM-dd h:m') + '</div>';
+                                content += '</div> </div> </li>';
+                                $(page).find('ul').append(content);
+                            }
+                        });
+                    });
+                });
+            } else {
+                $('.task_status').text('已派单');
+            }
           } else {
             $('.task_status').text('等待派单');
             $('.recover_user').text('待定');
           }
-        } else if(data.task_status == 1) {
+        } else if(task.task_status == 1) {
           $('.task_status').text('已完成');
-          $('.recover_user').text(data.username + data.mobile);
-          var task_type = data.task_type == 2 ? '现金交易' : '线上交易';
-          var content = '';
-          content += '<li> <div class="item-content"> <div class="item-inner">';
-          content += '<div class="item-title label">支付方式：</div>';
-          content += '<div class="item-input">' + task_type + '</div>';
-          content += '</div> </div> </li>';
-          content += '<li> <div class="item-content"> <div class="item-inner">';
-          content += '<div class="item-title label">回收品类：</div>';
-          content += '<div class="item-input">' + data.recover_name + '</div>';
-          content += '</div> </div> </li>';
-          content += '<li> <div class="item-content"> <div class="item-inner">';
-          content += '<div class="item-title label">回收单价：</div>';
-          content += '<div class="item-input">' + data.task_price + '</div>';
-          content += '</div> </div> </li>';
-          content += '<li> <div class="item-content"> <div class="item-inner">';
-          content += '<div class="item-title label">回收数量：</div>';
-          content += '<div class="item-input">' + data.number + '</div>';
-          content += '</div> </div> </li>';
-          content += '<li> <div class="item-content"> <div class="item-inner">';
-          content += '<div class="item-title label">回收总价：</div>';
-          content += '<div class="item-input">' + data.task_money + '</div>';
-          content += '</div> </div> </li>';
+          $('.recover_user').html(task.username +'(<a href="tel:' + task.mobile + '">' + task.user_mobile + '</a>)');
+          var content = orderContent(task);
           content += '<li> <div class="item-content"> <div class="item-inner">';
           content += '<div class="item-title label">完成时间：</div>';
           var mydate = new Date();
-          mydate.setTime(data.end_time * 1000);
+          mydate.setTime(task.end_time * 1000);
           content += '<div class="item-input">' + mydate.format('yyyy-MM-dd h:m') + '</div>';
           content += '</div> </div> </li>';
           $(page).find('ul').append(content);
         }
+      }
+
+    });
+  });
+
+  // 员工回收单详情
+  $(document).on("pageInit", "#user-order-info", function (e, id, page) {
+    var task_id = localStorage.task_id;
+
+    $.post('/index/order/userOrderInfo', {task_id:task_id}, function (data) {
+      if(data.code > 0) {
+        var task = data.data;
+        $('input[name="id"]').val(task_id);
+        $('.task_date').text(task.task_date);
+        $('.order_id').text(task.order_id);
+        $('.member_name').text(task.member_name);
+        $('.member_mobile').html('<a href="tel:' + task.member_mobile + '">' + task.member_mobile + '</a>');
+        $('.task_city').text(task.task_city);
+        $('.task_address').text(task.task_address);
+
+        if(task.task_status == 2) {
+          if(task.user_id > 0) {
+            var user_content = '';
+            if(task.task_money > 0) {
+                $('.task_status').text('等待用户确认');
+              var content = orderContent(task);
+                $(page).find('ul').append(content);
+            } else {
+                $('.task_status').text('待服务');
+                user_content += '<a href="#" class="button button-fill button-big popup-order">填写回收数据</a>';
+                $(page).find('ul').append(user_content);
+                // 回收数据填写
+                $('.popup-order').on('click',function () {
+                  var user_content = '';
+                    user_content += '<li class="back-white"> <div class="item-content"> <div class="item-inner">';
+                    user_content += '<div class="item-title label">支付方式：</div>';
+                    user_content += '<div class="item-input"><select name="task_type" class="task_type"><option value="0">请选择支付方式</option>';
+                    user_content += '<option value="1">线上交易</option><option value="2">现金交易</option>';
+                    user_content += '</select></div></div> </div> </li>';
+                    user_content += '<li class="back-white"> <div class="item-content"> <div class="item-inner">';
+                    user_content += '<div class="item-title label">回收品类：</div>';
+                    user_content += '<div class="item-input"><select name="recover_type" class="recover_type"><option value="0">请选择回收品类</option>';
+                    if (data.price && data.price.length > 0) {
+                        $.each(data.price, function (i, n) {
+                            user_content += '<option value="' + n.id + '" data-price="' + n.price + '">' + n.name + '</option>';
+                        });
+                    }
+                    user_content += '</select></div></div> </div> </li>';
+                    user_content += '<li class="back-white"> <div class="item-content"> <div class="item-inner">';
+                    user_content += '<div class="item-title label">回收单价：</div>';
+                    var task_price = task.task_price ? task.task_price : '';
+                    user_content += '<div class="item-input task_price">' + task_price + '</div>';
+                    user_content += '<input type="hidden" name="task_price" value="' + task_price + '"/>';
+                    user_content += '</div> </div> </li>';
+                    user_content += '<li class="back-white"> <div class="item-content"> <div class="item-inner">';
+                    user_content += '<div class="item-title label">回收数量：</div>';
+                    var number = task.number ? task.number : '';
+                    user_content += '<div class="item-input"><input type="number" name="number" oninput="sum(value)" placeholder="请输入数量" value="' + number + '" /></div>';
+                    user_content += '</div> </div> </li>';
+                    user_content += '<li class="back-white"> <div class="item-content"> <div class="item-inner">';
+                    user_content += '<div class="item-title label">回收总价：</div>';
+                    var task_money = task.task_money ? task.task_money : '';
+                    user_content += '<div class="item-input task_money">' + task_money + '</div>';
+                    user_content += '<input type="hidden" name="task_money" value="' + task_money + '"/>';
+                    user_content += '</div> </div> </li>';
+                    var popupHTML = '<div class="popup">'+
+                        '<header class="bar bar-nav"> ' +
+                        '<a class="button button-link button-nav pull-left close-popup" href="javascript:;">' +
+                        '<span class="icon icon-left"></span>返回</a>' +
+                        '<h1 class="title">回收数据</h1>' +
+                        '</header>'+
+                        '<div class="content" id="info"> <div class="list-block">' +
+                        '<ul><form class="edit-order">' +
+                        '<input type="hidden" name="id" value="'+ task_id +'" />'+
+                        user_content +
+                        '<a href="#" class="button button-fill button-big submit-order">提交</a>'+
+                        '</form></ul> </div> </div>'+
+                        '</div>';
+                    $.popup(popupHTML);
+                    // 回收类型选择触发
+                    $('.task_type').change(function () {
+                        var price = $('input[name="task_price"]').val();
+                        var num = $('input[name="number"]').val();
+                        if(num > 0 && price > 0) {
+                            var sum = ((price * 100) * (num * 100)) / 10000;
+                            var task_money = toDecimal2(sum);
+                            $('.task_money').text(task_money);
+                            $('input[name="task_money"]').val(task_money);
+                        }
+                    });
+                    // 回收类型选择触发
+                    $('.recover_type').change(function () {
+                        var id = $(this).val();
+                        var price = $(this).find('option[value="'+id+'"]').data('price');
+                        $('.task_price').text(price);
+                        $('input[name="task_price"]').val(price);
+                        var num = $('input[name="number"]').val();
+                        if(num > 0) {
+                            var sum = ((price * 100) * (num * 100)) / 10000;
+                            var task_money = toDecimal2(sum);
+                            $('.task_money').text(task_money);
+                            $('input[name="task_money"]').val(task_money);
+                        }
+                    });
+                    //计算总价
+                    sum = function (val) {
+                        var task_price = $('input[name="task_price"]').val();
+                        var task_type = $('.task_type').val();
+                        if(task_type == 0) {$.toast('请选择支付方式！'); return false;}
+                        if(task_price > 0) {
+                            var sum = ((task_price * 100) * (val * 100)) / 10000;
+                            var task_money = toDecimal2(sum);
+                            $('.task_money').text(task_money);
+                            $('input[name="task_money"]').val(task_money);
+                        } else {
+                            $.toast('请选择回收品类！');return false;
+                        }
+                    };
+                    //提交订单数据
+                    $('.submit-order').on('click',function () {
+                        var id = $('input[name="id"]').val();
+                        var task_type = $('.task_type').val();
+                        var recover_type = $('.recover_type').val();
+                        var task_price = $('input[name="task_price"]').val();
+                        var number = $('input[name="number"]').val();
+                        var task_money = $('input[name="task_money"]').val();
+                        if(task_type == 0) {$.toast('请选择支付方式！'); return false;}
+                        if(recover_type == 0) {$.toast('请选择回收品类！'); return false;}
+                        if(number == 0) {$.toast('请输入数量！'); return false;}
+                        if(id > 0 && task_type > 0 && recover_type > 0 && task_price > 0 && number > 0 && task_money > 0) {
+                            $.post('/index/order/editOrder', {
+                                id:id,task_type:task_type,recover_type:recover_type,task_price:task_price,number:number,task_money:task_money
+                            }, function (data) {
+                                $('.task_status').text('等待用户确认');
+                                $.closeModal('.popup');
+                                if(data.code == 1) {
+                                  var content = orderContent(data.data);
+                                    $(page).find('ul').append(content);
+                                    $('.popup-order').hide();
+                                }
+                                $.toast(data.msg);
+                            });
+                        } else {
+                            $.toast('数据错误!请重新填写!');return false;
+                        }
+                    });
+                });
+            }
+
+          } else {
+            $('.task_status').text('等待派单');
+          }
+        } else if(task.task_status == 1) {
+          $('.task_status').text('已完成');
+          var content = orderContent(task);
+          content += '<li> <div class="item-content"> <div class="item-inner">';
+          content += '<div class="item-title label">完成时间：</div>';
+          var mydate = new Date();
+          mydate.setTime(task.end_time * 1000);
+          content += '<div class="item-input">' + mydate.format('yyyy-MM-dd h:m') + '</div>';
+          content += '</div> </div> </li>';
+          $(page).find('ul').append(content);
+        }
+
       }
 
     });
@@ -678,7 +835,7 @@ $(function () {
         var wechat = $("input[name='wechat']").val().trim();
         if(wechat != '') {
           $.post('/index/user/editMember', {wechat:wechat}, function (data) {
-            localStorage.member_info = data.data;
+            localStorage.member_info = task.data;
             $('.wechat').text(wechat);
             $('.close-popup').click();
           });
@@ -951,6 +1108,14 @@ $(function () {
     }
     return format;
   };
-
+    if(/Android [4-7]/.test(navigator.appVersion)) {
+        window.addEventListener("resize", function() {
+            if(document.activeElement.tagName=="INPUT" || document.activeElement.tagName=="TEXTAREA") {
+                window.setTimeout(function() {
+                    document.activeElement.scrollIntoViewIfNeeded();
+                },0);
+            }
+        })
+    }
   $.init();
 });

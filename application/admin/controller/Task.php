@@ -100,6 +100,10 @@ class Task extends Base
 		}
 	}
 
+    /**
+     * 发送通知短信
+     * @param $id
+     */
 	private function sendTaskMessage($id)
 	{
 		$data = \app\admin\model\Task::getInstance()->getTask(['t.id' => $id]);

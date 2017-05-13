@@ -374,8 +374,9 @@
 .order-info .list-block li {
   background-color: #F7F7F8;
 }
-#order-info .list-block .back-white {
+#user-order-info .list-block .back-white {
   background-color: #fff;
+  color: red;
 }
 /*用户首页*/
 #user-index .card {
@@ -474,9 +475,9 @@
 
 /*提现详情*/
 #info .list-block {
-  margin: 1rem 0;
+  margin: 0;
 }
-#info .item-inner .item-input {
+#info .item-inner .item-input,#info .item-inner .item-input input {
   text-align: end;
 }
 #info .item-inner .item-input select {

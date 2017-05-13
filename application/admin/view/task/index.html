@@ -24,6 +24,7 @@
                                     <th>详细地址</th>
                                     <th>单价</th>
                                     <th>总价</th>
+                                    <th>交易方式</th>
                                     <!--<th>状态</th>-->
                                     <{eq name='type' value='undone'}>
                                     <th>操作</th>
@@ -35,12 +36,16 @@
                                 <tr id="id_<{$vo.id}>">
                                     <td><{$vo.order_id}></td>
                                     <td><{$vo.member_name}>（<{$vo.member_mobile}>）</td>
-                                    <td><{$vo.user_name}>（<{$vo.user_mobile}>）</td>
+                                    <td><{elt name='vo.user_id' value='0'}><{else /}><{$vo.user_name}>（<{$vo.user_mobile}>）<{/elt}></td>
                                     <td><{$vo.task_date,$vo.task_time}></td>
                                     <td><{$vo.task_city}></td>
                                     <td><{$vo.task_address}></td>
                                     <td><{$vo.task_price}></td>
                                     <td><{$vo.task_money}></td>
+                                    <td>
+                                        <{eq name='vo.task_type' value='1'}>线上交易<{/eq}>
+                                        <{eq name='vo.task_type' value='2'}>现金交易<{/eq}>
+                                    </td>
                                     <!--<td><{switch name="type" }>
                                         <{case value="undone"}>未完成<{/case}>
                                         <{case value="end"}>已完成<{/case}>

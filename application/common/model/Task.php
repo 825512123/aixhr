@@ -26,17 +26,14 @@ class Task extends Base
     }
 
 	/**
-	 * 新增任务/订单
+	 * 任务/订单数据提交
 	 * @param $data
 	 * @return int|string
 	 */
-    public function addTask($data = [])
+    public function editTask($data = [])
     {
-        $data = clearArray($data);//清除数组空键值对
-        $data['update_time'] = time();
-        return Db::name('order')->insert($data);
+        return $this->allowField(true)->where('id', $data['id'])->update($data);
     }
-
 	/**
 	 * 获取订单/任务列表
 	 * @param $data
@@ -58,10 +55,10 @@ class Task extends Base
 		    });
 	    }*/
 	    $res = Db::name('task')->alias('t')
-		    ->join('member m', 't.member_id=m.id')
+            ->join('recover_price rp', 't.recover_type=rp.id', 'LEFT')
 		    ->where($where)
 		    ->limit($data['limit'], 8)
-		    ->field('*,t.id as task_id,t.status as task_status')
+		    ->field('t.*,rp.name as recover_name')
 		    ->order('t.id desc')
 		    ->select();
     	return $res;
@@ -81,17 +78,12 @@ class Task extends Base
 	    } elseif($data['status'] == 1) {
 	    	$where['t.status'] = 1;
 	    }
-	    /*if($data['status'] == 1) {//完成状态或时间大于预约时间
-		    $res = $res->where(function ($query){
-			    $query->where('t.status', 1)
-				    ->whereOr('t.recover_date', '<', time());
-		    });
-	    }*/
+
 	    $res = Db::name('task')->alias('t')
-		    ->join('member m', 't.member_id=m.id')
+            ->join('recover_price rp', 't.recover_type=rp.id', 'LEFT')
 		    ->where($where)
 		    ->limit($data['limit'], 8)
-		    ->field('*,t.id as task_id,t.status as task_status')
+		    ->field('t.*,rp.name as recover_name')
 		    ->order('t.id desc')
 		    ->select();
     	return $res;
@@ -105,10 +97,11 @@ class Task extends Base
     public function getOrderInfo($where = [])
     {
     	$res = Db::name('task')->alias('t')
-		    ->join('member m', 't.user_id=m.id', 'LEFT')
+		    ->join('member m', 't.member_id=m.id')
+		    ->join('admin_user au', 't.user_id=au.id', 'LEFT')
 		    ->join('recover_price rp', 't.recover_type=rp.id', 'LEFT')
 		    ->where($where)
-		    ->field('*,t.id as task_id,t.status as task_status,t.create_time as create_task_time,rp.name as recover_name')
+		    ->field('t.*,au.name as username,au.mobile as user_mobile,m.username as member_name,m.mobile as member_mobile,t.id as task_id,t.status as task_status,t.create_time as create_task_time,rp.name as recover_name')
 		    ->find();
     	return $res;
     }
@@ -136,5 +129,27 @@ class Task extends Base
 			->count('id');
 		return $res;
 	}
+
+	public function confirmOrder($data = [])
+    {
+        $info = $this->allowField(true)->where('id',$data['id'])->find();
+        Db::startTrans();
+        try{
+            Db::name('task')->where('id',$data['id'])->update($data);
+            if($info['task_type'] == 1) {
+                Db::name('member')->where('id',$info['member_id'])->setInc('yue',$info['task_money']);
+            } else {
+                Db::name('member')->where('id',$info['member_id'])->setInc('money',$info['task_money']);
+            }
+            // 提交事务
+            Db::commit();
+            $res = true;
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            $res = false;
+        }
+        return $res;
+    }
 
 }
