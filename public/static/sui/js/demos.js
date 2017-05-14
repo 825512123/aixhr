@@ -465,10 +465,10 @@ $(function () {
 
     getOrderList(2, '#tab1');
     $('.order-tab1').on('click', function () {
-      getOrderList(2, '#tab1');
+        if(!$(this).hasClass('active')) {getOrderList(2, '#tab1');}
     });
     $('.order-tab2').on('click', function () {
-      getOrderList(1, '#tab2');
+        if(!$(this).hasClass('active')) {getOrderList(1, '#tab2');}
     });
     $(page).on('infinite', function () {
       if(orderListLoading) return;
@@ -511,10 +511,10 @@ $(function () {
 
     getOrderList(2, '#tab1');
     $('.order-tab1').on('click', function () {
-      getOrderList(2, '#tab1');
+        if(!$(this).hasClass('active')) {getOrderList(2, '#tab1');}
     });
     $('.order-tab2').on('click', function () {
-      getOrderList(1, '#tab2');
+        if(!$(this).hasClass('active')) {getOrderList(1, '#tab2');}
     });
     $(page).on('infinite', function () {
       if(orderListLoading) return;
