@@ -58,6 +58,26 @@ class User extends Base
         }
     }
 
+    /**
+     * 重设密码验证码
+     * @return \think\response\Json
+     */
+    public function sendCodePass()
+    {
+        $post = input("post.");
+        $res = Member::getInstance()->getMemberByWhere(['mobile' => $post['mobile']]);
+        if ($res > 0){
+            $message = new MessageApi();
+            if($message->sendCode($post['mobile'])) {
+                return json(['code' => 0, 'data' => $res, 'msg' => '验证码已发送']);
+            } else {
+                return json(['code' => 1, 'data' => '', 'msg' => '验证码发送失败']);
+            }
+        } else {
+            return json(['code' => 1, 'data' => '', 'msg' => '手机号未注册,请注册登录']);
+        }
+    }
+
 	/**
 	 * 判断验证码
 	 * @return \think\response\Json
@@ -139,8 +159,4 @@ class User extends Base
 	    }
     }
 
-    public function repassword()
-    {
-
-    }
 }

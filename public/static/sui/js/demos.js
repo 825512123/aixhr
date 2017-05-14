@@ -88,20 +88,19 @@ $(function () {
       var address_city = $("input[name='address_city']").val().trim();
       var address_input = $("input[name='address_input']").val().trim();
       if (address_city == '') {
-        $.alert('请选择省市区');
+        $.toast('请选择省市区');
       }
       if (address_input.length > 8) {
         $.post('/index/user/editMember', {address_city: address_city, address_input: address_input}, function (data) {
-          $.alert(data.msg, function () {
+            $.toast(data.msg);
             if (data.code > 0) {
               localStorage.member_info = data.data;
               $('.member-address').text(address_city + address_input + '<i class="icon icon-user-edit open-recover"></i>');
               $('.close-popup').click();
             }
-          });
         });
       } else {
-        $.alert('请精确到门牌号!8字以上');
+        $.toast('请精确到门牌号!8字以上');
       }
     });
 
@@ -113,7 +112,7 @@ $(function () {
     var password = $('#login').find('input[name="password"]').val().trim();
     if (username != '' && password != '') {
       $.post('/index/index/login', {username: username, password: password}, function (data) {
-        $.alert(data.msg, function () {
+          $.toast(data.msg);
           if (data.code > 0) {
             localStorage.member_id = data.member_id;
             localStorage.member_info = data.member_info;
@@ -122,14 +121,13 @@ $(function () {
               $('.close-popup').click();
               //indexLogin('/');
             }
-            indexLogin(localStorage.login_url);
+            setTimeout("indexLogin(localStorage.login_url)",1500);
           } else {
             $('.submit-login').addClass('login-button');
           }
-        });
       });
     } else {
-      $.alert('用户名/密码不能为空！');
+      $.toast('用户名/密码不能为空！');
       $('.submit-login').addClass('login-button');
     }
   });
@@ -162,7 +160,7 @@ $(function () {
       } else {
         $.post('/index/user/checkMobile', {mobile: mobile}, function (data) {
           if (data.code) {
-            $.alert(data.msg);
+            $.toast(data.msg);
             checkm = false;
           } else {
             checkm = true;
@@ -176,7 +174,7 @@ $(function () {
         checkm = false;
       } else {
         $.post('/index/user/sendCode', {mobile: mobile}, function (data) {
-          $.alert(data.msg, function (data) {
+            $.toast(data.msg);
             if (data.code) {
               checkm = false;
             } else {
@@ -185,7 +183,6 @@ $(function () {
               checkm = true;
               RemainTime();
             }
-          });
         });
       }
     };
@@ -193,7 +190,7 @@ $(function () {
       if (code.length == 6) {
         $.post('/index/user/checkCode', {code: code}, function (data) {
           if (data.code) {
-            $.alert(data.msg);
+            $.toast(data.msg);
             checkc = false;
           } else {
             checkc = true;
@@ -202,7 +199,7 @@ $(function () {
       } else if (code == '') {
         checkc = false;
       } else {
-        $.alert('验证码错误');
+        $.toast('验证码错误');
         checkc = false;
       }
     };
@@ -229,7 +226,7 @@ $(function () {
       password = $("input[name='password']").val().trim();
       repassword = $("input[name='repassword']").val().trim();
       if (password != repassword) {
-        $.alert('两次密码不一致');
+        $.toast('两次密码不一致');
         checkr = false;
       } else {
         checkr = true;
@@ -238,36 +235,35 @@ $(function () {
     $('.register-button').on('click', function () {
       $('.submit-register').removeClass('register-button');
       if (!checkm) {
-        $.alert('手机号有误，请重新输入！');
+        $.toast('手机号有误，请重新输入！');
         return false;
       }
       if (!checkc) {
-        $.alert('验证码有误，请重新输入！');
+        $.toast('验证码有误，请重新输入！');
         return false;
       }
       if (!checkp) {
-        $.alert('密码格式有误，请重新输入！');
+        $.toast('密码格式有误，请重新输入！');
         return false;
       }
       if (!checkr) {
-        $.alert('两次密码不一致，请重新输入！');
+        $.toast('两次密码不一致，请重新输入！');
         return false;
       }
       if (!$("input[name='protocol']").prop('checked')) {
-        $.alert('您还未接受用户协议');
+        $.toast('您还未接受用户协议');
         return false;
       }
 
       if (checkm && checkc && checkp && checkr) {
         $.post('/index/index/register', {mobile: mobile, password: password}, function (data) {
           if (data.code > 0) {
-            $.alert(data.msg, function () {
+              $.toast(data.msg);
               localStorage.member_id = data.member_id;
               localStorage.member_info = data.member_info;
               indexLogin(localStorage.login_url);
-            });
           } else {
-            $.alert('注册失败，请稍后再试！');
+            $.toast('注册失败，请稍后再试！');
             $('.submit-register').addClass('register-button');
           }
         });
@@ -276,42 +272,182 @@ $(function () {
       }
     });
   });
+
+// 忘记密码
+$(document).on("pageInit", "#repassword", function (e, id, page) {
+    $("input[name='mobile']").val('');
+    $("input[name='code']").val('');
+    $("input[name='password']").val('');
+    $("input[name='repassword']").val('');
+    var mobile, code, password, repassword, Account;
+    var checkm, checkc, checkp, checkr;
+    var itime = 59;
+    var RemainTime = function () {
+        if (itime > 0) {
+            $(".register-code-resend c").text(itime);
+            Account = setTimeout(function () {
+                RemainTime();
+            }, 1000);
+            itime = itime - 1;
+        } else {
+            clearTimeout(Account);
+            itime = 59;
+            $(".register-code-send").show();
+            $(".register-code-resend").hide();
+        }
+    };
+    var checkMobile = function (mobile) {
+        if (!checkPhone(mobile)) {
+            checkm = false;
+        } else {
+            $.post('/index/user/checkMobile', {mobile: mobile}, function (data) {
+                if (!data.code) {
+                    $.toast('手机号未注册,请注册登录!');
+                    checkm = false;
+                } else {
+                    checkm = true;
+                }
+            });
+        }
+    };
+    var sendCode = function () {
+        mobile = $("input[name='mobile']").val().trim();
+        if (!checkPhone(mobile)) {
+            checkm = false;
+        } else {
+            $.post('/index/user/sendCodePass', {mobile: mobile}, function (data) {
+                $.toast(data.msg);
+                if (data.code) {
+                    checkm = false;
+                } else {
+                    $("input[name='id']").val(data.data.id);
+                    $(".register-code-send").hide();
+                    $(".register-code-resend").show();
+                    checkm = true;
+                    RemainTime();
+                }
+            });
+        }
+    };
+    var checkCode = function (code) {
+        if (code.length == 6) {
+            $.post('/index/user/checkCode', {code: code}, function (data) {
+                if (data.code) {
+                    $.toast(data.msg);
+                    checkc = false;
+                } else {
+                    checkc = true;
+                }
+            });
+        } else if (code == '') {
+            checkc = false;
+        } else {
+            $.toast('验证码错误');
+            checkc = false;
+        }
+    };
+    /*$("input[name='mobile']").blur(function () {
+        mobile = $("input[name='mobile']").val().trim();
+        checkMobile(mobile);
+    });*/
+    $(".register-code-send").on('click', function () {
+        sendCode();
+    });
+    $("input[name='code']").blur(function () {
+        code = $(this).val().trim();
+        checkCode(code);
+    });
+    $("input[name='password']").blur(function () {
+        password = $("input[name='password']").val().trim();
+        if (!checkPassword(password)) {
+            checkp = false;
+        } else {
+            checkp = true;
+        }
+    });
+    $("input[name='repassword']").blur(function () {
+        password = $("input[name='password']").val().trim();
+        repassword = $("input[name='repassword']").val().trim();
+        if (password != repassword) {
+            $.toast('两次密码不一致');
+            checkr = false;
+        } else {
+            checkr = true;
+        }
+    });
+    $('.password-button').on('click', function () {
+        $('.submit-password').removeClass('password-button');
+        var id = $("input[name='id']").val();
+        if (!checkm) {
+            $.toast('手机号有误，请重新输入!');
+            return false;
+        }
+        if (!checkc) {
+            $.toast('验证码有误，请重新输入!');
+            return false;
+        }
+        if (!checkp) {
+            $.toast('密码格式有误，请重新输入!');
+            return false;
+        }
+        if (!checkr) {
+            $.toast('两次密码不一致，请重新输入!');
+            return false;
+        }
+        if (!id) {
+            $.toast('信息错误，请稍后再试!');
+            return false;
+        }
+
+        if (checkm && checkc && checkp && checkr && id) {
+            $.post('/index/index/repassword', {id:id, mobile: mobile, password: password}, function (data) {
+                $.toast(data.msg);
+                if (data.code > 0) {
+                    $.popup('.popup-login');
+                } else {
+                    $('.submit-password').addClass('password-button');
+                }
+            });
+        } else {
+            $('.submit-password').addClass('password-button');
+        }
+    });
+});
   //退出登录
   loginOut = function () {
     $.post('/index/index/loginOut', {}, function (data) {
-      $.alert(data.msg, function () {
+        $.toast(data.msg);
         if (data.code > 0) {
           localStorage.clear();
           window.location.href = '/';
         }
-      });
     });
   };
   function checkPhone(mobile) {
     if (mobile == '') {
-      $.alert('手机号不能为空！');
+      $.toast('手机号不能为空！');
       return false;
     }
     var reg = /^1[34578]\d{9}$/;
     if (reg.test(mobile)) {
       return true;
     } else {
-      $.alert('手机号有误，请重新输入!');
+      $.toast('手机号有误，请重新输入!');
       return false;
     }
-  };
+  }
 
   function checkPassword(password) {
     if (password == '') {
-      $.alert('密码不能为空！');
+      $.toast('密码不能为空！');
       return false;
     }
     if (password.length < 6) {
-      $.alert('密码必须 6 位以上，请重新输入!');
+      $.toast('密码必须 6 位以上，请重新输入!');
       return false;
     }
     return true;
-  };
+  }
 
   //强制保留2位小数，如：2，会在2后面补上00.即2.00
   function toDecimal2(x) {
@@ -376,11 +512,11 @@ $(function () {
       var address_city = $("input[name='address_city']").val().trim();
       var address_input = $("input[name='address_input']").val().trim();
       if (address_city == '') {
-        $.alert('请选择省市区');
+        $.toast('请选择省市区');
       }
       if (address_input.length > 5) {
         $.post('/index/user/editMember', {address_city: address_city, address_input: address_input}, function (data) {
-            $.alert(data.msg, function () {
+            $.toast(data.msg);
               if (data.code > 0) {
                 localStorage.member_info = data.data;
                 $('.address-show').show();
@@ -389,10 +525,9 @@ $(function () {
                 $('.address_input').text(address_input);
                 $('.close-popup').click();
               }
-            });
         });
       } else {
-        $.alert('请精确到门牌号!5字以上');
+        $.toast('请精确到门牌号!5字以上');
       }
     });
     // 回收时间
@@ -411,16 +546,15 @@ $(function () {
       var recover_time = $("input[name='recover_time']").val().trim();
       var day = $("input[name='task_time']").val().trim();
       if (!address_city) {
-        $.alert('请选择服务地址');
+        $.toast('请选择服务地址');
       } else {
         $.post('/index/order/add',
           {task_city:address_city, task_address:address_input, task_date:recover_date, task_time:recover_time, day:day},
           function (data) {
-            $.alert(data.msg, function () {
+              $.toast(data.msg);
               if (data.code > 0) {
                 indexLogin('/index/order/orderList');
               }
-            });
           });
       }
     });
@@ -528,6 +662,7 @@ $(function () {
     });
   });
 
+  // 订单详情部分内容拼接
   orderContent = function (task) {
       var task_type = task.task_type == 2 ? '现金交易' : '线上交易';
       var content = '';
@@ -556,10 +691,6 @@ $(function () {
   };
   // 回收单详情
   $(document).on("pageInit", "#order-info", function (e, id, page) {
-   /* $('.recover_type').onchange(function () {
-        alert(111);
-        console.log(this.data('price'));
-    });*/
     var task_id = localStorage.task_id;
     var aid = localStorage.aid > 0 ? localStorage.aid : 0;
     $.post('/index/order/orderInfo', {task_id:task_id}, function (data) {
@@ -788,20 +919,7 @@ $(function () {
     $('.money').text('余额为：￥' + toDecimal2(memberInfo.yue));
     //$('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
   });
-  /*checkMoney = function (i) {
-    $.toast(i);
-    /!*if (mobile == '') {
-      $.alert('手机号不能为空！');
-      return false;
-    }
-    var reg = /^1[34578]\d{9}$/;
-    if (reg.test(mobile)) {
-      return true;
-    } else {
-      $.alert('手机号有误，请重新输入!');
-      return false;
-    }*!/
-  };*/
+
   /*提现*/
   $(document).on("pageInit", "#withdraw", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
@@ -902,7 +1020,7 @@ $(function () {
       var account = eval('memberInfo.'+my_radio);
       if(account != '') {
         $.post('/index/funds/withdraw', {money:withdraw, type:my_radio}, function (data) {
-          $.alert(data.msg, function () {
+            $.toast(data.msg);
             if(data.code > 0) {
               localStorage.member_info = data.data;
               memberInfo = JSON.parse(data.data);
@@ -910,7 +1028,6 @@ $(function () {
               //$('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
               $('.back').click();
             }
-          });
         });
       } else {
         $.toast('该提现方式为空，请填写或选择其他提现方式');

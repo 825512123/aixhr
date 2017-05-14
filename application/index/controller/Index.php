@@ -27,7 +27,22 @@ class Index extends Base
                 $user = json_encode(session('member_info'));
                 return json(['code' => 1, 'member_info' => $user, 'member_id' => session('member_id'), 'msg' => '注册成功']);
             } else {
-                return json(['code' => 0, 'data' => '', 'msg' => '注册失败，请稍后再试']);
+                return json(['code' => 0, 'data' => '', 'msg' => '注册失败,请稍后再试']);
+            }
+        } else {
+            return $this->fetch();
+        }
+    }
+
+    public function repassword()
+    {
+        if(request()->isPost()) {
+            $post = input("post.");
+            $res = Member::getInstance()->editMember($post);
+            if ($res > 0){
+                return json(['code' => 1, 'data' => '', 'msg' => '重置成功,请登录!']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'msg' => '重置失败,请稍后再试!']);
             }
         } else {
             return $this->fetch();
