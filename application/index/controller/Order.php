@@ -9,9 +9,13 @@
 namespace app\index\controller;
 
 
+use app\admin\controller\Login;
+use app\admin\model\AdminUser;
 use app\common\controller\Base;
+use app\common\model\Member;
 use app\common\model\RecoverPrice;
 use app\common\model\Task;
+use think\Db;
 
 class Order extends Base
 {
@@ -142,8 +146,7 @@ class Order extends Base
             $res = Task::getInstance()->getOrderInfo($where);
             if ($res) {
                 if($res['task_status'] == 2) {
-                    $memberPrice = RecoverPrice::getInstance()->getMemberPrice(['member_id' => $res['member_id']]);
-                    $price = $this->getMemberPice($memberPrice);
+                    $price = $this->getMemberPice($res['member_id']);
                     return json(['code' => 1, 'data' => $res, 'price' => $price, 'msg' => '成功']);
                 } else {
                     return json(['code' => 1, 'data' => $res, 'price' => [], 'msg' => '成功']);
@@ -158,11 +161,12 @@ class Order extends Base
 
     /**
      * 获取用户价格
-     * @param $memberPrice
-     * @return false|\PDOStatement|string|\think\Collection
+     * @param $id
+     * @return false|\PDOStatement|string|\think\Collection|\think\response\Json
      */
-    public function getMemberPice($memberPrice)
+    public function getMemberPice($id)
     {
+        $memberPrice = RecoverPrice::getInstance()->getMemberPrice(['member_id' => $id]);
         $price = RecoverPrice::getInstance()->getList();
         if($memberPrice) {
             foreach ($price as $key => $val) {
@@ -173,7 +177,11 @@ class Order extends Base
                 }
             }
         }
-        return $price;
+        if (request()->isPost()) {
+            return json(['code' => 1, 'data' => $price, 'msg' => '成功']);
+        } else {
+            return $price;
+        }
     }
 
     /**
@@ -210,6 +218,43 @@ class Order extends Base
             return json(['code' => 1, 'data' => $post, 'msg' => '提交成功!']);
         } else {
             return json(['code' => 0, 'data' => '', 'msg' => '失败!请稍后再试!']);
+        }
+    }
+
+    /**
+     * 员工新增订单
+     * @return mixed|\think\response\Json
+     */
+    public function addOrder()
+    {
+        $this->checkRole();
+        if(request()->isPost()) {
+            $post = input("post.");
+            $post['aid'] = session('aid');
+            $post['status'] = 1;
+            $post['user_id'] = session('user_id');
+            $post['end_time'] = time();
+            $post['recover_date'] = $post['end_time'];
+            $post['create_time'] = $post['end_time'];
+            $sum = (($post['task_price']*100) * ($post['number']*100))/10000;
+            $sum = round($sum, 2);
+            if($post['task_money'] == $sum) {
+                $member = Member::getInstance()->getMember($post['member_id']);
+                $post['order_id'] = $this->get_task_id();
+                $post['task_city'] = $member['address_city'];
+                $post['task_address'] = $member['address_input'];
+                if (Task::getInstance()->addOrder($post)){
+                    $this->refreshSessionUser($post['user_id']);
+                    $user = json_encode(session('user_info'));
+                    return json(['code' => 1, 'data' => $user, 'msg' => '新增订单完成!']);
+                } else {
+                    return json(['code' => 0, 'data' => '', 'msg' => '失败!请稍后再试!']);
+                }
+            }
+        } else {
+            $memberList = Member::getInstance()->getMemberList();
+            $this->assign('memberList', $memberList);
+            return $this->fetch();
         }
     }
 }

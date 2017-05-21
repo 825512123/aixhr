@@ -10,14 +10,26 @@
 namespace app\index\controller;
 
 
+use app\admin\model\AdminUser;
 use app\common\controller\Base;
 use app\common\controller\MessageApi;
 use app\common\model\IncomeLog;
 use app\common\model\Member;
 use app\common\model\Task;
+use think\Request;
 
 class User extends Base
 {
+
+    public function __construct(Request $request = null)
+    {
+        parent::__construct($request);
+        if(session('aid')) {
+            $this->assign('is_admin', 1);
+        } else {
+            $this->assign('is_admin', 0);
+        }
+    }
 
     public function index()
     {
@@ -98,6 +110,10 @@ class User extends Base
 	 */
     public function money()
     {
+        if(session('aid')) {
+            $userList = AdminUser::getInstance()->where('id','neq',session('user_id'))->select();
+            $this->assign('userList', $userList);
+        }
     	return $this->fetch();
     }
 
@@ -124,6 +140,10 @@ class User extends Base
     	return $this->fetch();
     }
 
+    /**
+     * 收入列表
+     * @return mixed|\think\response\Json
+     */
     public function incomeList()
     {
 	    if(request()->isPost()) {
@@ -157,6 +177,48 @@ class User extends Base
 	    } else {
 		    return json(['code' => 0, 'data' => '', 'msg' => '操作失败，请稍候再试！']);
 	    }
+    }
+
+    /**
+     * 新增用户
+     * @return mixed|\think\response\Json
+     */
+    public function addUser()
+    {
+        $this->checkRole();
+        if(request()->isPost()) {
+            $post = input("post.");
+            $post['aid'] = session('aid');
+            $post['user_id'] = session('user_id');
+            if (Member::getInstance()->editMember($post)){
+                return json(['code' => 1, 'data' => '', 'msg' => '客户添加成功!']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败!请稍后再试!']);
+            }
+        } else {
+            return $this->fetch();
+        }
+    }
+
+    /**
+     * 客户列表
+     * @return mixed|\think\response\Json
+     */
+    public function memberList()
+    {
+        $this->checkRole();
+        if (request()->isPost()) {
+            $post = input("post.");
+            $res = Member::getInstance()->getMemberList($post);
+            if ($res > 0) {
+                $sum = Member::getInstance()->getMemberSum($post);
+                return json(['code' => 1, 'data' => $res, 'sum' => $sum, 'msg' => '成功']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
+            }
+        } else {
+            return $this->fetch();
+        }
     }
 
 }

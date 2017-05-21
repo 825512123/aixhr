@@ -50,7 +50,7 @@ class Member extends Base
      * @param array $npc_data
      * @return bool|false|int|string
      */
-    public function addNpc($npc_data = [])
+    /*public function addNpc($npc_data = [])
     {
         $npc_data = clearArray($npc_data);//清除数组空键值对
         $npc_data['create_npc_time'] = time();
@@ -67,7 +67,7 @@ class Member extends Base
             $res = false;
         }
         return $res;
-    }
+    }*/
 
     /**
      * 根据id返回 佣兵数据
@@ -91,9 +91,32 @@ class Member extends Base
      * @param $where
      * @return array|false|\PDOStatement|string|\think\Model
      */
-    public function getMemberByWhere($where)
+    public function getMemberByWhere($where = [])
     {
         $res = Db::name('member')->where($where)->find();
         return $res;
+    }
+
+    public function getMemberList($where = [])
+    {
+        $wh['aid'] = session('aid');
+        $wh['status'] = 1;
+        if(isset($where['type']) && $where['type'] > 0) {$wh['user_id'] = session('user_id');}
+        $res = $this->where($wh);
+        if(isset($where['limit'])) {
+            $res = $res->limit($where['limit'], 8);
+        }
+        $res = $res->order('id desc')->select();
+        return $res;
+    }
+
+    public function getMemberSum($where = [])
+    {
+        $wh['aid'] = session('aid');
+        $wh['status'] = 1;
+        if($where['type']) {
+            $wh['user_id'] = session('user_id');
+        }
+        return $this->where($wh)->count('id');
     }
 }

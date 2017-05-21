@@ -54,7 +54,7 @@ $(function () {
     $('.member-mobile').text(memberInfo.mobile);
   }
   price = function (id) {
-    localStorage.tab_id = id;
+    localStorage.price_id = id;
     $.router.load('/index/order/price');
   };
   infoIndex();
@@ -204,18 +204,18 @@ $(function () {
       }
     };
     $("input[name='mobile']").blur(function () {
-      mobile = $("input[name='mobile']").val().trim();
+      mobile = $(this).val().trim();
       checkMobile(mobile);
     });
     $(".register-code-send").on('click', function () {
       sendCode();
     });
     $("input[name='code']").blur(function () {
-      code = $("input[name='code']").val().trim();
+      code = $(this).val().trim();
       checkCode(code);
     });
     $("input[name='password']").blur(function () {
-      password = $("input[name='password']").val().trim();
+      password = $(this).val().trim();
       if (!checkPassword(password)) {
         checkp = false;
       } else {
@@ -224,7 +224,7 @@ $(function () {
     });
     $("input[name='repassword']").blur(function () {
       password = $("input[name='password']").val().trim();
-      repassword = $("input[name='repassword']").val().trim();
+      repassword = $(this).val().trim();
       if (password != repassword) {
         $.toast('两次密码不一致');
         checkr = false;
@@ -358,7 +358,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
         checkCode(code);
     });
     $("input[name='password']").blur(function () {
-        password = $("input[name='password']").val().trim();
+        password = $(this).val().trim();
         if (!checkPassword(password)) {
             checkp = false;
         } else {
@@ -367,7 +367,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
     });
     $("input[name='repassword']").blur(function () {
         password = $("input[name='password']").val().trim();
-        repassword = $("input[name='repassword']").val().trim();
+        repassword = $(this).val().trim();
         if (password != repassword) {
             $.toast('两次密码不一致');
             checkr = false;
@@ -470,7 +470,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
 
   $(document).on("pageInit", "#price", function (e, id, page) {
     var tab = $('.tab-link');
-    var id = localStorage.tab_id;
+    var id = localStorage.price_id;
     tab.eq(id).click();
   });
   // 开始回收
@@ -565,6 +565,195 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
     return today[day];
   };
 
+  // 新增订单
+  $(document).on("pageInit", "#add-order", function (e, id, page) {
+    // 服务客户选择触发
+    $('.member_id').change(function () {
+      var id = $(this).val();
+      $.post('/index/order/getMemberPice', {id:id}, function (data) {
+        console.log(data.data);
+        var price = '';
+        if (data.data && data.data.length > 0) {
+            $.each(data.data, function (i, n) {
+                price += '<option value="' + n.id + '" data-price="' + n.price + '">' + n.name + '</option>';
+            });
+            $('.recover_type').append(price);
+            // 回收类型选择触发
+            $('.recover_type').change(function () {
+                var id = $(this).val();
+                var price = $(this).find('option[value="'+id+'"]').data('price');
+                $('.task_price').text(price);
+                $('input[name="task_price"]').val(price);
+                var num = $('input[name="number"]').val();
+                if(num > 0) {
+                    var sum = ((price * 100) * (num * 100)) / 10000;
+                    var task_money = toDecimal2(sum);
+                    $('.task_money').text(task_money);
+                    $('input[name="task_money"]').val(task_money);
+                }
+            });
+            //计算总价
+            sum = function (val) {
+                var task_price = $('input[name="task_price"]').val();
+                var task_type = $('.task_type').val();
+                if(task_type == 0) {$.toast('请选择支付方式！'); return false;}
+                if(task_price > 0) {
+                    var sum = ((task_price * 100) * (val * 100)) / 10000;
+                    var task_money = toDecimal2(sum);
+                    $('.task_money').text(task_money);
+                    $('input[name="task_money"]').val(task_money);
+                } else {
+                    $.toast('请选择回收品类！');return false;
+                }
+            };
+        }
+      });
+    });
+    //提交订单数据
+    $('.submit-order').on('click',function () {
+        //日期时间初始化
+        var task_time;
+        var mydate = new Date();
+        var time = mydate.getTime();
+        mydate.setTime(time);
+        var week = getWeek(mydate.getDay());
+        var task_date = (mydate.getMonth() + 1) + '月' + mydate.getDate() + '日' + week;
+        var hours = mydate.getHours();
+        if(hours < 13) {
+            task_time = '8:00~12:00';
+        } else if(hours < 17) {
+            task_time = '13:00~17:00';
+        } else {
+            task_time = '17:00~19:00';
+        }
+      var member_id = $('.member_id').val();
+      var task_type = $('.task_type').val();
+      var recover_type = $('.recover_type').val();
+      var task_price = $('input[name="task_price"]').val();
+      var number = $('input[name="number"]').val();
+      var task_money = $('input[name="task_money"]').val();
+      if(member_id == 0) {$.toast('请选择服务客户！'); return false;}
+      if(task_type == 0) {$.toast('请选择支付方式！'); return false;}
+      if(recover_type == 0) {$.toast('请选择回收品类！'); return false;}
+      if(number == 0) {$.toast('请输入数量！'); return false;}
+      if(member_id > 0 && task_type > 0 && recover_type > 0 && task_price > 0 && number > 0 && task_money > 0) {
+          $.post('/index/order/addOrder', {
+              member_id:member_id,task_date:task_date,task_time:task_time,task_type:task_type,recover_type:recover_type,task_price:task_price,number:number,task_money:task_money
+          }, function (data) {
+              $.toast(data.msg);
+              if(data.code == 1) {
+                  localStorage.member_info = data.data;
+                  setTimeout("$.router.back()",1500);
+              }
+          });
+      } else {
+          $.toast('数据错误!请重新填写!');return false;
+      }
+    });
+  });
+  // 添加客户
+  $(document).on("pageInit", "#add-user", function (e, id, page) {
+      var checkm = false,mobile = '';
+      var checkMobile = function (mobile) {
+          if (!checkPhone(mobile)) {
+              checkm = false;
+          } else {
+              $.post('/index/user/checkMobile', {mobile: mobile}, function (data) {
+                  if (data.code) {
+                      $.toast('该手机号已经注册');
+                      checkm = false;
+                  } else {
+                      checkm = true;
+                  }
+              });
+          }
+      };
+      $("input[name='mobile']").blur(function () {
+          mobile = $(this).val().trim();
+          checkMobile(mobile);
+      });
+      // 地址初始化
+      var arr = '四川 南充 高坪区'.split(' ');
+      var input = '';
+      $("#city-picker").cityPicker({
+          value: [arr[0], arr[1], arr[2]]
+      });
+      $("input[name='address_input']").val(input);
+      // 提交
+      $('.submit-addUser').on('click', function () {
+          var username = $("input[name='username']").val().trim();
+          var address_city = $("input[name='address_city']").val().trim();
+          var address_input = $("input[name='address_input']").val().trim();
+          if (address_input == '' && username == '' && !checkm) {
+              $.toast('均为必填项,不可为空!');
+          } else {
+              $.post('/index/user/addUser',
+                  {address_city:address_city, address_input:address_input, username:username, mobile:mobile},
+                  function (data) {
+                      $.toast(data.msg);
+                      if (data.code > 0) {
+                          setTimeout("$.router.back()",1500);
+                      }
+                  });
+          }
+      });
+  });
+  memberPage = function (id) {
+      localStorage.member_page_id = id;
+      indexLogin('/index/user/memberInfo');
+  };
+  // 客户列表
+  $(document).on("pageInit", "#member-list", function (e, id, page) {
+    var orderListLoading = false;
+    var getMemberList = function (type, id) {
+        var limit = $('#order-list ' + id + ' li').length;
+        $.post('/index/user/memberList', {type:type, limit:limit}, function (data) {
+            if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+            if (data.code > 0 && data.sum > 0) {
+                var list = '';
+                $.each(data.data, function (i,n) {
+                    list += '<li><a href="#" class="item-link item-content">';
+                    //list += '<li><a href="#" onclick="memberPage('+ n.id +')" class="item-link item-content">';
+                    list += '<div class="item-media"><img src="/public/static/sui/img/icon_recover.svg" style="width: 2.2rem;"></div>';
+                    list += '<div class="item-inner"> <div class="item-title-row">';
+                    list += '<div class="item-title">' + n.username + '</div>';
+                    list += '</div> <div class="item-subtitle">'+ n.address_city + n.address_input;
+                    list += '</div> </div> </a></li>';
+                });
+                $(id + ' .media-list ul').append(list);
+                if(data.data.length < 8) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+                if(data.data.length == data.sum) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+            } else {
+                $(id + ' .infinite-scroll-preloader').hide(); return;
+            }
+        });
+    };
+
+    getMemberList(0, '#tab1');
+    $('.order-tab1').on('click', function () {
+        if(!$(this).hasClass('active')) {
+            $('#tab1 .media-list ul').html('');
+            getMemberList(0, '#tab1');
+        }
+    });
+    $('.order-tab2').on('click', function () {
+        if(!$(this).hasClass('active')) {
+            $('#tab2 .media-list ul').html('');
+            getMemberList(1, '#tab2');
+        }
+    });
+    $(page).on('infinite', function () {
+        if(orderListLoading) return;
+        orderListLoading = true;
+        if($(this).find('.infinite-scroll.active').attr('id') == "tab1"){
+            getMemberList(0, '#tab1');
+        } else {
+            getMemberList(1, '#tab2');
+        }
+
+    });
+  });
+
   orderInfo = function (id) {
     localStorage.task_id = id;
     indexLogin('/index/order/orderInfo');
@@ -599,10 +788,16 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
 
     getOrderList(2, '#tab1');
     $('.order-tab1').on('click', function () {
-        if(!$(this).hasClass('active')) {getOrderList(2, '#tab1');}
+        if(!$(this).hasClass('active')) {
+            $('#tab1 .media-list ul').html('');
+            getOrderList(2, '#tab1');
+        }
     });
     $('.order-tab2').on('click', function () {
-        if(!$(this).hasClass('active')) {getOrderList(1, '#tab2');}
+        if(!$(this).hasClass('active')) {
+            $('#tab2 .media-list ul').html('');
+            getOrderList(1, '#tab2');
+        }
     });
     $(page).on('infinite', function () {
       if(orderListLoading) return;
@@ -645,10 +840,16 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
 
     getOrderList(2, '#tab1');
     $('.order-tab1').on('click', function () {
-        if(!$(this).hasClass('active')) {getOrderList(2, '#tab1');}
+        if(!$(this).hasClass('active')) {
+            $('#tab1 .media-list ul').html('');
+            getOrderList(2, '#tab1');
+        }
     });
     $('.order-tab2').on('click', function () {
-        if(!$(this).hasClass('active')) {getOrderList(1, '#tab2');}
+        if(!$(this).hasClass('active')) {
+            $('#tab2 .media-list ul').html('');
+            getOrderList(1, '#tab2');
+        }
     });
     $(page).on('infinite', function () {
       if(orderListLoading) return;
@@ -824,7 +1025,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
                         '</form></ul> </div> </div>'+
                         '</div>';
                     $.popup(popupHTML);
-                    // 回收类型选择触发
+                    // 支付类型选择触发
                     $('.task_type').change(function () {
                         var price = $('input[name="task_price"]').val();
                         var num = $('input[name="number"]').val();
@@ -916,8 +1117,26 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
   /*我的钱包*/
   $(document).on("pageInit", "#money", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
-    $('.money').text('余额为：￥' + toDecimal2(memberInfo.yue));
-    //$('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
+    var money = toDecimal2(memberInfo.yue);
+    $('.money').text('余额为：￥' + money);
+    $('.open-transfer').on('click', function () {
+      $.popup('.popup-transfer');
+        checkMoney = function (i) {
+            if(i <= 0) {
+                $.toast('请输入合法数值');
+                $("input[name='withdraw']").val('');
+            }
+            if((i-money) > 0) {
+                $.toast('最多可提现' + money);
+                $("input[name='withdraw']").val(money);
+            }
+            var arr = i.split('.');
+            if(arr[1] && arr[1].length >2) {
+                $.toast('最多至小数后两位');
+                $("input[name='withdraw']").val(Math.floor(i*100)/100);
+            }
+        };
+    });
   });
 
   /*提现*/
@@ -1026,7 +1245,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
               memberInfo = JSON.parse(data.data);
               $('.money').text('可提现余额为：￥' + toDecimal2(memberInfo.yue));
               //$('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
-              $('.back').click();
+              $.router.back()
             }
         });
       } else {

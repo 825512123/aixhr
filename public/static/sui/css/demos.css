@@ -98,7 +98,7 @@
 .icon.icon-my-address {
   width: 1.45rem;
   height: 1.45rem;
-  background-image: url("../img/my_address.svg");
+  background-image: url("../img/address.svg");
 }
 .icon.icon-date {
   width: 1.45rem;
@@ -184,6 +184,26 @@
   width: 1.45rem;
   height: 1.45rem;
   background-image: url("../img/bottle.svg");
+}
+.icon.icon-out {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/out.svg");
+}
+.icon.icon-add-user {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/add-user.svg");
+}
+.icon.icon-add-order {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/add-order.svg");
+}
+.icon.icon-users {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/users.svg");
 }
 .active .icon.icon-bottle {
   width: 1.45rem;
@@ -338,8 +358,9 @@
   width: 27%;
 }
 /*回收页面*/
-#recover .list-block {
+#recover .list-block,#add-user .list-block {
   margin:  0;
+  font-size: 0.8rem;
 }
 #recover .list-block .recover-time .content-padded {
   margin: 0.5rem 0.1rem 0.5rem 0.6rem;
@@ -359,10 +380,10 @@
   line-height: 1.8rem;
   font-size: 0.6rem;
 }
-#recover .submit-recover {
+#recover .submit-recover ,#add-user .submit-addUser {
   padding-top: 0.3rem;
 }
-#recover .toolbar-inner .tab-item .font ~ .tab-label {
+#recover .toolbar-inner .tab-item .font ~ .tab-label,#add-user .toolbar-inner .tab-item .font ~ .tab-label {
   display: block;
   font-size: 0.55rem;
   position: relative;
@@ -377,6 +398,9 @@
 #user-order-info .list-block .back-white {
   background-color: #fff;
   color: red;
+}
+#add-user .list-block .item-title.label {
+  width: 32%;
 }
 /*用户首页*/
 #user-index .card {
@@ -435,7 +459,7 @@
 #withdraw .list-block {
   padding: 0;
 }
-#withdraw .modal-text-input {
+#withdraw .modal-text-input, #money .modal-text-input {
   height: 1.8rem;
   width: 100%;
   background-color: #efeff4;

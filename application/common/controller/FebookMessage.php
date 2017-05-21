@@ -13,7 +13,7 @@ namespace app\common\controller;
 class FebookMessage
 {
     private $account = 13452398854;
-    private $pwd     = '9CDEDEA83C9FA29EF64BF20FC5A9';
+    private $pwd     = '35d437c762e03bc4ce0c1a4a9';
     private $signId  = 30736;
 
     /**

@@ -7,6 +7,7 @@
  * Time: 18:24
  */
 namespace app\common\controller;
+use app\admin\model\AdminUser;
 use app\common\model\Member;
 use think\Controller;
 use think\Db;
@@ -25,6 +26,20 @@ class Base extends Controller
         session('member_info', $user);
     }
 
+    /**
+     * 刷新员工session
+     * @param $id
+     */
+    public function refreshSessionUser($id)
+    {
+        $user = AdminUser::getInstance()->getInfo(['au.id' => $id]);
+        session('menu',$user['rule']);
+        session('role_id',$user['role_id']);
+        session('user_id', $user['id']);
+        session('user_info', $user);
+        session('aid', $user['aid']);
+    }
+
     public function get_task_id()
     {
         $time = (int)date('ymd');
@@ -38,6 +53,16 @@ class Base extends Controller
             $data['create_date'] = $time;
             Db::name('config')->where(['name' => 'task_id'])->update($data);
             return $data['value'];
+        }
+    }
+
+    public function checkRole()
+    {
+        if(!session('aid')) {
+            $this->assign('is_admin', 0);
+            return $this->fetch('user/index');
+        } else {
+            $this->assign('is_admin', 1);
         }
     }
 }

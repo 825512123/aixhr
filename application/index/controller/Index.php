@@ -92,8 +92,7 @@ class Index extends Base
     {
     	$post = input('post.');
         if($post['aid'] > 0) {
-		    $login = new Login();// 管理员信息更新
-		    $login->refreshSessionUser($post['member_id']);
+		    $this->refreshSessionUser($post['member_id']);
 		    $user = json_encode(session('user_info'));
 	        return json(['code' => 1, 'member_info' => $user, 'member_id' => session('user_id'), 'aid' => session('aid'), 'msg' => '登录成功']);
 	    } else {

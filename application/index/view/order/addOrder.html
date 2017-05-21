@@ -1,0 +1,83 @@
+<div id="add-order" class="page page-current">
+    <!-- 你的html代码 -->
+    <header class="bar bar-nav">
+        <a class="button button-link button-nav pull-left back" href="#">
+            <span class="icon icon-left"></span>
+            返回
+        </a>
+        <a class="pull-right open-panel" data-panel=".popup-left">
+            <span class="icon icon-menu"></span>
+        </a>
+        <h1 class="title">新增订单</h1>
+    </header>
+    <div class="content" id="info">
+        <div class="list-block">
+            <ul>
+                <input type="hidden" name="task_date" value=""/>
+                <input type="hidden" name="task_time" value=""/>
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">服务客户：</div>
+                            <div class="item-input"><select name="member_id" class="member_id">
+                                <option value="0">请选择服务客户</option>
+                                <{volist name="memberList" id="vo"}>
+                                <option value="<{$vo.id}>" ><{$vo.username}></option>
+                                <{/volist}>
+                            </select></div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">支付方式：</div>
+                            <div class="item-input"><select name="task_type" class="task_type">
+                                <option value="0">请选择支付方式</option>
+                                <option value="1">线上交易</option>
+                                <option value="2" selected>现金交易</option>
+                            </select></div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">回收品类：</div>
+                            <div class="item-input"><select name="recover_type" class="recover_type">
+                                <option value="0">请选择回收品类</option>
+                            </select></div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">回收单价：</div>
+                            <div class="item-input task_price"></div>
+                            <input type="hidden" name="task_price" value=""/>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">回收数量：</div>
+                            <div class="item-input"><input type="number" name="number" oninput="sum(value)" placeholder="请输入数量" value=""></div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title label">回收总价：</div>
+                            <div class="item-input task_money"></div>
+                            <input type="hidden" name="task_money" value=""/>
+                        </div>
+                    </div>
+                </li>
+                <a href="#" class="button button-fill button-big submit-order">提交</a>
+            </ul>
+        </div>
+    </div>
+</div>

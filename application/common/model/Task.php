@@ -130,16 +130,53 @@ class Task extends Base
 		return $res;
 	}
 
+    /**
+     * 客户确认收货
+     * @param array $data
+     * @return bool
+     */
 	public function confirmOrder($data = [])
     {
         $info = $this->allowField(true)->where('id',$data['id'])->find();
         Db::startTrans();
         try{
             Db::name('task')->where('id',$data['id'])->update($data);
+            // 扣去员工余额
+            Db::name('admin_user')->where('id', $info['user_id'])->setDec('yue', $info['task_money']);
             if($info['task_type'] == 1) {
                 Db::name('member')->where('id',$info['member_id'])->setInc('yue',$info['task_money']);
             } else {
                 Db::name('member')->where('id',$info['member_id'])->setInc('money',$info['task_money']);
+            }
+            // 提交事务
+            Db::commit();
+            $res = true;
+        } catch (\Exception $e) {
+            // 回滚事务
+            Db::rollback();
+            $res = false;
+        }
+        return $res;
+    }
+
+    /**
+     * 员工新增订单
+     * @param array $data
+     * @return bool
+     */
+    public function addOrder($data = [])
+    {
+        Db::startTrans();
+        try{
+            Db::name('task')->insert($data);
+            // 扣去员工余额
+            Db::name('admin_user')->where('id', $data['user_id'])->setDec('yue', $data['task_money']);
+            if($data['task_type'] == 1) {
+                // 增加客户余额
+                Db::name('member')->where('id', $data['member_id'])->setInc('yue', $data['task_money']);
+            } else {
+                // 增加客户已提现
+                Db::name('member')->where('id', $data['member_id'])->setInc('money', $data['task_money']);
             }
             // 提交事务
             Db::commit();
