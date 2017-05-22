@@ -16,6 +16,7 @@ use app\common\controller\MessageApi;
 use app\common\model\IncomeLog;
 use app\common\model\Member;
 use app\common\model\Task;
+use app\common\model\TransferLog;
 use think\Request;
 
 class User extends Base
@@ -111,8 +112,11 @@ class User extends Base
     public function money()
     {
         if(session('aid')) {
-            $userList = AdminUser::getInstance()->where('id','neq',session('user_id'))->select();
+            $user_id = session('user_id');
+            $userList = AdminUser::getInstance()->where('id','neq',$user_id)->select();
+            $transferList = TransferLog::getInstance()->getCollectionList(['tl.user_id' => $user_id,'tl.status' => 2]);
             $this->assign('userList', $userList);
+            $this->assign('transferList', $transferList);
         }
     	return $this->fetch();
     }

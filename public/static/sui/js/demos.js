@@ -91,7 +91,9 @@ $(function () {
         $.toast('请选择省市区');
       }
       if (address_input.length > 8) {
+        $.showIndicator();
         $.post('/index/user/editMember', {address_city: address_city, address_input: address_input}, function (data) {
+            $.hideIndicator();
             $.toast(data.msg);
             if (data.code > 0) {
               localStorage.member_info = data.data;
@@ -111,7 +113,9 @@ $(function () {
     var username = $('#login').find('input[name="username"]').val().trim();
     var password = $('#login').find('input[name="password"]').val().trim();
     if (username != '' && password != '') {
+        $.showIndicator();
       $.post('/index/index/login', {username: username, password: password}, function (data) {
+          $.hideIndicator();
           $.toast(data.msg);
           if (data.code > 0) {
             localStorage.member_id = data.member_id;
@@ -173,7 +177,9 @@ $(function () {
       if (!checkPhone(mobile)) {
         checkm = false;
       } else {
+          $.showIndicator();
         $.post('/index/user/sendCode', {mobile: mobile}, function (data) {
+            $.hideIndicator();
             $.toast(data.msg);
             if (data.code) {
               checkm = false;
@@ -256,8 +262,10 @@ $(function () {
       }
 
       if (checkm && checkc && checkp && checkr) {
+          $.showIndicator();
         $.post('/index/index/register', {mobile: mobile, password: password}, function (data) {
           if (data.code > 0) {
+              $.hideIndicator();
               $.toast(data.msg);
               localStorage.member_id = data.member_id;
               localStorage.member_info = data.member_info;
@@ -315,7 +323,9 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
         if (!checkPhone(mobile)) {
             checkm = false;
         } else {
+            $.showIndicator();
             $.post('/index/user/sendCodePass', {mobile: mobile}, function (data) {
+                $.hideIndicator();
                 $.toast(data.msg);
                 if (data.code) {
                     checkm = false;
@@ -400,7 +410,9 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
         }
 
         if (checkm && checkc && checkp && checkr && id) {
+            $.showIndicator();
             $.post('/index/index/repassword', {id:id, mobile: mobile, password: password}, function (data) {
+                $.hideIndicator();
                 $.toast(data.msg);
                 if (data.code > 0) {
                     $.popup('.popup-login');
@@ -415,11 +427,13 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
 });
   //退出登录
   loginOut = function () {
+      $.showIndicator();
     $.post('/index/index/loginOut', {}, function (data) {
+        $.hideIndicator();
         $.toast(data.msg);
         if (data.code > 0) {
           localStorage.clear();
-          window.location.href = '/';
+          setTimeout("window.location.href = '/'",1500);
         }
     });
   };
@@ -515,7 +529,9 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
         $.toast('请选择省市区');
       }
       if (address_input.length > 5) {
+          $.showIndicator();
         $.post('/index/user/editMember', {address_city: address_city, address_input: address_input}, function (data) {
+            $.hideIndicator();
             $.toast(data.msg);
               if (data.code > 0) {
                 localStorage.member_info = data.data;
@@ -548,9 +564,11 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
       if (!address_city) {
         $.toast('请选择服务地址');
       } else {
+          $.showIndicator();
         $.post('/index/order/add',
           {task_city:address_city, task_address:address_input, task_date:recover_date, task_time:recover_time, day:day},
           function (data) {
+              $.hideIndicator();
               $.toast(data.msg);
               if (data.code > 0) {
                 indexLogin('/index/order/orderList');
@@ -571,7 +589,6 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
     $('.member_id').change(function () {
       var id = $(this).val();
       $.post('/index/order/getMemberPice', {id:id}, function (data) {
-        console.log(data.data);
         var price = '';
         if (data.data && data.data.length > 0) {
             $.each(data.data, function (i, n) {
@@ -611,6 +628,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
     });
     //提交订单数据
     $('.submit-order').on('click',function () {
+
         //日期时间初始化
         var task_time;
         var mydate = new Date();
@@ -637,9 +655,11 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
       if(recover_type == 0) {$.toast('请选择回收品类！'); return false;}
       if(number == 0) {$.toast('请输入数量！'); return false;}
       if(member_id > 0 && task_type > 0 && recover_type > 0 && task_price > 0 && number > 0 && task_money > 0) {
+          $.showIndicator();
           $.post('/index/order/addOrder', {
               member_id:member_id,task_date:task_date,task_time:task_time,task_type:task_type,recover_type:recover_type,task_price:task_price,number:number,task_money:task_money
           }, function (data) {
+              $.hideIndicator();
               $.toast(data.msg);
               if(data.code == 1) {
                   localStorage.member_info = data.data;
@@ -687,9 +707,11 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
           if (address_input == '' && username == '' && !checkm) {
               $.toast('均为必填项,不可为空!');
           } else {
+              $.showIndicator();
               $.post('/index/user/addUser',
                   {address_city:address_city, address_input:address_input, username:username, mobile:mobile},
                   function (data) {
+                      $.hideIndicator();
                       $.toast(data.msg);
                       if (data.code > 0) {
                           setTimeout("$.router.back()",1500);
@@ -763,7 +785,6 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
     var orderListLoading = false;
     var getOrderList = function (status, id, type) {
       var limit = $('#order-list ' + id + ' li').length;
-      console.log(limit);
       $.post('/index/order/orderList', {status:status, limit:limit}, function (data) {
         if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
         if (data.code > 0 && data.sum > 0) {
@@ -815,7 +836,6 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
     var orderListLoading = false;
     var getOrderList = function (status, id) {
       var limit = $('#order-list ' + id + ' li').length;
-      console.log(limit);
       $.post('/index/order/userOrderList', {status:status, limit:limit}, function (data) {
         if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
         if (data.code > 0 && data.sum > 0) {
@@ -911,7 +931,9 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
                 $(page).find('ul').append(content);
                 $('.submit-order').on('click', function () {
                     $.confirm('您确认数据无误吗？', function () {
+                        $.showIndicator();
                         $.post('/index/order/confirmOrder', {id:task_id}, function (data) {
+                            $.hideIndicator();
                           $.toast(data.msg);
                             if(data.code) {
                                 $('.task_status').text('已完成');
@@ -1076,9 +1098,11 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
                         if(recover_type == 0) {$.toast('请选择回收品类！'); return false;}
                         if(number == 0) {$.toast('请输入数量！'); return false;}
                         if(id > 0 && task_type > 0 && recover_type > 0 && task_price > 0 && number > 0 && task_money > 0) {
+                            $.showIndicator();
                             $.post('/index/order/editOrder', {
                                 id:id,task_type:task_type,recover_type:recover_type,task_price:task_price,number:number,task_money:task_money
                             }, function (data) {
+                                $.hideIndicator();
                                 $('.task_status').text('等待用户确认');
                                 $.closeModal('.popup');
                                 if(data.code == 1) {
@@ -1124,21 +1148,73 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
         checkMoney = function (i) {
             if(i <= 0) {
                 $.toast('请输入合法数值');
-                $("input[name='withdraw']").val('');
+                $("input[name='transfer']").val('');
             }
             if((i-money) > 0) {
                 $.toast('最多可提现' + money);
-                $("input[name='withdraw']").val(money);
+                $("input[name='transfer']").val(money);
             }
             var arr = i.split('.');
             if(arr[1] && arr[1].length >2) {
                 $.toast('最多至小数后两位');
-                $("input[name='withdraw']").val(Math.floor(i*100)/100);
+                $("input[name='transfer']").val(Math.floor(i*100)/100);
             }
         };
     });
+    // 转账提交
+    $('.submit-transfer').on('click', function () {
+      var transfer = $("input[name='transfer']").val().trim();
+      var remark = $("input[name='remark']").val().trim();
+      var user_id = $(".user_id").val();
+      if(!transfer) {$.toast('请输入转账金额'); return false;}
+      if(transfer <= 0) {$.toast('转账金额必须大于0'); return false;}
+      if(transfer > memberInfo.yue) {$.toast('转账金额大于余额'); return false;}
+      if(user_id == 0) {$.toast('请选择转账对象'); return false;}
+        $.showIndicator();
+      $.post('/index/funds/transfer', {money:transfer, remark:remark, user_id:user_id}, function (data) {
+          $.hideIndicator();
+          $.toast(data.msg);
+          if(data.code > 0) {
+              localStorage.member_info = data.data;
+              memberInfo = JSON.parse(data.data);
+              $('.money').text('余额为：￥' + toDecimal2(memberInfo.yue));
+              setTimeout("$.router.back()",1500);
+          }
+      });
+    });
   });
-
+  confirmTransfer = function (id) {
+      var buttons1 = [
+          {
+              text: '请选择',
+              label: true
+          },
+          {
+              text: '确认收账',
+              onClick: function() {
+                  $.showIndicator();
+                  $.post('/index/funds/confirmTransfer', {id:id}, function (data) {
+                      $.hideIndicator();
+                      $.toast(data.msg);
+                      if(data.code > 0) {
+                          $('#id_'+id).remove();
+                          localStorage.member_info = data.data;
+                          memberInfo = JSON.parse(data.data);
+                          $('.money').text('余额为：￥' + toDecimal2(memberInfo.yue));
+                      }
+                  });
+              }
+          }
+      ];
+      var buttons2 = [
+          {
+              text: '取消',
+              bg: 'danger'
+          }
+      ];
+      var groups = [buttons1, buttons2];
+      $.actions(groups);
+  };
   /*提现*/
   $(document).on("pageInit", "#withdraw", function (e, id, page) {
     var memberInfo = JSON.parse(localStorage.member_info);
@@ -1238,7 +1314,9 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
       if(!my_radio) {$.toast('请选择提现方式'); return false;}
       var account = eval('memberInfo.'+my_radio);
       if(account != '') {
+          $.showIndicator();
         $.post('/index/funds/withdraw', {money:withdraw, type:my_radio}, function (data) {
+            $.hideIndicator();
             $.toast(data.msg);
             if(data.code > 0) {
               localStorage.member_info = data.data;
@@ -1282,7 +1360,6 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
     var orderListLoading = false;
     var getOrderList = function (status, id) {
       var limit = $('#withdraw-list ' + id + ' li').length;
-      console.log(limit);
       $.post('/index/funds/withdrawList', {status:status, limit:limit}, function (data) {
         if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
         if (data.code > 0 && data.sum > 0) {
@@ -1305,6 +1382,58 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
             list += '<div class="item-media"><img src="'+ icon +'" style="width: 2.2rem;"></div>';
             list += '<div class="item-inner"> <div class="item-title-row">';
             list += '<div class="item-title">' + title + '</div>';
+            list += '<div class="item-after">-' + toDecimal2(n.money) + '</div>';
+            //list += '<div class="item-after">-' + n.money.toFixed(2) + '</div>';
+            list += '</div> <div class="item-subtitle">'+ mydate.format('yyyy-MM-dd h:m');
+            list += '</div> </div> </a></li>';
+          });
+          $(id + ' .media-list ul').append(list);
+          if(data.data.length < 8) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+          if(data.data.length == data.sum) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+        } else {
+          $(id + ' .infinite-scroll-preloader').hide(); return;
+        }
+      });
+    };
+
+    getOrderList(2, '#tab1');
+    $('.order-tab1').on('click', function () {
+      getOrderList(2, '#tab1');
+    });
+    $('.order-tab2').on('click', function () {
+      getOrderList(1, '#tab2');
+    });
+    $(page).on('infinite', function () {
+      if(orderListLoading) return;
+      orderListLoading = true;
+      if($(this).find('.infinite-scroll.active').attr('id') == "tab1"){
+        getOrderList(2, '#tab1');
+      } else {
+        getOrderList(1, '#tab2');
+      }
+
+    });
+  });
+
+  /*转账列表*/
+  $(document).on("pageInit", "#transfer-list", function (e, id, page) {
+    var orderListLoading = false;
+    var getOrderList = function (status, id) {
+      var limit = $('#transfer-list ' + id + ' li').length;
+      $.post('/index/funds/transferList', {status:status, limit:limit}, function (data) {
+        if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+        if (data.code > 0 && data.sum > 0) {
+          var list = '',icon = '',title;
+          var mydate = new Date();
+          $.each(data.data, function (i,n) {
+            //日期时间初始化
+            mydate.setTime(n.create_time * 1000);
+            list += '<li><a href="#" onclick="withdrawInfo('+ n.id +')" class="item-link item-content">';
+            icon = '/public/static/sui/img/transfer.svg';
+            title = '银行卡提现';
+            list += '<div class="item-media"><img src="'+ icon +'" style="width: 2.2rem;"></div>';
+            list += '<div class="item-inner"> <div class="item-title-row">';
+            list += '<div class="item-title">给 ' + n.name + ' 转账</div>';
             list += '<div class="item-after">-' + toDecimal2(n.money) + '</div>';
             //list += '<div class="item-after">-' + n.money.toFixed(2) + '</div>';
             list += '</div> <div class="item-subtitle">'+ mydate.format('yyyy-MM-dd h:m');
@@ -1381,7 +1510,6 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
     var orderListLoading = false;
     var getOrderList = function () {
       var limit = $('#withdraw-list li').length;
-      console.log(limit);
       $.post('/index/user/incomeList', {limit:limit}, function (data) {
         if(data.sum <= limit) {$('.infinite-scroll-preloader').hide(); return;}
         if (data.code > 0 && data.sum > 0) {

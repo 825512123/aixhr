@@ -11,6 +11,7 @@ namespace app\index\controller;
 
 
 use app\common\controller\Base;
+use app\common\model\TransferLog;
 use app\common\model\WithdrawLog;
 
 class Funds extends Base
@@ -129,4 +130,61 @@ class Funds extends Base
 		}
 	}
 
+    /**
+     * 转账
+     * @return \think\response\Json
+     */
+	public function transfer()
+    {
+        $post = input("post.");
+        $post['aid'] = session('aid');
+        $post['send_id'] = session('user_id');
+        if (TransferLog::getInstance()->transfer($post)){
+            $this->refreshSessionUser($post['send_id']);
+            $user = json_encode(session('user_info'));
+            return json(['code' => 1, 'data' => $user, 'msg' => '成功']);
+        } else {
+            return json(['code' => 0, 'data' => '', 'msg' => '失败']);
+        }
+    }
+
+    /**
+     * 员工确认转账
+     * @return \think\response\Json
+     */
+    public function confirmTransfer()
+    {
+        $post = input("post.");
+        $post['status'] = 1;
+        $post['end_time'] = time();
+        if (TransferLog::getInstance()->confirmTransfer($post)) {
+            $this->refreshSessionUser(session('user_id'));
+            $user = json_encode(session('user_info'));
+            return json(['code' => 1, 'data' => $user, 'msg' => '收账成功!']);
+        } else {
+            return json(['code' => 0, 'data' => '', 'msg' => '失败!请稍后再试!']);
+        }
+    }
+
+    /**
+     * 转账列表
+     * @return mixed|\think\response\Json
+     */
+    public function transferList()
+    {
+        if(request()->isPost()) {
+            $post = input("post.");
+            $where['tl.status'] = $post['status'];
+            $where['tl.send_id'] = session('user_id');
+            $res = TransferLog::getInstance()->getTransferList($where, $post['limit']);
+            if ($res > 0){
+                $sum = TransferLog::getInstance()->where(['status'=>$post['status'],'send_id'=>$where['tl.send_id']])->count('id');
+                return json(['code' => 1, 'data' => $res, 'sum' => $sum, 'msg' => '成功']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
+            }
+        } else {
+            return $this->fetch('/user/transferList');
+        }
+    }
 }

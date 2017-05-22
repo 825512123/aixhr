@@ -4,6 +4,11 @@
             <span class="icon icon-left"></span>
             返回
         </a>
+        <{eq name="is_admin" value="1"}>
+        <a class="pull-right button button-link button-nav" href="/index/funds/transferList">
+            明细
+        </a>
+        <{/eq}>
         <h1 class="title">我的钱包</h1>
     </header>
     <div class="content">
@@ -20,13 +25,28 @@
         <div class="content-block">
             <{eq name="is_admin" value="1"}>
             <a href="#" class="button button-fill button-big login-button open-transfer">转账</a>
+            <div class="list-block media-list">
+                <ul>
+                    <{volist name="transferList" id="vo"}>
+                    <li id="id_<{$vo.id}>"><a href="#" onclick="confirmTransfer(<{$vo.id}>)" class="item-link item-content">
+                        <div class="item-inner">
+                            <div class="item-title-row">
+                                <div class="item-title">来自 <{$vo.name}> 的转账 +<{$vo.money}></div>
+                                <div class="item-after" style="color:green">待确认</div>
+                            </div>
+                            <div class="item-subtitle"><{$vo.create_time|date="Y-m-d H:i",###}></div>
+                        </div>
+                    </a></li>
+                    <{/volist}>
+                </ul>
+            </div>
             <{else/}>
             <a href="/index/funds/withdraw" class="button button-fill button-big login-button submit-money">提现</a>
-            <{/eq}>
             <p class="buttons-row">
                 <a href="/index/user/incomeList" class="button button-raised button-big">收支明细</a>
                 <a href="/index/funds/withdrawList" class="button button-raised button-big">提现明细</a>
             </p>
+            <{/eq}>
         </div>
     </div>
     <{eq name="is_admin" value="1"}>
@@ -36,23 +56,41 @@
                 <span class="icon icon-left"></span>
                 返回
             </a>
-            <h1 class="title">编辑地址</h1>
+            <h1 class="title">转账</h1>
         </header>
         <div class="content edit-address">
             <div class="withdraw-money">
                 <span class="money"></span>
             </div>
             <div class="withdraw-input">
-                <input class="modal-text-input" type="number" name="withdraw" oninput="checkMoney(value)" value="" placeholder="请输入转账金额" />
+                <input class="modal-text-input" type="number" name="transfer" oninput="checkMoney(value)" value=""
+                       placeholder="请输入转账金额"/>
             </div>
             <div class="withdraw-money">
                 <span>转账给</span>
             </div>
-            <div class="content-block">
+            <div class="withdraw-input">
                 <div class="list-block media-list">
-
+                    <select name="user_id" class="user_id">
+                        <option value="0">请选择转账对象</option>
+                        <{volist name="userList" id="vo"}>
+                        <option value="<{$vo.id}>"><{$vo.name}></option>
+                        <{/volist}>
+                    </select>
                 </div>
-                <div class="submit-withdraw">
+            </div>
+            <div class="withdraw-money">
+                <span>备注信息</span>
+            </div>
+            <div class="withdraw-input">
+                <input class="modal-text-input" type="text" name="remark" value="" placeholder="请填写备注信息"/>
+            </div>
+            <div class="span">
+                <span>提示：线下转账请填写：线下转账;
+                    <br/>微信转账请填写：微信转账,交易单号为：XXXX。(支付宝/银行转账同上)</span>
+            </div>
+            <div class="content-block">
+                <div class="submit-transfer">
                     <a href="javascript:;" class="button button-fill button-big login-button ">确定</a>
                 </div>
             </div>

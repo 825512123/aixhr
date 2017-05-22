@@ -188,7 +188,7 @@
 .icon.icon-out {
   width: 1.45rem;
   height: 1.45rem;
-  background-image: url("../img/out.svg");
+  background-image: url("../img/out-login.svg");
 }
 .icon.icon-add-user {
   width: 1.45rem;
@@ -451,8 +451,28 @@
 #money .no-padding img {
   height: 7rem;
 }
+#money .popup {
+  background-color: #efeff4;
+}
+#money .list-block {
+  /*padding: 0.4rem 0.75rem;*/
+  margin: 0;
+  /*background-color: #fff;*/
+}
+#money .span {
+  margin: 0 0.75rem;
+}
+#money .content-block span {
+  margin: 0 0.75rem;
+}
+#money .user_id {
+  border-radius: 0.1rem;
+  height: 1.8rem;
+  border: 1px solid #D6D6D6;
+  background-color: #efeff4;
+}
 /*提现*/
-#withdraw .content-block,#withdraw .list-block {
+#withdraw .content-block,#withdraw .list-block,#money .content-block {
   padding: 0;
   margin: 0;
 }
@@ -471,7 +491,7 @@
 .withdraw-money {
   min-height: 2.2rem;
   padding-top: 0.5rem;
-  padding-bottom: 0.45rem;
+    /*padding-bottom: 0.45rem;*/
   padding-left: 0.75rem;
   border-bottom: 1px solid #D6D6D6;
   border-top: 1px solid #D6D6D6;
@@ -488,9 +508,8 @@
   font-size: 0.7rem;
   margin-bottom: 0.2rem;
 }
-#withdraw .submit-withdraw {
-  margin-top: 1rem;
-  padding: 0.75rem;
+#withdraw .submit-withdraw, #money .submit-transfer {
+  padding: 0.5rem 0.75rem 0 0.75rem;
 }
 
 #count .list-block {
