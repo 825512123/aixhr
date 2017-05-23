@@ -22,16 +22,6 @@ use think\Request;
 class User extends Base
 {
 
-    public function __construct(Request $request = null)
-    {
-        parent::__construct($request);
-        if(session('aid')) {
-            $this->assign('is_admin', 1);
-        } else {
-            $this->assign('is_admin', 0);
-        }
-    }
-
     public function index()
     {
         return $this->fetch('index');

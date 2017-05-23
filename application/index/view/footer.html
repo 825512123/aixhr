@@ -86,14 +86,16 @@
                     <div class="item-media"><i class="icon icon-use-integral"></i></div>
                     <div class="item-inner"><div class="item-title">我的积分</div></div>
                 </li>
+                <{neq name="is_admin" value="1"}>
                 <li class="item-content item-link" onclick="indexLogin('/index/user/count')">
                     <div class="item-media"><i class="icon icon-count"></i></div>
                     <div class="item-inner"><div class="item-title">我的统计</div></div>
                 </li>
-                <li class="item-content item-link" onclick="loginOut()">
+                <{/neq}>
+                <!--<li class="item-content item-link" onclick="loginOut()">
                     <div class="item-media"><i class="icon icon-out"></i></div>
                     <div class="item-inner"><div class="item-title">退出登录</div></div>
-                </li>
+                </li>-->
             </ul>
         </div>
     </div>

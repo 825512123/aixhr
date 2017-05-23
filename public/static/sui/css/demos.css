@@ -210,6 +210,16 @@
   height: 1.45rem;
   background-image: url("../img/bottle-color.svg");
 }
+.icon.icon-turn-out {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/turn-out.svg");
+}
+.icon.icon-turn-in {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/turn-in.svg");
+}
 
 /*图标导航*/
 .toolbar-inner {
@@ -571,6 +581,16 @@
   line-height: 3rem;
 }
 
+
+.page .red {
+  color: red;
+}
+.page .gray {
+  color: gray;
+}
+.page .green {
+  color: green;
+}
 /*主题颜色*/
 .bg-default .bar-nav {
   background-color: #0894ec;

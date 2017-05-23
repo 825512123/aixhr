@@ -172,19 +172,42 @@ class Funds extends Base
      */
     public function transferList()
     {
+        $user_info = session('user_info');
         if(request()->isPost()) {
             $post = input("post.");
             $where['tl.status'] = $post['status'];
-            $where['tl.send_id'] = session('user_id');
+            $where['tl.send_id|tl.user_id'] = $user_info['id'];
             $res = TransferLog::getInstance()->getTransferList($where, $post['limit']);
             if ($res > 0){
-                $sum = TransferLog::getInstance()->where(['status'=>$post['status'],'send_id'=>$where['tl.send_id']])->count('id');
+                $sum = TransferLog::getInstance()->where(['status'=>$post['status'],'send_id|user_id'=>$user_info['id']])->count('id');
                 return json(['code' => 1, 'data' => $res, 'sum' => $sum, 'msg' => '成功']);
             } else {
                 return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
             }
         } else {
+            $this->assign('send_id', $user_info['id']);
+            $this->assign('send_name', $user_info['name']);
             return $this->fetch('/user/transferList');
+        }
+    }
+
+    /**
+     * 转账详情
+     * @return mixed|\think\response\Json
+     */
+    public function transferInfo()
+    {
+        if(request()->isPost()) {
+            $post = input("post.");
+            $where['tl.id'] = $post['id'];
+            $res = TransferLog::getInstance()->getTransfer($where);
+            if ($res > 0){
+                return json(['code' => 1, 'data' => $res, 'msg' => '成功']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'msg' => '失败']);
+            }
+        } else {
+            return $this->fetch('/user/transferInfo');
         }
     }
 }

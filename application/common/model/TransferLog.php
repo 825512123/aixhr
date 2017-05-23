@@ -78,14 +78,36 @@ class TransferLog extends Base
     {
         $res = Db::name('transfer_log')->alias('tl')
             ->join('admin_user au', 'tl.user_id=au.id')
+            ->join('admin_user s', 'tl.send_id=s.id')
             ->where($where)
             ->limit($limit, 8)
             ->order('tl.id desc')
-            ->field('tl.*,au.name')
+            ->field('tl.*,au.name,s.name as send_name')
             ->select();
         return $res;
     }
 
+    /**
+     * 获取单条转账信息
+     * @param array $where
+     * @return array|false|\PDOStatement|string|\think\Model
+     */
+    public function getTransfer($where = [])
+    {
+        $res = Db::name('transfer_log')->alias('tl')
+            ->join('admin_user au', 'tl.user_id=au.id')
+            ->join('admin_user s', 'tl.send_id=s.id')
+            ->where($where)
+            ->field('tl.*,au.name,s.name as send_name')
+            ->find();
+        return $res;
+    }
+
+    /**
+     * 获取收账列表
+     * @param $where
+     * @return false|\PDOStatement|string|\think\Collection
+     */
     public function getCollectionList($where)
     {
         $res = Db::name('transfer_log')->alias('tl')

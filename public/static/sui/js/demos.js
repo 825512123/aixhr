@@ -1183,12 +1183,9 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
       });
     });
   });
+  // 确认收账
   confirmTransfer = function (id) {
       var buttons1 = [
-          {
-              text: '请选择',
-              label: true
-          },
           {
               text: '确认收账',
               onClick: function() {
@@ -1414,7 +1411,10 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
 
     });
   });
-
+    transferInfo = function (id) {
+        localStorage.transfer_id = id;
+        indexLogin('/index/funds/transferInfo');
+    };
   /*转账列表*/
   $(document).on("pageInit", "#transfer-list", function (e, id, page) {
     var orderListLoading = false;
@@ -1423,20 +1423,31 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
       $.post('/index/funds/transferList', {status:status, limit:limit}, function (data) {
         if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
         if (data.code > 0 && data.sum > 0) {
-          var list = '',icon = '',title;
+          var list = '',icon = '';
           var mydate = new Date();
           $.each(data.data, function (i,n) {
             //日期时间初始化
-            mydate.setTime(n.create_time * 1000);
-            list += '<li><a href="#" onclick="withdrawInfo('+ n.id +')" class="item-link item-content">';
-            icon = '/public/static/sui/img/transfer.svg';
-            title = '银行卡提现';
-            list += '<div class="item-media"><img src="'+ icon +'" style="width: 2.2rem;"></div>';
+            if(n.status == 1) {
+                mydate.setTime(n.end_time * 1000);
+            } else {
+                mydate.setTime(n.create_time * 1000);
+            }
+            if(n.status == 2 && n.user_id == memberInfo.id) {
+                list += '<li id="id_'+ n.id +'"><a href="#" onclick="confirmTransfer('+ n.id +')" class="item-link item-content">';
+            } else {
+                list += '<li><a href="#" onclick="transferInfo('+ n.id +')" class="item-content">';
+            }
+            icon = (n.send_id == memberInfo.id) ? '/public/static/sui/img/turn-out.svg' : '/public/static/sui/img/turn-in.svg';
+            list += '<div class="item-media"><img src="'+ icon +'" style="width: 2rem;"></div>';
             list += '<div class="item-inner"> <div class="item-title-row">';
-            list += '<div class="item-title">给 ' + n.name + ' 转账</div>';
-            list += '<div class="item-after">-' + toDecimal2(n.money) + '</div>';
-            //list += '<div class="item-after">-' + n.money.toFixed(2) + '</div>';
-            list += '</div> <div class="item-subtitle">'+ mydate.format('yyyy-MM-dd h:m');
+            if(n.send_id == memberInfo.id) {
+                list += '<div class="item-title red">转出给 ' + n.name + '</div>';
+                list += '<div class="item-after red">-' + toDecimal2(n.money) + '</div>';
+            } else {
+                list += '<div class="item-title green">' + n.send_name + ' 转入</div>';
+                list += '<div class="item-after green">+' + toDecimal2(n.money) + '</div>';
+            }
+            list += '</div> <div class="item-subtitle gray">'+ mydate.format('yyyy-MM-dd h:m');
             list += '</div> </div> </a></li>';
           });
           $(id + ' .media-list ul').append(list);
@@ -1497,6 +1508,35 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
           content += '<li> <div class="item-content"> <div class="item-inner">';
           content += '<div class="item-title label">完成时间：</div>';
           mydate.setTime(data.run_time * 1000);
+          content += '<div class="item-input">' + mydate.format('yyyy-MM-dd h:m:s') + '</div>';
+          content += '</div> </div> </li>';
+          $(page).find('ul').append(content);
+        }
+      }
+
+    });
+  });
+  /*转账详情*/
+  $(document).on("pageInit", "#transfer-info", function (e, id, page) {
+    var transfer_id = localStorage.transfer_id;
+    $.post('/index/funds/transferInfo', {id:transfer_id}, function (data) {
+      if(data.code > 0) {
+        var data = data.data;
+        var title = '';
+        $('.transfer_money').text(toDecimal2(data.money));//金额
+        var status = (data.status == 1) ? '已完成' : '待确认';
+        $('.status').text(status);//金额
+        $('.send_id').text(data.send_name);//金额
+        $('.user_id').text(data.name);//金额
+        var mydate = new Date();
+        mydate.setTime(data.create_time * 1000);
+        $('.create_time').text(mydate.format('yyyy-MM-dd'));//时间
+        $('.remark').html(data.remark);//信息
+        if(data.status == 1) {
+          var content = '';
+          content += '<li> <div class="item-content"> <div class="item-inner">';
+          content += '<div class="item-title label">完成时间：</div>';
+          mydate.setTime(data.end_time * 1000);
           content += '<div class="item-input">' + mydate.format('yyyy-MM-dd h:m:s') + '</div>';
           content += '</div> </div> </li>';
           $(page).find('ul').append(content);

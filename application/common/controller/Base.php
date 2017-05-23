@@ -11,10 +11,21 @@ use app\admin\model\AdminUser;
 use app\common\model\Member;
 use think\Controller;
 use think\Db;
+use think\Request;
 
 class Base extends Controller
 {
-	/**
+    public function __construct(Request $request = null)
+    {
+        parent::__construct($request);
+        if(session('aid')) {
+            $this->assign('is_admin', 1);
+        } else {
+            $this->assign('is_admin', 0);
+        }
+    }
+
+    /**
 	 * 刷新用户session
 	 * @param $where
 	 */
