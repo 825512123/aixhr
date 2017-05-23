@@ -50,6 +50,11 @@ class TransferLog extends Base
         return $res;
     }
 
+    /**
+     * 确认收账
+     * @param array $data
+     * @return bool
+     */
     public function confirmTransfer($data = [])
     {
         $info = $this->where('id', $data['id'])->find();
@@ -58,6 +63,10 @@ class TransferLog extends Base
             Db::name('transfer_log')->where('id',$data['id'])->update($data);
             // 增加被转账员工余额
             Db::name('admin_user')->where('id', $info['user_id'])->setInc('yue', $info['money']);
+            $time = time();
+            $admin_income[] = ['aid' => $info['aid'], 'user_id' => $info['user_id'], 'money' => $info['money'], 'create_time' => $time,'type' => 3,'order_id' => $info['id']];
+            $admin_income[] = ['aid' => $info['aid'], 'user_id' => $info['send_id'], 'money' => $info['money'], 'create_time' => $time,'type' => 2,'order_id' => $info['id']];
+            Db::name('admin_income')->insertAll($admin_income);// 录入员工收支表
             // 提交事务
             Db::commit();
             $res = true;

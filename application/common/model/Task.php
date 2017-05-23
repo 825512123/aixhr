@@ -142,14 +142,16 @@ class Task extends Base
         Db::startTrans();
         try {
             Db::name('task')->where('id', $data['id'])->update($data);
-            // 扣去员工余额
-            Db::name('admin_user')->where('id', $info['user_id'])->setDec('yue', $info['task_money']);
             if ($info['task_type'] == 1) {
-                $income = ['aid' => $info['aid'], 'member_id' => $info['member_id'], 'money' => $info['task_money'], 'create_time' => time(),'type' => 1,'order_id' => $info['order_id']];
+                $income = ['aid' => $info['aid'], 'member_id' => $info['member_id'], 'money' => $info['task_money'], 'create_time' => time(),'type' => 1,'order_id' => $info['id']];
                 Db::name('income_log')->insert($income);// 录入收支表
                 Db::name('member')->where('id', $info['member_id'])->setInc('yue', $info['task_money']);
             } else {
                 Db::name('member')->where('id', $info['member_id'])->setInc('money', $info['task_money']);
+                // 扣去员工余额
+                Db::name('admin_user')->where('id', $info['user_id'])->setDec('yue', $info['task_money']);
+                $admin_income = ['aid' => $info['aid'], 'user_id' => $info['user_id'], 'money' => $info['task_money'], 'create_time' => time(),'type' => 1,'order_id' => $info['id']];
+                Db::name('admin_income')->insert($admin_income);// 录入员工收支表
             }
             // 提交事务
             Db::commit();
