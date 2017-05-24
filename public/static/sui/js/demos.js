@@ -728,7 +728,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
   $(document).on("pageInit", "#member-list", function (e, id, page) {
     var orderListLoading = false;
     var getMemberList = function (type, id) {
-        var limit = $('#order-list ' + id + ' li').length;
+        var limit = $('#member-list ' + id + ' li').length;
         $.post('/index/user/memberList', {type:type, limit:limit}, function (data) {
             if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
             if (data.code > 0 && data.sum > 0) {
@@ -835,7 +835,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
   $(document).on("pageInit", "#user-order-list", function (e, id, page) {
     var orderListLoading = false;
     var getOrderList = function (status, id) {
-      var limit = $('#order-list ' + id + ' li').length;
+      var limit = $('#user-order-list ' + id + ' li').length;
       $.post('/index/order/userOrderList', {status:status, limit:limit}, function (data) {
         if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
         if (data.code > 0 && data.sum > 0) {

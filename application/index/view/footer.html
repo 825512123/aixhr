@@ -82,11 +82,11 @@
                     <div class="item-media"><i class="icon icon-sum-money"></i></div>
                     <div class="item-inner"><div class="item-title">我的钱包</div></div>
                 </li>
+                <{neq name="is_admin" value="1"}>
                 <li class="item-content item-link" onclick="indexLogin('/index/user/integral')">
                     <div class="item-media"><i class="icon icon-use-integral"></i></div>
                     <div class="item-inner"><div class="item-title">我的积分</div></div>
                 </li>
-                <{neq name="is_admin" value="1"}>
                 <li class="item-content item-link" onclick="indexLogin('/index/user/count')">
                     <div class="item-media"><i class="icon icon-count"></i></div>
                     <div class="item-inner"><div class="item-title">我的统计</div></div>
