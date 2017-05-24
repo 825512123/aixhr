@@ -254,7 +254,7 @@ class Order extends Base
         } else {
             $memberList = Member::getInstance()->getMemberList();
             $this->assign('memberList', $memberList);
-            return $this->fetch();
+            return $this->fetch('addOrder');
         }
     }
 }
