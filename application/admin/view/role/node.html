@@ -34,8 +34,11 @@
 							<td><{$vo.is_menu}></td>
 							<td>
 								<a href="<{:url('role/node_edit', 'id='.$vo.id)}>" class="btn btn-primary">编辑</a>
+								<{eq name="$pid" value="0"}>
 								<a href="<{:url('role/node', 'id='.$vo.id)}>" class="btn btn-success">子节点</a>
-								<button type="button" class="btn btn-danger" data-id="<{$vo.id}>" data-url="/admin/role/node_del">删除</button>
+								<{else/}>
+								<button type="button" class="btn btn-danger ajax-delete" data-id="<{$vo.id}>" data-url="/admin/role/node_del">删除</button>
+								<{/eq}>
 							</td>
 						</tr>
 						<{/volist}>

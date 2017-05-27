@@ -593,7 +593,7 @@ if (!function_exists('clearArray')) {
     function clearArray($data)
     {
         foreach ($data as $key => $val) {
-            if(empty($val) && $val != 0) unset($data[$key]);
+            if($val === '') unset($data[$key]);
         }
         return $data;
     }

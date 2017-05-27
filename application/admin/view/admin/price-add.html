@@ -1,0 +1,79 @@
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><{$pageTitle}></h3>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                <form role="form" method="post" id="price-add" action="<{:url('admin/price_add')}>">
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="name">类型名称</label>
+                                <input value="<{gt name='$info.id' value='0'}><{$info.id}><{/gt}>" type="hidden" class="form-control" id="id" name="id">
+                                <input value="<{if condition='$info.name'}><{$info.name}><{/if}>" type="text" class="form-control" id="name" name="name" placeholder="请填写类型名称">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="price">类型价格</label>
+                                <input value="<{if condition='$info.price'}><{$info.price}><{else /}><{/if}>" type="text" class="form-control" id="price" name="price" placeholder="请填写价格">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="min">小于数量</label>
+                                <input value="<{if condition='$info.min'}><{$info.min}><{else /}>0<{/if}>" type="number" class="form-control" id="min" name="min" placeholder="请填写小于数量">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="max">大于数量</label>
+                                <input value="<{if condition='$info.max'}><{$info.max}><{else /}>0<{/if}>" type="number" class="form-control" id="max" name="max" placeholder="请填写大于数量,大于小于同时填写取区间">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="pid">分类</label>
+                                <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" id="pid" name="pid" tabindex="-1" aria-hidden="true">
+                                    <option value="0" <{if condition='$info.pid eq 0'}>selected="selected"<{/if}>>顶级分类</option>
+                                    <{volist name="list" id="vo"}>
+                                    <option value="<{$vo.id}>" <{if condition='$vo.id eq $info.pid'}>selected="selected"<{/if}>><{$vo.name}></option>
+                                    <{/volist}>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>状态</label>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="status" value="1" <{if condition='$info.status neq 0'}>checked="checked"<{/if}> >
+                                        正常
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="status" value="0" <{if condition='$info.status eq 0'}>checked="checked"<{/if}> >
+                                        禁用
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+
+                        <div class="box-footer col-md-12">
+                            <button type="button" class="btn btn-primary price-add">提 交</button>
+                        </div>
+                </form>
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->

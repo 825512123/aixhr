@@ -62,7 +62,7 @@
 							<div class="form-group">
 								<label for="pid">操作</label>
 								<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" id="pid" name="pid" tabindex="-1" aria-hidden="true">
-									<option value="<{$vo.id}>" <{if condition='$vo.id eq 0'}>selected="selected"<{/if}>>顶级节点</option>
+									<option value="0" <{if condition='$info.pid eq 0'}>selected="selected"<{/if}>>顶级节点</option>
 									<{volist name="list" id="vo"}>
 									<option value="<{$vo.id}>" <{if condition='$vo.id eq $info.pid'}>selected="selected"<{/if}>><{$vo.node_name}></option>
 									<{/volist}>

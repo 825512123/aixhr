@@ -1,0 +1,138 @@
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="btn-group">
+                        <a href="<{:url('funds/withdraw', 'type=undone')}>" class="btn btn-default <{eq name='type' value='undone'}>active<{/eq}>">申请中</a>
+                        <a href="<{:url('funds/withdraw', 'type=end')}>" class="btn btn-default <{eq name='type' value='end'}>active<{/eq}>">已完成</a>
+                        <a href="<{:url('funds/withdraw', 'type=cancel')}>" class="btn btn-default <{eq name='type' value='cancel'}>active<{/eq}>">已取消</a>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>用户名(手机号)</th>
+                            <th>提现金额</th>
+                            <th>提现方式</th>
+                            <th>提现信息</th>
+                            <th>申请日期</th>
+                            <{eq name='type' value='end'}>
+                            <th>提现员工（手机号）</th>
+                            <th>提现日期</th>
+                            <th>回执单号</th>
+                            <{/eq}>
+                            <{eq name='type' value='undone'}>
+                            <th>操作</th>
+                            <{/eq}>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <{volist name="list" id="vo"}>
+                        <tr id="id_<{$vo.id}>">
+                            <td><{$vo.member_name}>（<{$vo.member_mobile}>）</td>
+                            <td><{$vo.money}></td>
+                            <td><{switch name="vo.type"}><{case value="1"}>微信<{/case}><{case value="2"}>支付宝<{/case}><{case value="3"}>银行卡<{/case}>现金<{default /}><{/switch}></td>
+                            <td><{$vo.info}></td>
+                            <th><{$vo.create_time|date="Y-m-d H:i:s",###}></th>
+                            <{eq name='type' value='end'}>
+                            <th><{$vo.user_name}>（<{$vo.user_mobile}>）</th>
+                            <th><{$vo.run_time|date="Y-m-d H:i:s",###}></th>
+                            <td><{$vo.receipt_id}></td>
+                            <{/eq}>
+                            <{eq name='type' value='undone'}>
+                            <td>
+                                <{elt name='vo.user_id' value='0'}>
+                                <button type="button" onclick="send_task(<{$vo.id}>)" class="btn btn-success">提现</button>
+                                <{else /}>
+                                <button type="button" class="btn btn-success disabled">已提现</button>
+                                <{/elt}>
+                                <button type="button" onclick="cancel_withdraw(<{$vo.id}>)" class="btn btn-danger">取消申请</button>
+                            </td>
+                            <{/eq}>
+
+                        </tr>
+                        <{/volist}>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+
+    <div class="modal" id="sendModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form role="form" method="post" id="send-task">
+                    <input name="id" type="hidden" value='' >
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">提现处理</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="box-body">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="name">提现回执单号/备注信息</label>
+                                    <input type="text" class="form-control" id="name" name="receipt_id" value='' placeholder="请输入回执单号或者备注信息">
+                                </div>
+                                <!-- /.form-group -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary confirm-withdraw">确认</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <div class="modal" id="cancelModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form role="form" method="post" id="cancel-task">
+                    <input name="id" type="hidden" value='' >
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">取消预约订单</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="box-body">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <select class="form-control select2 select2-hidden-accessible" style="width: 100%;" name="user_id" tabindex="-1" aria-hidden="true">
+
+                                    </select>
+                                </div>
+                                <!-- /.form-group -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary cancel-task">确认</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+</section>
+<!-- /.content -->

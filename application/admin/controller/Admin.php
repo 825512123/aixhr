@@ -12,6 +12,7 @@ namespace app\admin\controller;
 use app\admin\model\AdminAdmin;
 use app\admin\model\AdminRole;
 use app\admin\model\AdminUser;
+use app\admin\model\RecoverPrice;
 
 class Admin extends Base
 {
@@ -149,4 +150,72 @@ class Admin extends Base
 		$data['create_time'] = time();
 		return $data;
 	}
+
+    /**
+     * 回收价格列表
+     * @return mixed
+     */
+	public function price($id = '')
+    {
+        if($id) {
+            $where = ['pid' => $id];
+        } else {
+            $where = ['pid' => 0];
+        }
+        $list = RecoverPrice::getInstance()->getList($where);
+        $this->assign('pid', $where['pid']);
+        $this->assign('list', $list);
+        return $this->fetch();
+    }
+
+    /**
+     * 新增回收类型及价格
+     * @param string $id
+     * @return mixed
+     */
+    public function price_add($id = '')
+    {
+        if(request()->isPost()) {
+            $post = input("post.");
+            $data = clearArray($post);
+            if(RecoverPrice::getInstance()->edit($data)) {
+                return json(['code' => 1, 'data' => '', 'msg' => '成功!']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'msg' => '失败!']);
+            }
+        }
+        if($id) {
+            $data = RecoverPrice::getInstance()->getInfo(['id' => $id]);
+            $this->assign('pageTitle', '编辑类型价格');
+        } else {
+            $data['id'] = 0;
+            $data['pid'] = 0;
+            $data['name'] = '';
+            $data['min'] = 0;
+            $data['max'] = 0;
+            $data['price'] = 0;
+            $data['status'] = 1;
+            $this->assign('pageTitle', '新增类型价格');
+        }
+        $list = RecoverPrice::getInstance()->getList(['pid' => 0]);
+        $this->assign('list', $list);
+        $this->assign('info', $data);
+        return $this->fetch('price-add');
+    }
+
+    /**
+     * 删除价格
+     * @return \think\response\Json
+     */
+    public function price_del()
+    {
+        $post = input("post.");
+        $data['id'] = $post['id'];
+        $data['status'] = '0';
+        $res = RecoverPrice::getInstance()->edit($data);
+        if ($res > 0){
+            return json(['code' => 1, 'data' => '', 'msg' => '操作成功!']);
+        }
+        return json(['code' => 0, 'data' => '', 'msg' => '操作失败!请稍后再试!']);
+    }
 }

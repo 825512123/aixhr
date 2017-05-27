@@ -126,6 +126,7 @@ class Role extends Base
 			$where = ['pid' => 0];
 		}
 		$role = AdminNode::getInstance()->getList($where);
+        $this->assign('pid', $where['pid']);
 		$this->assign('list', $role);
 		return $this->fetch();
 	}

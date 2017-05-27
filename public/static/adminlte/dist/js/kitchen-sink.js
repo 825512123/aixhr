@@ -7,6 +7,10 @@ $(function () {
   router = function (url) {
     location.href = url;
   };
+  pageBack = function (t) {
+    t = t*1000;
+    setTimeout("history.back()", t);
+  };
   ajax_status = function (url,id) {
     $.post(url, {id:id}, function (data) {
       if(data.code) {
@@ -129,6 +133,23 @@ $(function () {
       }
     },'json');
   });
+  // 编辑类型价格提交
+  $('.price-add').on('click', function () {
+    var from = $('#price-add').serialize();
+    var name = $('input[name="name"]').val().trim();
+    var price = $('input[name="price"]').val().trim();
+    if(!name) { alertModal('请填写类型名称！'); return false;}
+    if(!name) { alertModal('请填写类型价格！'); return false;}
+    $.post('/admin/admin/price_add', from, function (data) {
+      if(data.code) {
+        successModal();
+        pageBack(1.5);
+      } else {
+        errorModal();
+      }
+    },'json');
+  });
+
 
   var change = function (obj) {
     if(obj.hasClass('btn-danger')) {
@@ -173,8 +194,8 @@ $(function () {
       }
     },'json');
   });
-  // 节点删除
-  $('#role-node .btn-danger').on('click', function () {
+  // 列表删除
+  $('.ajax-delete').on('click', function () {
     var obj = $(this);
     var url = obj.data('url');
     var id = obj.data('id');
@@ -212,7 +233,7 @@ $(function () {
     },'json');
   });
 
-  // 订单管理-订单分配
+  // 订单管理-订单分配/资金管理-提现确认
   send_task = function (id) {
     $('#send-task').find('input[name="id"]').val(id);
     $('#sendModal').modal('show');
@@ -230,6 +251,31 @@ $(function () {
       }
     },'json');
   });
+  // 资金管理-提现确认
+  $('.confirm-withdraw').on('click', function () {
+    var receipt_id = $("input[name='receipt_id']").val().trim();
+    var id = $('#send-task').find('input[name="id"]').val();
+    $.post('/admin/funds/confirmWithdraw', {id:id,receipt_id:receipt_id,status:1}, function (data) {
+      if(data.code) {
+        successModal();
+        setTimeout("router('/admin/funds/withdraw')", 1000);
+      } else {
+        errorModal();
+      }
+    },'json');
+  });
+  // 取消提现
+  cancel_withdraw = function (id) {
+      $.post('/admin/funds/cancelWithdraw', {id:id,status:0}, function (data) {
+          if(data.code) {
+              successModal();
+              setTimeout("router('/admin/funds/withdraw')", 1000);
+          } else {
+              errorModal();
+          }
+      },'json');
+  };
+
   // 订单管理-订单取消
   cancel_task = function (id) {
     $('#cancel-task').find('input[name="id"]').val(id);

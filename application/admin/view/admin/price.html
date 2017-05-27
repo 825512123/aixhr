@@ -1,0 +1,62 @@
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <button type="button" class="btn btn-default pull-right" onclick="router('/admin/admin/price_add')"><i class="fa fa-plus"></i> 新添类型价格</button>
+                </div>
+                <div class="box-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>类型名</th>
+                            <th>父级</th>
+                            <th>价格</th>
+                            <th>小于数量</th>
+                            <th>大于数量</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <{volist name="list" id="vo"}>
+                        <tr id="id_<{$vo.id}>">
+                            <td><{$vo.name}></td>
+                            <td><{$vo.pid}></td>
+                            <td><{$vo.price}></td>
+                            <td><{$vo.min}></td>
+                            <td><{$vo.max}></td>
+                            <td><{$vo.status}></td>
+                            <td>
+                                <a href="<{:url('admin/price_add', 'id='.$vo.id)}>" class="btn btn-primary">编辑</a>
+                                <{eq name="$pid" value="0"}>
+                                <a href="<{:url('admin/price', 'id='.$vo.id)}>" class="btn btn-success">子类</a>
+                                <{else/}>
+                                <button type="button" class="btn btn-danger ajax-delete" data-id="<{$vo.id}>" data-url="/admin/admin/price_del">删除</button>
+                                <{/eq}>
+                            </td>
+                        </tr>
+                        <{/volist}>
+
+                        </tbody>
+                        <!--<tfoot>
+                        <tr>
+                            <th>Rendering engine</th>
+                            <th>Browser</th>
+                            <th>Platform(s)</th>
+                            <th>Engine version</th>
+                            <th>CSS grade</th>
+                        </tr>
+                        </tfoot>-->
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->

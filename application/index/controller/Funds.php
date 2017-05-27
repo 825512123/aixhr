@@ -27,6 +27,7 @@ class Funds extends Base
 			$post = input("post.");
 			$data['money'] = (float)$post['money'];
 			$member_info = session('member_info');
+			$data['aid'] = $member_info['aid'];
 			if($post['money'] > $member_info['yue']) {
 				return json(['code' => 0, 'data' => '', 'msg' => '提现金额大于余额！']);
 			}
@@ -95,7 +96,11 @@ class Funds extends Base
 	{
 		if(request()->isPost()) {
 			$post = input("post.");
-			$where['status'] = $post['status'];
+			if($post['status'] == 1) {
+                $where['status'] = $post['status'];
+            } else {
+                $where['status'] = ['neq',1];
+            }
 			$where['member_id'] = session('member_id');
 			$res = WithdrawLog::getInstance()->getWithdrawList($where, $post['limit']);
 			if ($res > 0){

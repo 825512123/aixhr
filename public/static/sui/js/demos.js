@@ -1245,7 +1245,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
         var wechat = $("input[name='wechat']").val().trim();
         if(wechat != '') {
           $.post('/index/user/editMember', {wechat:wechat}, function (data) {
-            localStorage.member_info = task.data;
+            localStorage.member_info = data.data;
             $('.wechat').text(wechat);
             $('.close-popup').click();
           });
@@ -1320,7 +1320,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
               memberInfo = JSON.parse(data.data);
               $('.money').text('可提现余额为：￥' + toDecimal2(memberInfo.yue));
               //$('.money').text('可提现余额为：￥' + memberInfo.yue.toFixed(2));
-              $.router.back()
+              setTimeout("$.router.back()",1500);
             }
         });
       } else {
@@ -1360,7 +1360,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
       $.post('/index/funds/withdrawList', {status:status, limit:limit}, function (data) {
         if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
         if (data.code > 0 && data.sum > 0) {
-          var list = '',icon = '',title;
+          var list = '',icon = '',title,status;
           var mydate = new Date();
           $.each(data.data, function (i,n) {
             //日期时间初始化
@@ -1377,11 +1377,22 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
               title = '银行卡提现';
             }
             list += '<div class="item-media"><img src="'+ icon +'" style="width: 2.2rem;"></div>';
-            list += '<div class="item-inner"> <div class="item-title-row">';
-            list += '<div class="item-title">' + title + '</div>';
-            list += '<div class="item-after">-' + toDecimal2(n.money) + '</div>';
-            //list += '<div class="item-after">-' + n.money.toFixed(2) + '</div>';
-            list += '</div> <div class="item-subtitle">'+ mydate.format('yyyy-MM-dd h:m');
+            list += '<div class="item-inner">';
+            list += '<div class="item-title-row"><div class="item-title">' + title + '</div>';
+            list += '<div class="item-after">-' + toDecimal2(n.money) + '</div></div>';
+            list += '<div class="item-title-row"><div class="item-title">' + mydate.format('yyyy-MM-dd h:m') + '</div>';
+            switch(n.status)
+            {
+              case 1:
+                  status = '已完成'; break;
+              case 2:
+                  status = '申请中'; break;
+                  break;
+              default:
+                  status = '已取消';
+            }
+            list += '<div class="item-after">' + status + '</div></div>';
+            //list += '<div class="item-subtitle">'+ mydate.format('yyyy-MM-dd h:m');
             list += '</div> </div> </a></li>';
           });
           $(id + ' .media-list ul').append(list);
