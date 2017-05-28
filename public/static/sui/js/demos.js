@@ -722,7 +722,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
   });
   memberPage = function (id) {
       localStorage.member_page_id = id;
-      indexLogin('/index/user/memberInfo');
+      indexLogin('/index/user/member');
   };
   // 客户列表
   $(document).on("pageInit", "#member-list", function (e, id, page) {
@@ -734,12 +734,12 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
             if (data.code > 0 && data.sum > 0) {
                 var list = '';
                 $.each(data.data, function (i,n) {
-                    list += '<li><a href="#" class="item-link item-content">';
-                    //list += '<li><a href="#" onclick="memberPage('+ n.id +')" class="item-link item-content">';
+                    //list += '<li><a href="#" class="item-link item-content">';
+                    list += '<li><a href="#" onclick="memberPage('+ n.id +')" class="item-link item-content">';
                     list += '<div class="item-media"><img src="/public/static/sui/img/icon_recover.svg" style="width: 2.2rem;"></div>';
                     list += '<div class="item-inner"> <div class="item-title-row">';
                     list += '<div class="item-title">' + n.username + '</div>';
-                    list += '</div> <div class="item-subtitle">'+ n.address_city + n.address_input;
+                    list += '</div> <div class="item-subtitle">'+ n.address_city + '     ' + n.address_input;
                     list += '</div> </div> </a></li>';
                 });
                 $(id + ' .media-list ul').append(list);
@@ -774,6 +774,44 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
         }
 
     });
+  });
+  // 客户信息
+  $(document).on("pageInit", "#member", function (e, id, page) {
+      var member_id = localStorage.member_page_id;
+      $.post('/index/user/member', {id:member_id}, function (data) {
+          if(data.code > 0) {
+              var data = JSON.parse(data.data);
+              $('.username').text(data.username);
+              $('.actual_name').text(data.actual_name);
+              if(data.mobile) $('.mobile').html('<a href="tel:' + data.mobile + '">' + data.mobile + '</a>');
+              $('.address_city').text(data.address_city);
+              $('.address_input').text(data.address_input);
+          }
+
+      });
+      $('.edit-member').on('click', function () {
+          
+      });
+  });
+  // 客户签约价格
+  $(document).on("pageInit", "#member-price", function (e, id, page) {
+      var member_id = localStorage.member_page_id;
+      $.post('/index/user/price', {id:member_id}, function (data) {
+          if(data.code > 0) {
+              var list = '';
+              $.each(data.data, function (i,n) {
+                  //list += '<li><a href="#" class="item-link item-content">';
+                  list += '<li><a href="#" onclick="memberPage('+ n.id +')" class="item-link item-content">';
+                  list += '<div class="item-media"><img src="/public/static/sui/img/icon_recover.svg" style="width: 2.2rem;"></div>';
+                  list += '<div class="item-inner"> <div class="item-title-row">';
+                  list += '<div class="item-title">' + n.username + '</div>';
+                  list += '</div> <div class="item-subtitle">'+ n.address_city + '     ' + n.address_input;
+                  list += '</div> </div> </a></li>';
+              });
+              $(id + ' .media-list ul').append(list);
+          }
+
+      });
   });
 
   orderInfo = function (id) {
@@ -1422,7 +1460,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
 
     });
   });
-    transferInfo = function (id) {
+  transferInfo = function (id) {
         localStorage.transfer_id = id;
         indexLogin('/index/funds/transferInfo');
     };
@@ -1623,7 +1661,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
     }
     return format;
   };
-    if(/Android [4-7]/.test(navigator.appVersion)) {
+  if(/Android [4-7]/.test(navigator.appVersion)) {
         window.addEventListener("resize", function() {
             if(document.activeElement.tagName=="INPUT" || document.activeElement.tagName=="TEXTAREA") {
                 window.setTimeout(function() {

@@ -10,6 +10,7 @@ namespace app\admin\controller;
 
 
 use app\admin\model\Member;
+use app\admin\model\RecoverPrice;
 
 class User extends Base
 {
@@ -29,6 +30,10 @@ class User extends Base
 
 	}
 
+    /**
+     * 禁用
+     * @return \think\response\Json
+     */
 	public function down()
 	{
 		if(request()->isPost()) {
@@ -43,5 +48,17 @@ class User extends Base
 		} else {
 			$this->redirect('/admin/admin/user');
 		}
+	}
+
+    /**
+     * 签约价格
+     * @return mixed
+     */
+	public function price()
+	{
+        $list = RecoverPrice::getInstance()->getMemberPriceList();
+        dump($list);exit;
+        $this->assign('list', $list);
+        return $this->fetch();
 	}
 }

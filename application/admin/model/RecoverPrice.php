@@ -68,4 +68,9 @@ class RecoverPrice extends Base
         }
         return $res;
     }
+
+    public function getMemberPriceList()
+    {
+        return Db::name('member_price')->select();
+    }
 }

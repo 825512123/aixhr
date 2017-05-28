@@ -15,6 +15,7 @@ use app\common\controller\Base;
 use app\common\controller\MessageApi;
 use app\common\model\IncomeLog;
 use app\common\model\Member;
+use app\common\model\RecoverPrice;
 use app\common\model\Task;
 use app\common\model\TransferLog;
 use think\Request;
@@ -215,4 +216,33 @@ class User extends Base
         }
     }
 
+    public function member()
+    {
+        if (request()->isPost()) {
+            $post = input("post.");
+            $res = Member::getInstance()->getMember($post['id']);
+            if ($res > 0) {
+                return json(['code' => 1, 'data' => json_encode($res), 'msg' => '成功']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
+            }
+        } else {
+            return $this->fetch();
+        }
+    }
+
+    public function price()
+    {
+        if (request()->isPost()) {
+            $post = input("post.");
+            $res = RecoverPrice::getInstance()->getMemberPrice(['member_id' => $post['id']]);
+            if ($res > 0) {
+                return json(['code' => 1, 'data' => $res, 'msg' => '成功']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
+            }
+        } else {
+            return $this->fetch();
+        }
+    }
 }
