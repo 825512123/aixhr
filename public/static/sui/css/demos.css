@@ -195,6 +195,11 @@
   height: 1.45rem;
   background-image: url("../img/add-user.svg");
 }
+.icon.icon-user {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/user.svg");
+}
 .icon.icon-add-order {
   width: 1.45rem;
   height: 1.45rem;
@@ -461,35 +466,35 @@
 #money .no-padding img {
   height: 7rem;
 }
-#money .popup {
+#money .popup, #member-price .popup {
   background-color: #efeff4;
 }
-#money .list-block {
+#money .list-block, #member-price .list-block {
   /*padding: 0.4rem 0.75rem;*/
   margin: 0;
   /*background-color: #fff;*/
 }
-#money .span {
+#money .span, #member-price .span {
   margin: 0 0.75rem;
 }
 #money .content-block span {
   margin: 0 0.75rem;
 }
-#money .user_id {
+#money .user_id, #member-price .recover_type_id {
   border-radius: 0.1rem;
   height: 1.8rem;
   border: 1px solid #D6D6D6;
   background-color: #efeff4;
 }
 /*提现*/
-#withdraw .content-block,#withdraw .list-block,#money .content-block {
+#withdraw .content-block,#withdraw .list-block,#money .content-block, #member-price .content-block {
   padding: 0;
   margin: 0;
 }
 #withdraw .list-block {
   padding: 0;
 }
-#withdraw .modal-text-input, #money .modal-text-input {
+#withdraw .modal-text-input, #money .modal-text-input, #member-price .modal-text-input {
   height: 1.8rem;
   width: 100%;
   background-color: #efeff4;

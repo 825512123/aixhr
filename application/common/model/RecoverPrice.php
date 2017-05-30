@@ -39,16 +39,49 @@ class RecoverPrice extends Base
     }
 
     /**
-     * 获取用户特殊价格
+     * 获取用户特殊价格列表
      * @param array $where
      * @return false|\PDOStatement|string|\think\Collection
      */
-    public function getMemberPrice($where = [])
+    public function getMemberPriceList($where = [])
     {
         $res = Db::name('member_price')
             ->where($where)
             ->field('recover_type_id as id,price')
             ->select();
         return $res;
+    }
+
+    /**
+     * 获取用户特殊价格
+     * @param array $where
+     * @return false|\PDOStatement|string|\think\Collection
+     */
+    public function getMemberPrice($where = [])
+    {
+        $res = Db::name('member_price')->alias('mp')
+            ->join('recover_price rp', 'rp.id = mp.recover_type_id')
+            ->where($where)
+            ->field('mp.recover_type_id as id,mp.price,rp.name')
+            ->select();
+        return $res;
+    }
+
+    public function editMemberPrice($data = [])
+    {
+        $res = Db::name('member_price')
+            ->where(['member_id' => $data['member_id'],'recover_type_id' => $data['recover_type_id']])
+            ->update($data);
+        return $res;
+    }
+
+    public function addMemberPrice($data = [])
+    {
+        return Db::name('member_price')->insert($data);
+    }
+
+    public function getMemberPriceFind($where = [])
+    {
+        return Db::name('member_price')->where($where)->find();
     }
 }

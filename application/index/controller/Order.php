@@ -166,7 +166,7 @@ class Order extends Base
      */
     public function getMemberPice($id)
     {
-        $memberPrice = RecoverPrice::getInstance()->getMemberPrice(['member_id' => $id]);
+        $memberPrice = RecoverPrice::getInstance()->getMemberPriceList(['member_id' => $id]);
         $price = RecoverPrice::getInstance()->getList();
         if($memberPrice) {
             foreach ($price as $key => $val) {

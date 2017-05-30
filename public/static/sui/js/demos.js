@@ -23,6 +23,7 @@ $(function () {
       }
     } else {*/
       if (localStorage.member_id) {
+        localStorage.member_page_id = 0;
         $.router.load(url);
       } else {
         $.toast('请先登录！');
@@ -671,8 +672,38 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
       }
     });
   });
-  // 添加客户
+  // 添加/编辑客户
   $(document).on("pageInit", "#add-user", function (e, id, page) {
+      var member_id = localStorage.member_page_id;
+      if(member_id > 0) {
+          $.showIndicator();
+          $('.title').text('编辑客户');
+          $.post('/index/user/member', {id:member_id}, function (data) {
+              if (data.code > 0) {
+                  $.hideIndicator();
+                  var data = JSON.parse(data.data);
+                  $("input[name='id']").val(data.id);
+                  $("input[name='mobile']").val(data.mobile);
+                  $("input[name='username']").val(data.username);
+                  $("input[name='actual_name']").val(data.actual_name);
+                  // 地址初始化
+                  var arr = data.address_city.split(' ');
+                  $("#city-picker").cityPicker({
+                      value: [arr[0], arr[1], arr[2]]
+                  });
+                  $("input[name='address_input']").val(data.address_input);
+              }
+          });
+      } else {
+          $('.title').text('添加客户');
+          // 地址初始化
+          var arr = '四川 南充 高坪区'.split(' ');
+          var input = '';
+          $("#city-picker").cityPicker({
+              value: [arr[0], arr[1], arr[2]]
+          });
+          $("input[name='address_input']").val(input);
+      }
       var checkm = false,mobile = '';
       var checkMobile = function (mobile) {
           if (!checkPhone(mobile)) {
@@ -692,16 +723,11 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
           mobile = $(this).val().trim();
           checkMobile(mobile);
       });
-      // 地址初始化
-      var arr = '四川 南充 高坪区'.split(' ');
-      var input = '';
-      $("#city-picker").cityPicker({
-          value: [arr[0], arr[1], arr[2]]
-      });
-      $("input[name='address_input']").val(input);
       // 提交
       $('.submit-addUser').on('click', function () {
+          var id = $("input[name='id']").val();
           var username = $("input[name='username']").val().trim();
+          var actual_name = $("input[name='actual_name']").val().trim();
           var address_city = $("input[name='address_city']").val().trim();
           var address_input = $("input[name='address_input']").val().trim();
           if (address_input == '' && username == '' && !checkm) {
@@ -709,7 +735,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
           } else {
               $.showIndicator();
               $.post('/index/user/addUser',
-                  {address_city:address_city, address_input:address_input, username:username, mobile:mobile},
+                  {id:id,address_city:address_city, address_input:address_input, username:username, mobile:mobile,actual_name:actual_name},
                   function (data) {
                       $.hideIndicator();
                       $.toast(data.msg);
@@ -721,8 +747,8 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
       });
   });
   memberPage = function (id) {
-      localStorage.member_page_id = id;
-      indexLogin('/index/user/member');
+    localStorage.member_page_id = id;
+    $.router.load('/index/user/member');
   };
   // 客户列表
   $(document).on("pageInit", "#member-list", function (e, id, page) {
@@ -777,9 +803,11 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
   });
   // 客户信息
   $(document).on("pageInit", "#member", function (e, id, page) {
+      $.showIndicator();
       var member_id = localStorage.member_page_id;
       $.post('/index/user/member', {id:member_id}, function (data) {
           if(data.code > 0) {
+              $.hideIndicator();
               var data = JSON.parse(data.data);
               $('.username').text(data.username);
               $('.actual_name').text(data.actual_name);
@@ -788,9 +816,6 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
               $('.address_input').text(data.address_input);
           }
 
-      });
-      $('.edit-member').on('click', function () {
-          
       });
   });
   // 客户签约价格
@@ -801,22 +826,50 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
               var list = '';
               $.each(data.data, function (i,n) {
                   //list += '<li><a href="#" class="item-link item-content">';
-                  list += '<li><a href="#" onclick="memberPage('+ n.id +')" class="item-link item-content">';
+                  list += '<li><div class="item-content">';
                   list += '<div class="item-media"><img src="/public/static/sui/img/icon_recover.svg" style="width: 2.2rem;"></div>';
-                  list += '<div class="item-inner"> <div class="item-title-row">';
-                  list += '<div class="item-title">' + n.username + '</div>';
-                  list += '</div> <div class="item-subtitle">'+ n.address_city + '     ' + n.address_input;
-                  list += '</div> </div> </a></li>';
+                  list += '<div class="item-inner">';
+                  list += '<div class="item-title label">' + n.name + '</div>';
+                  list += '<div class="item-input">￥' + toDecimal2(n.price) + '</div>';
+                  list += '</div> </div></li>';
               });
-              $(id + ' .media-list ul').append(list);
+              $('ul').append(list);
           }
-
       });
+
+      $('.add-price').on('click', function () {
+          $.popup('.popup-price');
+          checkMoney = function (i) {
+              if(i > 1.2) {
+                  $.toast('价格太高了吧!');
+                  $("input[name='price']").val(1.5);
+              }
+              var arr = i.split('.');
+              if(arr[1] && arr[1].length >2) {
+                  $.toast('最多至小数后两位');
+                  $("input[name='price']").val(Math.floor(i*100)/100);
+              }
+          };
+      });
+      $('.submit-price').on('click', function () {
+          var price = $("input[name='price']").val().trim();
+          var recover_type_id = $(".recover_type_id").val();
+          var member_id = localStorage.member_page_id;
+          if(price == '') {$.toast('请输入签约价格');}
+          if(recover_type_id == 0) {$.toast('请选择回收类型');}
+
+          $.post('/index/user/addPrice', {member_id:member_id,price:price,recover_type_id:recover_type_id}, function (data) {
+              $.toast(data.msg);
+              if(data.code == 1) setTimeout("indexLogin('index/user/price')",1500);
+          });
+      });
+
   });
+
 
   orderInfo = function (id) {
     localStorage.task_id = id;
-    indexLogin('/index/order/orderInfo');
+    $.router.load('/index/order/orderInfo');
   };
   // 我的回收单
   $(document).on("pageInit", "#order-list", function (e, id, page) {
@@ -952,8 +1005,10 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
   $(document).on("pageInit", "#order-info", function (e, id, page) {
     var task_id = localStorage.task_id;
     var aid = localStorage.aid > 0 ? localStorage.aid : 0;
+    $.showIndicator();
     $.post('/index/order/orderInfo', {task_id:task_id}, function (data) {
       if(data.code > 0) {
+        $.hideIndicator();
         var task = data.data;
         $('input[name="id"]').val(task_id);
         $('.task_date').text(task.task_date);
@@ -1014,9 +1069,10 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
   // 员工回收单详情
   $(document).on("pageInit", "#user-order-info", function (e, id, page) {
     var task_id = localStorage.task_id;
-
+    $.showIndicator();
     $.post('/index/order/userOrderInfo', {task_id:task_id}, function (data) {
       if(data.code > 0) {
+        $.hideIndicator();
         var task = data.data;
         $('input[name="id"]').val(task_id);
         $('.task_date').text(task.task_date);
@@ -1388,7 +1444,7 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
 
   withdrawInfo = function (id) {
     localStorage.withdraw_id = id;
-    indexLogin('/index/funds/withdrawInfo');
+    $.router.load('/index/funds/withdrawInfo');
   };
   /*提现列表*/
   $(document).on("pageInit", "#withdraw-list", function (e, id, page) {

@@ -4,16 +4,53 @@
             <span class="icon icon-left"></span>
             返回
         </a>
-        <a class="pull-right button button-link button-nav" href="#">
+        <a class="pull-right button button-link button-nav add-price" href="#">
             添加
         </a>
-        <h1 class="title">客户签约金额</h1>
+        <h1 class="title">客户签约价格</h1>
     </header>
-    <div class="content">
-        <div class="tabs infinite-scroll active">
-            <div class="list-block media-list">
-                <ul>
-                </ul>
+    <div class="content" id="info">
+        <div class="list-block">
+            <ul>
+            </ul>
+        </div>
+    </div>
+    <div class="popup popup-price">
+        <header class="bar bar-nav">
+            <a class="button button-link button-nav pull-left close-popup" href="javascript:;">
+                <span class="icon icon-left"></span>
+                返回
+            </a>
+            <h1 class="title">添加签约价格</h1>
+        </header>
+        <div class="content edit-address">
+            <div class="withdraw-money">
+                <span>请选择需要修改签约价格的回收类型</span>
+            </div>
+            <div class="withdraw-input">
+                <div class="list-block media-list">
+                    <select name="recover_type_id" class="recover_type_id">
+                        <option value="0">请选择回收类型</option>
+                        <{volist name="price" id="vo"}>
+                        <option value="<{$vo.id}>"><{$vo.name}></option>
+                        <{/volist}>
+                    </select>
+                </div>
+            </div>
+            <div class="withdraw-money">
+                <span>请输入修改的签约价格</span>
+            </div>
+            <div class="withdraw-input">
+                <input class="modal-text-input" type="number" name="price" oninput="checkMoney(value)" value=""
+                       placeholder="请输入签约金额"/>
+            </div>
+            <div class="span">
+                <span>提示：修改后，该客户的该回收类型按新价格计费
+            </div>
+            <div class="content-block">
+                <div class="submit-price">
+                    <a href="javascript:;" class="button button-fill button-big login-button ">确定</a>
+                </div>
             </div>
         </div>
     </div>

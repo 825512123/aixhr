@@ -82,6 +82,7 @@ class Member extends Base
             ->find();*/
         $res = Db::name('member')
             ->where('id', $id)
+            ->field('id,aid,user_id,username,mobile,actual_name,email,icon,wechat,alipay,bank,bank_name,open_id,yue,money,integral,use_integral,parent_id,all_parent_id,create_time,update_time,status,last_login_ip,address_city,address_input')
             ->find();
         return $res;
     }

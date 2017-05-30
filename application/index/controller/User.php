@@ -186,7 +186,7 @@ class User extends Base
             $post['aid'] = session('aid');
             $post['user_id'] = session('user_id');
             if (Member::getInstance()->editMember($post)){
-                return json(['code' => 1, 'data' => '', 'msg' => '客户添加成功!']);
+                return json(['code' => 1, 'data' => '', 'msg' => '成功!']);
             } else {
                 return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败!请稍后再试!']);
             }
@@ -231,18 +231,41 @@ class User extends Base
         }
     }
 
+    /**
+     * 签约价格列表
+     * @return mixed|\think\response\Json
+     */
     public function price()
     {
         if (request()->isPost()) {
             $post = input("post.");
-            $res = RecoverPrice::getInstance()->getMemberPrice(['member_id' => $post['id']]);
+            $res = RecoverPrice::getInstance()->getMemberPrice(['mp.member_id' => $post['id']]);
             if ($res > 0) {
                 return json(['code' => 1, 'data' => $res, 'msg' => '成功']);
             } else {
                 return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
             }
         } else {
+            $price = RecoverPrice::getInstance()->getList();
+            $this->assign('price', $price);
             return $this->fetch();
+        }
+    }
+
+    public function addPrice()
+    {
+        $recoverPrice = RecoverPrice::getInstance();
+        $post = input("post.");
+        $post['user_id'] = session('user_id');
+        if($recoverPrice->getMemberPriceFind(['member_id' => $post['member_id'],'recover_type_id' => $post['recover_type_id']])) {
+            $res = $recoverPrice->editMemberPrice($post);
+        } else {
+            $res = $recoverPrice->addMemberPrice($post);
+        }
+        if ($res > 0) {
+            return json(['code' => 1, 'data' => '', 'msg' => '成功']);
+        } else {
+            return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
         }
     }
 }
