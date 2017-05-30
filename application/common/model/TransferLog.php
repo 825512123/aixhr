@@ -37,8 +37,6 @@ class TransferLog extends Base
             Db::name('transfer_log')->insert($data);
             // 扣去员工余额
             Db::name('admin_user')->where('id', $data['send_id'])->setDec('yue', $data['money']);
-            // 增加被转账员工余额
-            Db::name('admin_user')->where('id', $data['user_id'])->setInc('yue', $data['money']);
             // 提交事务
             Db::commit();
             $res = true;
