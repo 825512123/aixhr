@@ -1,0 +1,103 @@
+<div id="order-day" class="page">
+    <header class="bar bar-nav">
+        <a class="button button-link button-nav pull-left back" href="#">
+            <span class="icon icon-left"></span>
+            返回
+        </a>
+        <a class="pull-right button button-link button-nav count" href="#">
+            统计
+        </a>
+        <h1 class="title">日期订单</h1>
+    </header>
+    <div class="content" id="info">
+        <div class="list-block">
+            <ul>
+                <!-- Text inputs -->
+                <li>
+                    <div class="item-content">
+                        <div class="item-media"><i class="icon icon-date"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title label">查看日期</div>
+                            <div class="item-input">
+                                <input type="text" name="day" id="day" >
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="buttons-tab">
+            <a href="#tab1" class="tab-link button order-tab1 active">进行中</a>
+            <a href="#tab2" class="tab-link button order-tab2">已完成</a>
+        </div>
+
+        <div class="tabs">
+            <div id="tab1" class="tab infinite-scroll active">
+                <div class="list-block media-list inset">
+                    <ul>
+                    </ul>
+                </div>
+                <!-- 加载提示符 -->
+                <div class="infinite-scroll-preloader">
+                    <div class="preloader">
+                    </div>
+                </div>
+            </div>
+            <div id="tab2" class="tab infinite-scroll">
+                <div class="list-block media-list inset">
+                    <ul>
+                    </ul>
+                </div>
+                <!-- 加载提示符 -->
+                <div class="infinite-scroll-preloader">
+                    <div class="preloader">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="popup popup-count">
+        <header class="bar bar-nav">
+            <a class="button button-link button-nav pull-left close-popup" href="javascript:;">
+                <span class="icon icon-left"></span>
+                返回
+            </a>
+            <h1 class="title count-title"><{$title}>统计</h1>
+        </header>
+        <div class="content" id="recover">
+            <div class="list-block">
+                <ul>
+                    <!--<li class="item-content" onclick="indexLogin('/index/order/orderList')">-->
+                    <li class="item-content">
+                        <div class="item-media"><i class="icon icon-order"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title">已完成订单</div>
+                            <div class="item-after sum_order"><{$count.count}></div>
+                        </div>
+                    </li>
+                    <!--<li class="item-content" onclick="indexLogin('/index/user/money')">-->
+                    <li class="item-content">
+                        <div class="item-media"><i class="icon icon-sum-money"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title">已使用金额</div>
+                            <div class="item-after use_money"><{$count.sum}></div>
+                        </div>
+                    </li>
+                    <li class="item-content">
+                        <div class="item-media"><i class="icon icon-kg"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title">已完成数量</div>
+                            <div class="item-after sum_number"><{$count.number}></div>
+                        </div>
+                    </li>
+                    <li class="item-content">
+                        <div class="item-media"><i class="icon icon-price"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title">平均单价</div>
+                            <div class="item-after price"><{$count.price}></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+    </div>
+</div>

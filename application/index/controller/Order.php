@@ -75,7 +75,14 @@ class Order extends Base
 			return $this->fetch('userOrderList');
 		} elseif (request()->isPost()) {
 			$post = input("post.");
-			$res = Task::getInstance()->getOrderList($post);
+            $where['t.member_id'] = session('member_id');
+            if ($post['status'] == 2) {
+                $where['t.status'] = 2;
+                $where['t.recover_date'] = ['gt', time()];
+            } else {
+                $where['t.status'] = 1;
+            }
+			$res = Task::getInstance()->getOrderList($where, $post['limit']);
 			if ($res > 0) {
 				$sum = Task::getInstance()->getOrderSum($post);
 				return json(['code' => 1, 'data' => $res, 'sum' => $sum, 'msg' => '成功']);
@@ -108,6 +115,65 @@ class Order extends Base
 			return $this->fetch('userOrderList');
 		}
 	}
+
+    /**
+     * 今日订单
+     * @return mixed|\think\response\Json
+     */
+    public function dayOrder()
+    {
+        $taskModel = Task::getInstance();
+        if (request()->isPost()) {
+            $post = input("post.");
+            //$post['day'] = '2017-05-31';
+            $today = $post['day'] ? $post['day'] : date('Y-m-d');
+            $startToday = strtotime($today);//今天起始时间戳
+            $endToday = $startToday + 86399;//今天结束时间戳86399
+            if ($post['status'] == 2) {
+                $data['t.status'] = 2;
+                $where['status'] = 2;
+            } else {
+                $data['t.status'] = 1;
+                $where['status'] = 1;
+            }
+            $data['t.recover_date'] = ['between', [$startToday, $endToday]];
+            $res = $taskModel->getDayOrderList($data);
+            if ($res > 0) {
+                $where['recover_date'] = ['between', [$startToday, $endToday]];
+                $sum = $taskModel->getDayOrderSum($where);
+                $count = $this->getDayCount($where);
+                return json(['code' => 1, 'data' => $res, 'sum' => $sum, 'count'=> $count, 'msg' => '成功']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'sum' => 0, 'count'=> '','msg' => '失败']);
+            }
+        } else {
+            $today = date('Y-m-d');
+            $startToday = strtotime($today);//今天起始时间戳
+            $endToday = $startToday + 86399;//今天结束时间戳86399
+            $where['recover_date'] = ['between', [$startToday, $endToday]];
+            $count = $this->getDayCount($where);
+            $this->assign('count', $count);
+            $this->assign('title', $today);
+            return $this->fetch('dayOrder');
+        }
+    }
+
+    private function getDayCount($where = [])
+    {
+        $where['status'] = 1;
+        $data = Task::getInstance()->where($where)->field('id,task_money,number')->select();
+        $count = ['count' => count($data), 'sum' => 0, 'number' => 0, 'price' => 0];
+        if ($data) {
+            $sum = 0;
+            foreach ($data as $v) {
+                $sum += ($v['task_money']*100);
+                $count['number'] += $v['number'];
+            }
+            $count['price'] = ($sum/$count['number'])/100;
+            $count['sum'] = $sum/100;
+        }
+        return $count;
+    }
 
 	/**
 	 * 订单详情
@@ -255,6 +321,26 @@ class Order extends Base
             $memberList = Member::getInstance()->getMemberList();
             $this->assign('memberList', $memberList);
             return $this->fetch('addOrder');
+        }
+    }
+
+    /**
+     * 公司订单
+     * @return mixed|\think\response\Json
+     */
+    public function adminOrder()
+    {
+        if (request()->isPost()) {
+            $post = input("post.");
+            $res = Task::getInstance()->getOrderList($post);
+            if ($res > 0) {
+                $sum = Task::getInstance()->getOrderSum($post);
+                return json(['code' => 1, 'data' => $res, 'sum' => $sum, 'msg' => '成功']);
+            } else {
+                return json(['code' => 0, 'data' => '', 'sum' => 0, 'msg' => '失败']);
+            }
+        } else {
+            return $this->fetch('adminOrder');
         }
     }
 }

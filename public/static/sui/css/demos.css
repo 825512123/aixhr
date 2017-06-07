@@ -205,6 +205,11 @@
   height: 1.45rem;
   background-image: url("../img/add-order.svg");
 }
+.icon.icon-day-order {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/day-order.svg");
+}
 .icon.icon-users {
   width: 1.45rem;
   height: 1.45rem;
@@ -224,6 +229,16 @@
   width: 1.45rem;
   height: 1.45rem;
   background-image: url("../img/turn-in.svg");
+}
+.icon.icon-kg {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/kg.svg");
+}
+.icon.icon-price {
+  width: 1.45rem;
+  height: 1.45rem;
+  background-image: url("../img/price.svg");
 }
 
 /*图标导航*/

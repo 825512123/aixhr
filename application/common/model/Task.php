@@ -37,28 +37,16 @@ class Task extends Base
 
     /**
      * 获取订单/任务列表
-     * @param $data
+     * @param array $where
+     * @param int $limit
      * @return false|\PDOStatement|string|\think\Collection
      */
-    public function getOrderList($data = [])
+    public function getOrderList($where = [], $limit = 0)
     {
-        $where['t.member_id'] = session('member_id');
-        if ($data['status'] == 2) {
-            $where['t.status'] = 2;
-            $where['t.recover_date'] = ['gt', time()];
-        } elseif ($data['status'] == 1) {
-            $where['t.status'] = 1;
-        }
-        /*if($data['status'] == 1) {//完成状态或时间大于预约时间
-            $res = $res->where(function ($query){
-                $query->where('t.status', 1)
-                    ->whereOr('t.recover_date', '<', time());
-            });
-        }*/
         $res = Db::name('task')->alias('t')
             ->join('recover_price rp', 't.recover_type=rp.id', 'LEFT')
             ->where($where)
-            ->limit($data['limit'], 8)
+            ->limit($limit, 8)
             ->field('t.*,rp.name as recover_name')
             ->order('t.id desc')
             ->select();
@@ -81,12 +69,36 @@ class Task extends Base
         }
 
         $res = Db::name('task')->alias('t')
-            ->join('recover_price rp', 't.recover_type=rp.id', 'LEFT')
+            ->join('member m', 't.member_id=m.id')
             ->where($where)
             ->limit($data['limit'], 8)
-            ->field('t.*,rp.name as recover_name')
+            ->field('t.*,m.username')
             ->order('t.id desc')
             ->select();
+        return $res;
+    }
+
+    /**
+     * 日订单
+     * @param array $where
+     * @return false|\PDOStatement|string|\think\Collection
+     */
+    public function getDayOrderList($where = [])
+    {
+        $res = Db::name('task')->alias('t')
+            ->join('admin_user au', 't.user_id=au.id','LEFT')
+            ->join('member m', 't.member_id=m.id')
+            ->where($where)
+            ->field('t.*,m.username member_name,au.name username')
+            ->order('t.id desc')
+            ->select();
+        return $res;
+    }
+
+    public function getDayOrderSum($where = [])
+    {
+        $res = Db::name('task')->where($where)
+            ->count('id');
         return $res;
     }
 

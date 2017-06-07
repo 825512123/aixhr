@@ -3,7 +3,7 @@ $(function () {
   $(".swiper-container").swiper({
     loop: true,
     lazyLoading: true,
-    autoplay: 3000,
+    autoplay: 5000,
     height: 200,
     autoplayDisableOnInteraction: false,
     //centeredSlides: true,
@@ -922,6 +922,83 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
 
     });
   });
+  // 今日订单
+  $(document).on("pageInit", "#order-day", function (e, id, page) {
+    var mydate = new Date();
+    var day = mydate.format('yyyy-MM-dd');
+    $('#day').val(day);
+    $("#day").calendar({
+      value: [day],
+      onClose: function(p){
+          if($('.order-tab1').hasClass('active')) {
+              $('#tab1 .media-list ul').html('');
+              getOrderList(2, '#tab1');
+          } else {
+              $('#tab2 .media-list ul').html('');
+              getOrderList(1, '#tab2');
+          }
+      }
+    });
+    var orderListLoading = false;
+    var getOrderList = function (status, id) {
+      var limit = $('#order-list ' + id + ' li').length;
+      var day = $('#day').val();
+      $.post('/index/order/dayOrder', {status:status, limit:limit,day:day}, function (data) {
+        $('.count-title').text(day + '统计');
+        $('.sum_order').text(data.count.count);
+        $('.use_money').text(data.count.sum);
+        $('.sum_number').text(data.count.number);
+        $('.price').text(data.count.price);
+        if(data.sum <= limit) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+        if (data.code > 0 && data.sum > 0) {
+          var list = '';
+          $.each(data.data, function (i,n) {
+            var username = n.username ? n.username : '未指派';
+            list += '<li><a href="#" onclick="orderInfo('+ n.id +')" class="item-link item-content">';
+            list += '<div class="item-media"><img src="/public/static/sui/img/icon_recover.svg" style="width: 2.2rem;"></div>';
+            list += '<div class="item-inner"> <div class="item-title-row">';
+            list += '<div class="item-title">' + n.member_name + '</div>';
+            list += '<div class="item-after">' + username + '</div>';
+            list += '</div> <div class="item-subtitle">'+ n.task_date + n.task_time;
+            list += '</div> </div> </a></li>';
+          });
+          $(id + ' .media-list ul').append(list);
+          if(data.data.length < 8) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+          if(data.data.length == data.sum) {$(id + ' .infinite-scroll-preloader').hide(); return;}
+        } else {
+          $(id + ' .infinite-scroll-preloader').hide(); return;
+        }
+      });
+    };
+
+    getOrderList(2, '#tab1');
+    $('.order-tab1').on('click', function () {
+        if(!$(this).hasClass('active')) {
+            $('#tab1 .media-list ul').html('');
+            getOrderList(2, '#tab1');
+        }
+    });
+    $('.order-tab2').on('click', function () {
+        if(!$(this).hasClass('active')) {
+            $('#tab2 .media-list ul').html('');
+            getOrderList(1, '#tab2');
+        }
+    });
+    $(page).on('infinite', function () {
+      if(orderListLoading) return;
+      orderListLoading = true;
+      if($(this).find('.infinite-scroll.active').attr('id') == "tab1"){
+        getOrderList(2, '#tab1');
+      } else {
+        getOrderList(1, '#tab2');
+      }
+
+    });
+
+    $('.count').on('click', function () {
+      $.popup('.popup-count');
+    });
+  });
   // 员工的回收单
   $(document).on("pageInit", "#user-order-list", function (e, id, page) {
     var orderListLoading = false;
@@ -932,11 +1009,10 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
         if (data.code > 0 && data.sum > 0) {
           var list = '';
           $.each(data.data, function (i,n) {
-            var recover_name = n.recover_name ? n.recover_name : '再生资源回收';
             list += '<li><a href="#" onclick="orderInfo('+ n.id +')" class="item-link item-content">';
             list += '<div class="item-media"><img src="/public/static/sui/img/icon_recover.svg" style="width: 2.2rem;"></div>';
             list += '<div class="item-inner"> <div class="item-title-row">';
-            list += '<div class="item-title">' + recover_name + '</div>';
+            list += '<div class="item-title">' + n.username + '</div>';
             list += '</div> <div class="item-subtitle">'+ n.task_date + n.task_time;
             list += '</div> </div> </a></li>';
           });
@@ -1078,7 +1154,9 @@ $(document).on("pageInit", "#repassword", function (e, id, page) {
         $('.task_date').text(task.task_date);
         $('.order_id').text(task.order_id);
         $('.member_name').text(task.member_name);
-        $('.member_mobile').html('<a href="tel:' + task.member_mobile + '">' + task.member_mobile + '</a>');
+        var mobile = task.member_mobile ? task.member_mobile : '';
+        //mobile = task.user_id == localStorage.member_id ? mobile : '';
+        $('.member_mobile').html('<a href="tel:' + mobile + '">' + mobile + '</a>');
         $('.task_city').text(task.task_city);
         $('.task_address').text(task.task_address);
 
